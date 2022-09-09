@@ -1,15 +1,11 @@
 <template>
-  <div>
-    layout default
-    <slot />
+  <div class="app">
+    <div class="page-main">
+      <slot />
+    </div>
   </div>
 </template>
 
 <script setup>
-// definePageMeta({
-// layout: loggedLayout
-// })
-
-
 </script>
 

@@ -1,0 +1,92 @@
+.btn-primary {
+  @apply block py-1.5 px-2.5 mt-1 w-full text-sm font-medium text-center text-white rounded border border-white focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-sm focus:outline-none;
+  // @apply bg-indigo-600 hover:bg-indigo-700;
+  @apply bg-gradient-to-r from-indigo-500 to-indigo-500;
+}
+
+.btn-payment {
+  @apply transition inline-flex items-center py-2 px-4 text-base font-medium text-white rounded-md border border-transparent focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-sm focus:outline-none;
+  // @apply px-3.5 mt-1 w-6/12 text-base font-medium text-white rounded border border-white focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 shadow-sm focus:outline-none;
+  // @apply bg-indigo-600 hover:bg-indigo-700;
+  &:disabled {
+    @apply bg-none bg-indigo-400 bg-opacity-30;
+  }
+
+  @apply bg-gradient-to-r from-indigo-600 to-indigo-800;
+  @apply hover:transform hover:scale-105;
+}
+
+.btn {
+  @apply border border-indigo-900 rounded-md p-2 bg-indigo-100 focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 shadow-md active:shadow-none my-2;
+}
+
+.p-button {
+  @apply inline-flex cursor-pointer items-center py-2 px-4 text-sm font-medium rounded-md border border-transparent focus:ring-2 focus:ring-offset-2 shadow-sm focus:outline-none;
+  @apply text-gray-500 shadow-none focus:ring-gray-400 hover:bg-gray-100 dark:bg-transparent dark:text-gray-300 dark:hover:text-gray-900 dark:hover:bg-gray-200 dark:hover:bg-opacity-10;
+
+  .p-button-icon-left {
+    @apply mr-2;
+  }
+}
+
+.button-icon-append {
+  @apply ml-2 -mr-1 h-5 w-5;
+}
+
+.button-icon-prepend {
+  @apply -ml-1 mr-2 h-5 w-5;
+}
+
+.btn-default {
+  @apply inline-flex items-center py-2 px-4 text-sm font-medium rounded-md border border-transparent focus:ring-2 focus:ring-offset-2 shadow-sm focus:outline-none;
+}
+
+.btn-indigo {
+  @apply text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500;
+}
+
+.btn-blue {
+  @apply text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-500;
+}
+
+.btn-gray {
+  @apply text-white bg-gray-600 hover:bg-gray-700 focus:ring-gray-500 dark:bg-gray-500;
+}
+
+.btn-red {
+  @apply text-white bg-red-600 hover:bg-red-700 focus:ring-red-500;
+}
+
+.btn-green {
+  @apply text-white bg-green-600 hover:bg-green-700 focus:ring-green-500;
+}
+
+.btn-purple {
+  @apply text-white bg-purple-600 hover:bg-purple-700 focus:ring-purple-500;
+}
+
+.btn-yellow {
+  @apply text-white bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500;
+}
+
+.btn-teal {
+  @apply text-white bg-teal-600 hover:bg-teal-700 focus:ring-teal-500;
+}
+
+.btn-clean {
+  @apply text-sm text-gray-500 shadow-none focus:ring-gray-400 hover:bg-gray-100;
+  @apply dark:bg-transparent dark:text-gray-300 dark:hover:text-gray-300 dark:hover:bg-gray-200/10 dark:focus:ring-gray-600 dark:focus:ring-offset-gray-700;
+}
+
+.btn-table {
+  @apply border border-gray-300 rounded-l-none text-gray-500 focus:ring-gray-400 hover:bg-gray-100;
+  @apply dark:bg-gray-900/70 dark:border-gray-500 dark:focus:text-gray-200 dark:hover:text-gray-300 dark:hover:bg-gray-900/100 dark:text-gray-400 dark:focus:ring-gray-600 dark:ring-offset-gray-800;
+}
+
+.btn-loading {
+  @apply bg-opacity-90;
+}
+
+.btn-disabled {
+  @apply bg-opacity-50 hover:bg-opacity-60 hover:cursor-no-drop;
+}

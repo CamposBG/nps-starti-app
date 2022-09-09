@@ -7,8 +7,7 @@
     </Html>
 
     <NuxtLayout>
-    <!-- <NuxtPage /> -->
-    Bem-vindo ao NPS Starti
+      <NuxtPage />
     </NuxtLayout>
   </div>
 </template>
