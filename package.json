@@ -8,6 +8,14 @@
     "postinstall": "nuxt prepare"
   },
   "devDependencies": {
-    "nuxt": "3.0.0-rc.9"
+    "autoprefixer": "^10.4.8",
+    "naive-ui": "^2.33.2",
+    "nuxt": "3.0.0-rc.9",
+    "postcss": "^8.4.16",
+    "tailwindcss": "^3.1.8"
+  },
+  "dependencies": {
+    "@harlem/core": "^2.3.9",
+    "vee-validate": "^4.6.7"
   }
 }
