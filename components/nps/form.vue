@@ -1,7 +1,9 @@
 <template>
-   <Form @submit="onSubmit">
-    <slot />
-  </Form>
+  <div class="h-full">
+    <Form @submit="onSubmit">
+     <slot />
+   </Form>
+  </div>
 </template>
 
 <script setup>

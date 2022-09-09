@@ -17,6 +17,6 @@ export const token = getter('token', state => {
   return state.token
 });
 
-export const setToken = mutation('set-token', (state, payload) => {
+export const setToken = mutation('set-token', (state, payload: string) => {
   state.token = payload;
 });

@@ -8,25 +8,25 @@
     </Transition>
     <Transition name="bounce" appear>
       <div class="login-wrapper" v-if="showLoginWrapper">
-        <LazyNpsForm>
-          <LazyNpsInput id="email" name="email" v-model="form.email" placeholder="Digite o seu e-mail" label="E-mail">
-            <template #prepend>
-              <Envelope class="w-5 h-5"/>
-            </template>
-          </LazyNpsInput>
-          <LazyNpsInput id="password" name="password" :type="getPasswordInputType()" v-model="form.password" placeholder="Digite sua senha" label="Senha">
-            <template #prepend>
-              <Lock class="w-5 h-5"/>
-            </template>
-            <template #append>
-                <a @click="changeIsPasswordVisibleState" href="javascript:">
-                  <Eye class="w-5 h-5" v-if="!isPasswordVisible"/>
-                  <EyeSlashRegular class="w-5 h-5"  v-else/>
-                </a>
-            </template>
-          </LazyNpsInput>
+        <LazyNpsForm @isSubmittingForm="(value) => (isSubmitting = value)" @submit="handleSubmit">
+            <LazyNpsInput id="email" name="email" v-model="form.email" placeholder="Digite o seu e-mail" label="E-mail" rules="required">
+              <template #prepend>
+                <Envelope class="w-5 h-5"/>
+              </template>
+            </LazyNpsInput>
+            <LazyNpsInput rules="required" id="password" name="password" :type="getPasswordInputType()" v-model="form.password" placeholder="Digite sua senha" label="Senha">
+              <template #prepend>
+                <Lock class="w-5 h-5"/>
+              </template>
+              <template #append>
+                  <a @click="changeIsPasswordVisibleState" href="javascript:">
+                    <Eye class="w-5 h-5" v-if="!isPasswordVisible"/>
+                    <EyeSlashRegular class="w-5 h-5"  v-else/>
+                  </a>
+              </template>
+            </LazyNpsInput>
           <div class="w-1/2 mx-auto text-center">
-            <LazyNpsButton class="w-full flex justify-center text-lg" @click="showWelcomeMessage = true">
+            <LazyNpsButton class="w-full flex justify-center text-lg" type="submit" :loading="isSubmitting">
               Entrar
             </LazyNpsButton>
           </div>
@@ -38,18 +38,29 @@
 
 <script setup>
 import {Eye, EyeSlashRegular, Envelope, Lock} from '@vicons/fa';
+import {
+  state,
+  setToken
+} from '../../store/auth';
 
 definePageMeta({
   layout: 'blank'
 });
 
+// composables
+const router = useRouter();
+
 // refs | data
 const form = reactive({
-  email: null
+  email: null,
+  password: null
 });
 const isPasswordVisible = ref(false);
 const showLoginWrapper = ref(false);
 const showWelcomeMessage = ref(false);
+const passwordError = ref(false);
+const passwordMessage = ref(false);
+const isSubmitting= ref(false);
 
 // methods
 const getPasswordInputType = () => {
@@ -60,7 +71,20 @@ const changeIsPasswordVisibleState = () => {
   isPasswordVisible.value = !isPasswordVisible.value;
 };
 
+const handleSubmit = () => {
+  passwordMessage.value = null;
+  passwordError.value = false;
 
+  console.log('loggin in...');
+  setTimeout(() => {
+
+    isSubmitting.value = false;
+    setToken('token-monstro-1')
+    router.push('/')
+  }, 3000)
+};
+
+// lifecycles
 onMounted(() => {
   showLoginWrapper.value = true;
   showWelcomeMessage.value = true;
@@ -88,7 +112,7 @@ onMounted(() => {
   }
 
   .login-wrapper {
-    @apply w-1/2 md:w-1/4 mx-auto bg-gray-100 border rounded-md p-5 shadow-md;
+    @apply w-1/2 h-fit md:w-1/4 mx-auto bg-gray-100 border rounded-md p-5 shadow-md;
   }
 }
 
