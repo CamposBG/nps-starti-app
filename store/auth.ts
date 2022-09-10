@@ -10,13 +10,16 @@ export const {
   state,
   getter,
   mutation,
-  ...store
-} = createStore('user', STATE);
+  // ...store
+} = createStore('user', STATE, {
+  allowOverwrite: true
+});
 
 export const token = getter('token', state => {
   return state.token
 });
 
-export const setToken = mutation('set-token', (state, payload: string) => {
+export const setToken = mutation<string>('setToken', (state, payload: string) => {
+  console.log({payload})
   state.token = payload;
 });

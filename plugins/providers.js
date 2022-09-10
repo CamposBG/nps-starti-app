@@ -1,5 +1,7 @@
-import { defineNuxtPlugin, useState } from '#app'
+import Vue3Storage, { StorageType } from 'vue3-storage';
 import Harlem from '@harlem/core'
+import { Vue3ProgressPlugin } from '@marcoschulte/vue3-progress';
+import { defineNuxtPlugin, useState } from '#app'
 
 export default defineNuxtPlugin((nuxtApp) => {
   if (useState('beforeEach').value === undefined) {
@@ -10,10 +12,12 @@ export default defineNuxtPlugin((nuxtApp) => {
         top: 0
       });
 
-      nuxtApp.vueApp.use(Harlem);
+    nuxtApp.vueApp.use(Vue3Storage, { namespace: 'nps_', storage: StorageType.Local });
+    nuxtApp.vueApp.use(Vue3ProgressPlugin);
+    nuxtApp.vueApp.use(Harlem);
 
-      nuxtApp.$router.beforeEach(async (to, from, next) => {
-        next();
-      })
+    nuxtApp.$router.beforeEach(async (to, from, next) => {
+      next();
+    })
   }
 });
