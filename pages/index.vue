@@ -5,5 +5,5 @@
 </template>
 
 <script setup>
-
+import {state} from '../store/auth'
 </script>

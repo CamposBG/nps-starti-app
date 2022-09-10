@@ -1,18 +1,14 @@
-import {
-  state,
-  setToken
-} from '../store/auth';
+import { useStorage } from 'vue3-storage';
 
-export default defineNuxtRouteMiddleware(async (to, from) => {
-  const nuxtApp = useNuxtApp();
-
-  const token = state.token;
+export default defineNuxtRouteMiddleware( async (to, from) => {
+  const store = useStorage();
+  const user = store.getStorageSync('user');
 
   if (to.path !== '/auth/login') {
-    if (!token || token.length === 0) {
+    if (!user.token) {
       return navigateTo('/auth/login')
     }
-  } else if (token && token.length > 0) {
+  } else if (user.token && user.token.length > 0) {
     return navigateTo('/');
   }
-}) 
+});

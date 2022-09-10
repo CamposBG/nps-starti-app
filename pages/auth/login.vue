@@ -38,10 +38,7 @@
 
 <script setup>
 import {Eye, EyeSlashRegular, Envelope, Lock} from '@vicons/fa';
-import {
-  state,
-  setToken
-} from '../../store/auth';
+import { useStorage } from 'vue3-storage';
 
 definePageMeta({
   layout: 'blank'
@@ -49,6 +46,7 @@ definePageMeta({
 
 // composables
 const router = useRouter();
+const storage = useStorage();
 
 // refs | data
 const form = reactive({
@@ -71,15 +69,20 @@ const changeIsPasswordVisibleState = () => {
   isPasswordVisible.value = !isPasswordVisible.value;
 };
 
+
 const handleSubmit = () => {
   passwordMessage.value = null;
   passwordError.value = false;
 
-  console.log('loggin in...');
-  setTimeout(() => {
-
+  setTimeout(async () => {
+    await storage.setStorage({
+      key: 'user',
+      data: {
+        token: 'djiqwjdj892j189d28dj128d2',
+        email: form.email
+      },
+    });
     isSubmitting.value = false;
-    setToken('token-monstro-1')
     router.push('/')
   }, 3000)
 };
