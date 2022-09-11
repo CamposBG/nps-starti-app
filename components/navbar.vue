@@ -1,39 +1,57 @@
 <template>
-  <div>
-    <div id="mySidebar" class="sidebar">
-      <div class="bg-blue-700 text-center py-3">
-        <NuxtLink class="text-blue-200 text-xl tracking-wide" to="/">NPS STARTI</NuxtLink>
-
+  <div>    
+    <div class="sidebar overflow-hidden" :class="sidebarWidth">
+      <div class="bg-slate-500 text-center py-3" :class="{'pl-2':minimized}">
+        <NuxtLink class="text-gray-200 text-xl tracking-wide whitespace-nowrap" to="/">NPS  <br><span v-show="!minimized" class="transition ease-in-out delay-500">STARTI</span> </NuxtLink>
       </div>
-      <div class="mt-5 text-lg text-blue-100 pl-5 flex flex-col gap-5">
-        <div class="menu-icon  hover:text-amber-400" :class="{'text-amber-400':activeLink ==='dash'}">
+      <div v-if="!minimized" class=" mt-10 pl-5 text-sm text-gray-100 shadow-sm ">
+        <p class="">MENU</p>
+      </div>
+      
+      <div class="mt-5 text-lg text-gray-100 pl-5 flex flex-col gap-5">
+        <div class="menu-icon  hover:text-amber-400 hover:shadow-sm" :class="{'text-amber-400':activeLink ==='dash'}">
           <NuxtLink class="link flex gap-4 items-center" to="/dashboard">
             <ChartPie class=" icon w-6 h-6 shrink-0" />Dashboard
           </NuxtLink>
         </div>
-        <div class=" menu-icon  hover:text-sky-400 " :class="{'text-sky-400':activeLink ==='config'}">
+        <div class=" menu-icon  hover:text-sky-400 hover:shadow-sm" :class="{'text-sky-400':activeLink ==='config'}">
 
           <NuxtLink class="link flex gap-4 items-center" to="/config">
             <Cog class="icon w-6 h-6 shrink-0" /> Configurações
           </NuxtLink>
         </div>
-        <div class=" menu-icon  hover:text-emerald-400" :class="{'text-emerald-400':activeLink ==='users'}">
+        <div class=" menu-icon  hover:text-emerald-400 hover:shadow-sm" :class="{'text-emerald-400':activeLink ==='users'}">
 
           <NuxtLink class="link flex gap-4 items-center" to="/users">
             <AddressCard class="icon w-6 h-6 shrink-0 " />Usuários
           </NuxtLink>
         </div>
       </div>
+      <div class="minimize-icon" :class="{'rotate-180':minimized}" @click="toglleSidebar">
+        <AngleDoubleLeft class="w-5 h-5" />
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ChartPie, Cog, AddressCard } from '@vicons/fa';
+import { ChartPie, Cog, AddressCard, AngleDoubleLeft } from '@vicons/fa';
+
+const emit = defineEmits(['isSidebarToggle'])
 
 const route = useRoute()
 // ref|data
-const mini = ref(true)
+const minimized = ref(false)
+
+// methods
+const toglleSidebar = () => {
+  console.log("aqui")
+  minimized.value = !minimized.value
+}
+// computed
+const sidebarWidth = computed(()=>{
+  return minimized.value? 'w-[61px]': 'w-[200px]'
+})
 
 const activeLink = computed(() => {
   if (route.path === '/') {
@@ -47,12 +65,17 @@ const activeLink = computed(() => {
   }
 })
 
+watch(minimized, ()=>{
+  console.log("mudou")
+  emit('isSidebarToggle', minimized)
+})
 
 </script>
 
-<style scoped  lang="scss">
+<style  lang="scss" scoped>
 .sidebar {
-  @apply h-full w-[200px] fixed top-0 left-0 bg-slate-500 z-10;
+  @apply h-full fixed top-0 left-0 bg-slate-500 z-10;
+  transition: 0.3s ease;
 }
 
 .menu-icon:hover {
@@ -86,5 +109,14 @@ const activeLink = computed(() => {
   80% {
     transform: rotate(-5deg);
   }
+}
+.minimize-icon {
+  @apply fixed bottom-6 left-6 text-gray-100 hover:cursor-pointer;
+  transition: 0.2s linear;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+  transition: 0.2s linear;
 }
 </style>
