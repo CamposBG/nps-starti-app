@@ -6,8 +6,6 @@
 @tailwind screens;
 @tailwind variants;
 
-@import 'buttons';
-
 body {
   padding: 0;
   margin: 0;
@@ -15,12 +13,9 @@ body {
   @apply relative min-h-screen;
 
   .app {
-    // @apply pt-[30px];
     @apply relative h-full min-h-screen;
 
     .page-main {
-      // voltar o pr-12 quando tiver o sidebar-right
-      // @apply relative pr-12 w-screen h-full;
       @apply relative h-full;
     }
   }

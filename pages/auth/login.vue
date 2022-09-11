@@ -8,84 +8,23 @@
     </Transition>
     <Transition name="bounce" appear>
       <div class="login-wrapper" v-if="showLoginWrapper">
-        <LazyNpsForm @isSubmittingForm="(value) => (isSubmitting = value)" @submit="handleSubmit">
-            <LazyNpsInput id="email" name="email" v-model="form.email" placeholder="Digite o seu e-mail" label="E-mail" rules="required">
-              <template #prepend>
-                <Envelope class="w-5 h-5"/>
-              </template>
-            </LazyNpsInput>
-            <LazyNpsInput rules="required" id="password" name="password" :type="getPasswordInputType()" v-model="form.password" placeholder="Digite sua senha" label="Senha">
-              <template #prepend>
-                <Lock class="w-5 h-5"/>
-              </template>
-              <template #append>
-                  <a @click="changeIsPasswordVisibleState" href="javascript:">
-                    <Eye class="w-5 h-5" v-if="!isPasswordVisible"/>
-                    <EyeSlashRegular class="w-5 h-5"  v-else/>
-                  </a>
-              </template>
-            </LazyNpsInput>
-          <div class="w-1/2 mx-auto text-center">
-            <LazyNpsButton class="w-full flex justify-center text-lg" type="submit" :loading="isSubmitting">
-              Entrar
-            </LazyNpsButton>
-          </div>
-        </LazyNpsForm>
+        <LazyLoginForm />
       </div>
     </Transition>
   </div>
 </template>
 
 <script setup>
-import {Eye, EyeSlashRegular, Envelope, Lock} from '@vicons/fa';
-import { useStorage } from 'vue3-storage';
 
 definePageMeta({
   layout: 'blank'
 });
 
-// composables
-const router = useRouter();
-const storage = useStorage();
-
 // refs | data
-const form = reactive({
-  email: null,
-  password: null
-});
-const isPasswordVisible = ref(false);
 const showLoginWrapper = ref(false);
 const showWelcomeMessage = ref(false);
-const passwordError = ref(false);
-const passwordMessage = ref(false);
-const isSubmitting= ref(false);
 
 // methods
-const getPasswordInputType = () => {
-  return isPasswordVisible.value ? 'text' : 'password'
-};
-
-const changeIsPasswordVisibleState = () => {
-  isPasswordVisible.value = !isPasswordVisible.value;
-};
-
-
-const handleSubmit = () => {
-  passwordMessage.value = null;
-  passwordError.value = false;
-
-  setTimeout(async () => {
-    await storage.setStorage({
-      key: 'user',
-      data: {
-        token: 'djiqwjdj892j189d28dj128d2',
-        email: form.email
-      },
-    });
-    isSubmitting.value = false;
-    router.push('/')
-  }, 3000)
-};
 
 // lifecycles
 onMounted(() => {
