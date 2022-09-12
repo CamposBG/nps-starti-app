@@ -10,4 +10,8 @@ export default class Repository {
 
         this.base = new BaseRepository(this.context);
     }
+
+    async storeUser(data) {
+        return this.post('/calculator', data);
+      }
 }
