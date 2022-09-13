@@ -1,11 +1,15 @@
 <template>
   <div class="app">
-
     <Navbar @isSidebarToggle="adjustMargin" />
     <div class="top-bar">
       <UserCircle class="w-5 h-5" />
       <p>{{user.email}}</p>
-        <DoorOpen class="w-5 h-5 hover: cursor-pointer" v-on:click="logOut" />
+      <NTooltip placement="bottom" trigger="hover">
+        <template #trigger>
+          <DoorOpen class="w-5 h-5 hover: cursor-pointer" v-on:click="logOut" />
+        </template>
+        <span> Sair do sistema </span>
+      </NTooltip>
     </div>
     <div class="main" :class="mainMargin">
       <slot />
@@ -15,6 +19,7 @@
 
 
 <script setup>
+import { NTooltip } from 'naive-ui';
 import { UserCircle, DoorOpen } from '@vicons/fa';
 import { useStorage } from 'vue3-storage';
 

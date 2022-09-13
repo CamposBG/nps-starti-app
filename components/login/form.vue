@@ -14,7 +14,7 @@
         </template>
       </NInput>
     </NFormItem>
-    <NButton color="#1C52FF" type="success" block @click="submitForm" :loading="isSubmitting">
+    <NButton color="#1C52FF" block @click="submitForm" :loading="isSubmitting">
       <template #icon>
         <NIcon>
           <SignInAlt />
@@ -29,9 +29,6 @@
 import { Envelope, Lock, SignInAlt } from '@vicons/fa';
 import { NForm, NFormItem, NInput, NButton, NIcon, useMessage } from 'naive-ui'
 import {useStorage} from "vue3-storage";
-
-
-const emit = defineEmits(['submit']);
 
 const storage = useStorage();
 const router = useRouter();
@@ -73,7 +70,6 @@ const submitForm = (e) => {
       (errors) => {
         if (!errors) {
           isSubmitting.value = true;
-
           setTimeout(async () => {
             await storage.setStorage({
               key: 'user',
