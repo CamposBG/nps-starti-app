@@ -2,16 +2,18 @@
   <div class="h-full">
     <Html>
       <Head>
-        <meta name="naive-ui-style" />
+        <Meta name="naive-ui-style" />
         <Title>Starti NPS</Title>
       </Head>
     </Html>
-    <NConfigProvider>
-      <NMessageProvider>
-        <NuxtLayout>
-          <NuxtPage />
-        </NuxtLayout>
-      </NMessageProvider>
+    <NConfigProvider preflight-style-disabled>
+      <NDialogProvider>
+        <NMessageProvider>
+          <NuxtLayout>
+            <NuxtPage />
+          </NuxtLayout>
+        </NMessageProvider>
+      </NDialogProvider>
     </NConfigProvider>
     <vue3-progress-bar />
   </div>
@@ -19,7 +21,7 @@
 
 <script setup>
 import { useProgress } from '@marcoschulte/vue3-progress';
-import { NMessageProvider, NConfigProvider } from 'naive-ui'
+import { NMessageProvider, NConfigProvider, NDialogProvider } from 'naive-ui'
 
 
 const nuxtApp = useNuxtApp();
