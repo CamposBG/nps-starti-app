@@ -1,5 +1,6 @@
 <template>
-  <div class="w-full">
+  <div class="max-w-lg mx-auto">
+    <p class="text-lg font-bold mb-5">Editar Usuário</p>
     <!-- form -->
     <NForm ref="formRef" :model="formValue" :rules="rules">
 
@@ -21,21 +22,21 @@
         </NInput>
       </NFormItem>
 
-      <!-- password -->
-      <NFormItem label="Sua senha" path="password" :show-require-mark="true">
-        <NInput v-model:value="formValue.password" placeholder="Digite a sua senha" type="password"
-          @input="handlePasswordInput" @keydown.enter.prevent>
+      <!-- confirmPassword -->
+      <NFormItem ref="confirmPasswordRef" first label="Senha" path="confirmPassword"
+        :show-require-mark="true">
+        <NInput v-model:value="formValue.confirmPassword" placeholder="Digite a sua senha" type="password"
+          @keydown.enter.prevent>
           <template #prefix>
             <Lock class="w-3" />
           </template>
         </NInput>
       </NFormItem>
 
-      <!-- confirmPassword -->
-      <NFormItem ref="confirmPasswordRef" first label="Confirme sua senha" path="confirmPassword"
-        :show-require-mark="true">
-        <NInput v-model:value="formValue.confirmPassword" placeholder="Digite a sua senha" type="password"
-          @keydown.enter.prevent>
+      <!-- password -->
+      <NFormItem label="Confirme a senha" path="password" :show-require-mark="true">
+        <NInput v-model:value="formValue.password" placeholder="Digite a sua senha" type="password"
+          @input="handlePasswordInput" @keydown.enter.prevent>
           <template #prefix>
             <Lock class="w-3" />
           </template>
@@ -48,9 +49,13 @@
       </NFormItem>
 
       <!-- submit btn -->
-      <NButton round @click="submitForm">
-        Enviar
-      </NButton>
+      <div class="flex gap-2 justify-end">
+        <NButton round  @click="submitForm" type="primary">
+          <span v-if="isSubmitting === true" class="animate-ping"> Loading...</span>
+          <span v-else>Enviar</span>
+        </NButton>        
+        <NButton round @click="$router.push('/users')">Voltar</NButton>
+      </div>
     </NForm>
   </div>
 </template>
@@ -61,18 +66,29 @@ import { NForm, NFormItem, NInput, useMessage, NSwitch, NButton } from 'naive-ui
 
 const emit = defineEmits(['submit']);
 
+const router = useRouter()
+const nuxtApp = useNuxtApp()
+const route = useRoute()
+
+//AsyncData
+const {data:response, pending, error} = useLazyAsyncData(
+  `user-${Math.random}`, 
+  () => nuxtApp.$repo.user.getOneUser(route.params.guid), 
+  {pick:['name','email','is_admin']}
+)
+
 // refs | data
 const formRef = ref(null);
 const confirmPasswordRef = ref(null)
 const isSubmitting = ref(false);
 const message = useMessage();
-
 const formValue = ref({
-  email: "",
-  name: "",
-  password: "",
-  confirmPassword: "",
-  isAdmin: "false"
+  email: null,
+  name: null,
+  password: null,
+  confirmPassword: null,
+  isAdmin: "false",
+  changePassword:true
 });
 
 const rules = ref(null);
@@ -80,6 +96,7 @@ const rules = ref(null);
 rules.value = {
   email: {
     required: true,
+    message: 'Email é obrigatório',
     validator(rule, value) {
       if (!value) {
         return new Error("E-mail é obrigatório");
@@ -92,12 +109,13 @@ rules.value = {
   },
   password: [{
     required: true,
-    message: "A senha é obrigatória",
+    message: "Passwods devem ser identicos",
     trigger: ["blur"]
   },
   {
     validator: validatePasswordSame,
-    message: "Passwods devem ser identicos",
+    required: true,
+    message: "A senha é obrigatória ",
     trigger: ["blur", "password-input"]
   }
   ],
@@ -109,31 +127,42 @@ function validatePasswordSame(rule, value) {
 }
 
 function handlePasswordInput() {
-  if (modelRef.value.reenteredPassword) {
+  if (formRef.value.reenteredPassword) {
     rPasswordFormItemRef.value?.validate({ trigger: "password-input" });
   }
 }
 
-
-const submitForm = (e) => {
+const submitForm = async (e) => {
   e.preventDefault();
+  isSubmitting.value = true
   formRef.value?.validate(
-    (errors) => {
+    async (errors) => {
       if (!errors) {
-
-        isSubmitting.value = true;
-        console.log("PASSOu validação");
-        // TODO vazer requisição e validação
-        message.success("Usuário salvo com sucesso");
+        const response = await nuxtApp.$repo.user.editUser(formValue.value)
+        if (response.data?.susses === true) {
+          message.success('Usuário adicionado com sucesso')
+          router.push('/users')
+        } else {
+          message.error('Não foi possível adicionar o usuário')
+          isSubmitting.value = false
+        }
       } else {
-        console.log("falhou validação");
         return false
       }
-      console.log(errors)
     }
   )
+  isSubmitting.value = false
 }
 
-
+watch(response, ()=>{
+  if(response.value.data?.name.length > 0){
+    formValue.value.email = response.value.data.email;
+    formValue.value.name = response.value.data.name;
+    formValue.value.isAdmin = response.value.data.is_admin;
+  }
+})
+onBeforeMount(()=>{
+  console.log(error)
+})
 
 </script>

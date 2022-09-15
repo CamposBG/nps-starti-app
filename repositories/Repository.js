@@ -8,6 +8,7 @@ export default class Repository {
   base = null;
 
   user = null;
+  
   projects = null;
 
   constructor(context) {

@@ -21,21 +21,21 @@
         </NInput>
       </NFormItem>
 
-      <!-- password -->
-      <NFormItem label="Sua senha" path="password" :show-require-mark="true">
-        <NInput v-model:value="formValue.password" placeholder="Digite a sua senha" type="password"
-          @input="handlePasswordInput" @keydown.enter.prevent>
+      <!-- confirmPassword -->
+      <NFormItem ref="confirmPasswordRef" first label="Senha" path="confirmPassword"
+        :show-require-mark="true">
+        <NInput v-model:value="formValue.confirmPassword" placeholder="Digite a sua senha" type="password"
+          @keydown.enter.prevent>
           <template #prefix>
             <Lock class="w-3" />
           </template>
         </NInput>
       </NFormItem>
 
-      <!-- confirmPassword -->
-      <NFormItem ref="confirmPasswordRef" first label="Confirme sua senha" path="confirmPassword"
-        :show-require-mark="true">
-        <NInput v-model:value="formValue.confirmPassword" placeholder="Digite a sua senha" type="password"
-          @keydown.enter.prevent>
+      <!-- password -->
+      <NFormItem label="Confirme a senha" path="password" :show-require-mark="true">
+        <NInput v-model:value="formValue.password" placeholder="Digite a sua senha" type="password"
+          @input="handlePasswordInput" @keydown.enter.prevent>
           <template #prefix>
             <Lock class="w-3" />
           </template>
@@ -48,11 +48,14 @@
       </NFormItem>
 
       <!-- submit btn -->
-      <NButton round @click="submitForm">
-        Enviar
-      </NButton>
+      <div class="flex gap-2 justify-end">
+        <NButton round  @click="submitForm" type="primary">
+          <span v-if="isSubmitting === true" class="animate-ping"> Loading...</span>
+          <span v-else>Enviar</span>
+        </NButton>        
+        <NButton round @click="$router.push('/users')">Voltar</NButton>
+      </div>
     </NForm>
-    {{isSubmitting}}
   </div>
 </template>
 
@@ -62,7 +65,9 @@ import { NForm, NFormItem, NInput, useMessage, NSwitch, NButton } from 'naive-ui
 
 const emit = defineEmits(['submit']);
 
+
 const nuxtApp = useNuxtApp()
+const router = useRouter()
 
 // refs | data
 const formRef = ref(null);
@@ -70,10 +75,10 @@ const confirmPasswordRef = ref(null)
 const isSubmitting = ref(false);
 const message = useMessage();
 const formValue = ref({
-  email: "",
-  name: "",
-  password: "",
-  confirmPassword: "",
+  email: null,
+  name: null,
+  password: null,
+  confirmPassword: null,
   isAdmin: "false"
 });
 
@@ -82,6 +87,7 @@ const rules = ref(null);
 rules.value = {
   email: {
     required: true,
+    message: 'Email é obrigatório',
     validator(rule, value) {
       if (!value) {
         return new Error("E-mail é obrigatório");
@@ -94,12 +100,13 @@ rules.value = {
   },
   password: [{
     required: true,
-    message: "A senha é obrigatória",
+    message: "Passwods devem ser identicos",
     trigger: ["blur"]
   },
   {
     validator: validatePasswordSame,
-    message: "Passwods devem ser identicos",
+    required: true,
+    message: "A senha é obrigatória ",
     trigger: ["blur", "password-input"]
   }
   ],
@@ -111,7 +118,7 @@ function validatePasswordSame(rule, value) {
 }
 
 function handlePasswordInput() {
-  if (modelRef.value.reenteredPassword) {
+  if (formRef.value.reenteredPassword) {
     rPasswordFormItemRef.value?.validate({ trigger: "password-input" });
   }
 }
@@ -119,34 +126,24 @@ function handlePasswordInput() {
 
 const submitForm = async (e) => {
   e.preventDefault();
+  isSubmitting.value = true
   formRef.value?.validate(
-    (errors) => {
+    async (errors) => {
       if (!errors) {
-
-        isSubmitting.value = true;
-        console.log("PASSOu validação");
+        const response = await nuxtApp.$repo.user.storeUser(formValue.value)
+        if (response.data?.susses === true) {
+          message.success('Usuário adicionado com sucesso')
+          router.push('/users')
+        } else {
+          message.error('Não foi possível adicionar o usuário')
+          isSubmitting.value = false
+        }
       } else {
-        console.log("falhou validação");
         return false
       }
-      console.log(errors)
-      // isSubmitting.value = false;
-
     }
   )
+  isSubmitting.value = false
 }
-
-async function sendData (data) {
-  const response = await nuxtApp.$repo.user.storeUser(data)
-  return response
-}
-
-watch(isSubmitting, async() => {
-  console.log("dentro do watch")
-  if(isSubmitting.value === true ){
-    await sendData(formValue.value)
-  }
-})
-
 
 </script>

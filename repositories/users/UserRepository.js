@@ -6,9 +6,17 @@ export default class UserRepository extends BaseRepository {
 
     this.baseUrl = baseUrl;
   }
+  
   async storeUser(body) {
-    console.log("aqui")
-    return this.post("/user", body);
+    return this.post("/users", body);
+  }
+  
+  async getOneUser(guid) {
+    return this.get(`UAHUHAUHAU/users/${guid}`)
+  }
+
+  async editUser(guid, body) {
+    return this.put(`/users/${guid}`, body);
   }
 
 }
