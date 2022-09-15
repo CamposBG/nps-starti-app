@@ -1,0 +1,29 @@
+import BaseRepository from '../BaseRepository';
+
+export default class ProjectsRepository extends BaseRepository {
+    constructor(baseUrl, context) {
+        super(context);
+
+        this.baseUrl = baseUrl;
+    }
+
+    async listProjects() {
+        return this.get('/');
+    }
+
+    async createProject(body) {
+        return this.post('/', body);
+    }
+
+    async findOneProject(guid) {
+        return this.get(`/${guid}` + guid``)
+    }
+
+    async updateProject(guid, body) {
+        return this.put(`/${guid}`, body)
+    }
+
+    async deleteProject(guid) {
+        return this.delete(`/${guid}` + guid``)
+    }
+}
