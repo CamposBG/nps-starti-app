@@ -52,7 +52,6 @@
         Enviar
       </NButton>
     </NForm>
-    {{isSubmitting}}
   </div>
 </template>
 
@@ -62,13 +61,12 @@ import { NForm, NFormItem, NInput, useMessage, NSwitch, NButton } from 'naive-ui
 
 const emit = defineEmits(['submit']);
 
-const nuxtApp = useNuxtApp()
-
 // refs | data
 const formRef = ref(null);
 const confirmPasswordRef = ref(null)
 const isSubmitting = ref(false);
 const message = useMessage();
+
 const formValue = ref({
   email: "",
   name: "",
@@ -117,7 +115,7 @@ function handlePasswordInput() {
 }
 
 
-const submitForm = async (e) => {
+const submitForm = (e) => {
   e.preventDefault();
   formRef.value?.validate(
     (errors) => {
@@ -125,28 +123,17 @@ const submitForm = async (e) => {
 
         isSubmitting.value = true;
         console.log("PASSOu validação");
+        // TODO vazer requisição e validação
+        message.success("Usuário salvo com sucesso");
       } else {
         console.log("falhou validação");
         return false
       }
       console.log(errors)
-      // isSubmitting.value = false;
-
     }
   )
 }
 
-async function sendData (data) {
-  const response = await nuxtApp.$repo.user.storeUser(data)
-  return response
-}
-
-watch(isSubmitting, async() => {
-  console.log("dentro do watch")
-  if(isSubmitting.value === true ){
-    await sendData(formValue.value)
-  }
-})
 
 
 </script>
