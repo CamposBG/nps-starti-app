@@ -36,26 +36,6 @@ export default class BaseRepository {
     }
 
     catchError(error) {
-        const { tc } = this.context.$i18n.global;
-        let msgError = '';
-        if (error.response && typeof error.response.data === 'object') {
-            const { data } = error.response;
-            if (data.errors !== undefined) {
-                data.errors.forEach((err) => {
-                    msgError += `${err.field} => ${err.message} <br>`;
-                });
-            } else if (data.error !== undefined) {
-                msgError = `[${data.error.code}] ${tc(data.error.detail)}`;
-            }
-        }
-
-        if (msgError !== '') {
-            this.context.$bus.emit('noty:error', {
-                title: tc('d.m.reqErrorTitle'),
-                msg: msgError,
-            });
-        }
-
         return error;
     }
 
