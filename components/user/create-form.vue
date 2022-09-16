@@ -21,19 +21,8 @@
         </NInput>
       </NFormItem>
 
-      <!-- confirmPassword -->
-      <NFormItem ref="confirmPasswordRef" first label="Senha" path="confirmPassword"
-        :show-require-mark="true">
-        <NInput v-model:value="formValue.confirmPassword" placeholder="Digite a sua senha" type="password"
-          @keydown.enter.prevent>
-          <template #prefix>
-            <Lock class="w-3" />
-          </template>
-        </NInput>
-      </NFormItem>
-
       <!-- password -->
-      <NFormItem label="Confirme a senha" path="password" :show-require-mark="true">
+      <NFormItem label=" Senha" path="password" :show-require-mark="true">
         <NInput v-model:value="formValue.password" placeholder="Digite a sua senha" type="password"
           @input="handlePasswordInput" @keydown.enter.prevent>
           <template #prefix>
@@ -42,26 +31,55 @@
         </NInput>
       </NFormItem>
 
-      <!-- isAdmin -->
-      <NFormItem :span="12" label="Administrador" path="isAdmin">
-        <NSwitch v-model:value="formValue.isAdmin" />
+      <!-- confirmPassword -->
+      <NFormItem ref="confirmPasswordRef"  label="Confirme a senha" path="confirmPassword" :show-require-mark="true">
+        <NInput v-model:value="formValue.confirmPassword" placeholder="Digite a sua senha" type="password"
+          @keydown.enter.prevent>
+          <template #prefix>
+            <Lock class="w-3" />
+          </template>
+        </NInput>
       </NFormItem>
+
+
+
+      <!-- user type radio -->
+      <n-radio-group v-model:value="formValue.userType" name="left-size" style="margin-bottom: 12px">
+        <n-radio-button value="1">
+          Admin
+        </n-radio-button>
+        <n-radio-button value="2">
+          Viewer
+        </n-radio-button>
+        <n-radio-button value="3">
+          Owner
+        </n-radio-button>
+      </n-radio-group>
+
+      <NFormItem v-if="formValue.userType == 3" label="Escolha os projetos" path="project" :show-require-mark="true">
+        <n-select v-model:value="formValue.project" multiple :options="options" />
+      </NFormItem>
+
+
 
       <!-- submit btn -->
       <div class="flex gap-2 justify-end">
-        <NButton round  @click="submitForm" type="primary">
+        <NButton round @click="submitForm" type="primary">
           <span v-if="isSubmitting === true" class="animate-ping"> Loading...</span>
           <span v-else>Enviar</span>
-        </NButton>        
+        </NButton>
         <NButton round @click="$router.push('/users')">Voltar</NButton>
       </div>
     </NForm>
+    <pre>
+      {{formValue}}
+    </pre>
   </div>
 </template>
 
 <script setup>
 import { Envelope, Lock, User } from '@vicons/fa';
-import { NForm, NFormItem, NInput, useMessage, NSwitch, NButton } from 'naive-ui'
+import { NForm, NFormItem, NInput, useMessage, NSwitch, NButton, NRadioButton, NRadioGroup, NSelect } from 'naive-ui'
 
 const emit = defineEmits(['submit']);
 
@@ -79,12 +97,29 @@ const formValue = ref({
   name: null,
   password: null,
   confirmPassword: null,
-  isAdmin: "false"
+  project: [],
+  userType: "1"
 });
+const options = [
+  {
+    label: "Starti Security",
+    value: "stsec",
+    disabled: false
+  },
+  {
+    label: "StartiOne",
+    value: "stOne",
+    disabled: false
+  }
+]
 
 const rules = ref(null);
 
 rules.value = {
+  name:{
+    required:true,
+    message: 'Nome é obrigatório',
+  },
   email: {
     required: true,
     message: 'Email é obrigatório',
@@ -100,16 +135,28 @@ rules.value = {
   },
   password: [{
     required: true,
-    message: "Passwods devem ser identicos",
-    trigger: ["blur"]
+    message: "A senha é obrigatória",
+    trigger: ['input', 'blur']
   },
   {
     validator: validatePasswordSame,
     required: true,
-    message: "A senha é obrigatória ",
-    trigger: ["blur", "password-input"]
+    message: "Passwods devem ser identicos",
+    // trigger: ["blur", 'input',"password-input"]
   }
   ],
+  project: {
+    required: true,
+    message: 'Selecione ao menos 1 projeto',
+    validator(rule, value){
+      console.log(value.length)
+      if(value.length < 1 && formValue.value.userType === 3){
+        console.log(value)
+        return new Error("Selecione ao menos 1 projeto");
+      }
+    },
+    trigger: ["blur"]
+  }
 };
 
 // methods
