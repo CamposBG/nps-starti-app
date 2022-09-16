@@ -7,11 +7,12 @@
       </Head>
     </Html>
     <NConfigProvider preflight-style-disabled>
-      <NDialogProvider>
+      <NDialogProvider >
         <NMessageProvider>
           <NuxtLayout>
             <NuxtPage />
           </NuxtLayout>
+          <LazyDrawer />
         </NMessageProvider>
       </NDialogProvider>
     </NConfigProvider>
@@ -22,7 +23,6 @@
 <script setup>
 import { useProgress } from '@marcoschulte/vue3-progress';
 import { NMessageProvider, NConfigProvider, NDialogProvider } from 'naive-ui'
-
 
 const nuxtApp = useNuxtApp();
 
