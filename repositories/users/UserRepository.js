@@ -12,11 +12,15 @@ export default class UserRepository extends BaseRepository {
   }
   
   async getOneUser(guid) {
-    return this.get(`UAHUHAUHAU/users/${guid}`)
+    return this.get(`/users/${guid}`)
   }
 
   async editUser(guid, body) {
     return this.put(`/users/${guid}`, body);
+  }
+
+  async listUsers(page){
+    return this.get(`/users/?page=${page}`)
   }
 
 }

@@ -22,26 +22,30 @@
       </NFormItem>
 
       <!-- password -->
-      <NFormItem label=" Senha" path="password" :show-require-mark="true">
-        <NInput v-model:value="formValue.password" placeholder="Digite a sua senha" type="password"
-          @input="handlePasswordInput" @keydown.enter.prevent>
-          <template #prefix>
-            <Lock class="w-3" />
-          </template>
-        </NInput>
-      </NFormItem>
-
-      <!-- confirmPassword -->
-      <NFormItem ref="confirmPasswordRef"  label="Confirme a senha" path="confirmPassword" :show-require-mark="true">
-        <NInput v-model:value="formValue.confirmPassword" placeholder="Digite a sua senha" type="password"
-          @keydown.enter.prevent>
-          <template #prefix>
-            <Lock class="w-3" />
-          </template>
-        </NInput>
-      </NFormItem>
-
-
+      <div v-if="formValue.guid" class="mb-3">
+        Trocar senha?   
+        <NSwitch  v-model:value="isChangingPassword"/>
+      </div>
+      <div v-if="isChangingPassword || !formValue.guid">
+        <NFormItem label=" Senha" path="password" :show-require-mark="true">
+          <NInput v-model:value="formValue.password" placeholder="Digite a sua senha" type="password"
+            @input="handlePasswordInput" @keydown.enter.prevent>
+            <template #prefix>
+              <Lock class="w-3" />
+            </template>
+          </NInput>
+        </NFormItem>
+  
+        <!-- confirmPassword -->
+        <NFormItem ref="confirmPasswordRef"  label="Confirme a senha" path="confirmPassword" :show-require-mark="true">
+          <NInput v-model:value="formValue.confirmPassword" placeholder="Digite a sua senha" type="password"
+            @keydown.enter.prevent>
+            <template #prefix>
+              <Lock class="w-3" />
+            </template>
+          </NInput>
+        </NFormItem>
+      </div>
 
       <!-- user type radio -->
       <n-radio-group v-model:value="formValue.userType" name="left-size" style="margin-bottom: 12px">
@@ -60,20 +64,15 @@
         <n-select v-model:value="formValue.project" multiple :options="options" />
       </NFormItem>
 
-
-
       <!-- submit btn -->
       <div class="flex gap-2 justify-end">
-        <NButton round @click="submitForm" type="primary">
+        <NButton  @click="submitForm" color="teal">
           <span v-if="isSubmitting === true" class="animate-ping"> Loading...</span>
           <span v-else>Enviar</span>
         </NButton>
-        <NButton round @click="$router.push('/users')">Voltar</NButton>
+        <NButton  @click="$router.push('/users')">Voltar</NButton>
       </div>
     </NForm>
-    <pre>
-      {{formValue}}
-    </pre>
   </div>
 </template>
 
@@ -87,12 +86,17 @@ const emit = defineEmits(['submit']);
 const nuxtApp = useNuxtApp()
 const router = useRouter()
 
+const props = defineProps({
+  userData: { type: Object, default: null, required: false }
+});
+
 // refs | data
 const formRef = ref(null);
 const confirmPasswordRef = ref(null)
 const isSubmitting = ref(false);
 const message = useMessage();
 const formValue = ref({
+  guid: null,
   email: null,
   name: null,
   password: null,
@@ -114,6 +118,7 @@ const options = [
 ]
 
 const rules = ref(null);
+const isChangingPassword = ref(false);
 
 rules.value = {
   name:{
@@ -149,9 +154,7 @@ rules.value = {
     required: true,
     message: 'Selecione ao menos 1 projeto',
     validator(rule, value){
-      console.log(value.length)
       if(value.length < 1 && formValue.value.userType === 3){
-        console.log(value)
         return new Error("Selecione ao menos 1 projeto");
       }
     },
@@ -170,20 +173,28 @@ function handlePasswordInput() {
   }
 }
 
-
 const submitForm = async (e) => {
   e.preventDefault();
   isSubmitting.value = true
   formRef.value?.validate(
     async (errors) => {
       if (!errors) {
-        const response = await nuxtApp.$repo.user.storeUser(formValue.value)
-        if (response.data?.susses === true) {
-          message.success('Usuário adicionado com sucesso')
-          router.push('/users')
+        if (!formValue.value.guid) {
+          const response = await nuxtApp.$repo.user.storeUser(formValue.value)
+          if (response?.success === true) {
+            message.success('Usuário adicionado com sucesso')
+            router.push('/users')
+          } else {
+            message.error('Não foi possível adicionar o usuário')
+          }
         } else {
-          message.error('Não foi possível adicionar o usuário')
-          isSubmitting.value = false
+          const response = await nuxtApp.$repo.user.editUser(formValue.value.guid, formValue.value)
+          if (response?.success === true) {
+            message.success('Usuário atualizado com sucesso')
+            router.push('/users')
+          } else {
+            message.error('Não foi possível atualizar o usuário')
+          }
         }
       } else {
         return false
@@ -192,5 +203,15 @@ const submitForm = async (e) => {
   )
   isSubmitting.value = false
 }
+
+onMounted(() => {
+  if (props.userData) {
+    formValue.value.email = props.userData.email,
+    formValue.value.guid = props.userData.guid,
+    formValue.value.name = props.userData.name,
+    formValue.value.project = [],
+    formValue.value.userType = props.userData.userType
+  }
+});
 
 </script>
