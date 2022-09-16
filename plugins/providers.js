@@ -4,6 +4,7 @@ import Harlem from '@harlem/core'
 import { Vue3ProgressPlugin } from '@marcoschulte/vue3-progress';
 import { defineNuxtPlugin, useState } from '#app'
 import Repository from "~/repositories/Repository";
+import Functions from "~/utils/functions";
 
 export default defineNuxtPlugin((nuxtApp) => {
   if (useState('beforeEach').value === undefined) {
@@ -15,6 +16,7 @@ export default defineNuxtPlugin((nuxtApp) => {
       });
 
     nuxtApp.provide('repo', new Repository(nuxtApp));
+    nuxtApp.provide('utils', new Functions(nuxtApp));
     nuxtApp.provide('bus', mitt());
 
 

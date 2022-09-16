@@ -13,6 +13,7 @@ import {useStorage} from "vue3-storage";
 
 const storage = useStorage();
 const router = useRouter();
+const nuxtApp = useNuxtApp();
 
 const props = defineProps({
 
@@ -43,6 +44,12 @@ const options = [
 ]
 
 //methods
+
+const handleLogout = async () => {
+  await nuxtApp.$repo.auth.logout({token: user.token});
+  store.clearStorageSync();
+  router.push('/auth/login');
+};
 
 const handleSelect = (key) => {
   if(key === 'logout'){

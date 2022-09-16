@@ -48,29 +48,28 @@
       </div>
 
       <!-- user type radio -->
-      <n-radio-group v-model:value="formValue.userType" name="left-size" style="margin-bottom: 12px">
-        <n-radio-button value="1">
-          Admin
-        </n-radio-button>
-        <n-radio-button value="2">
-          Viewer
-        </n-radio-button>
-        <n-radio-button value="3">
-          Owner
-        </n-radio-button>
-      </n-radio-group>
+      <NRadioGroup v-model:value="formValue.userType" name="left-size" style="margin-bottom: 12px">
+        <NRadioButton value="1">
+          Administrador
+        </NRadioButton>
+        <NRadioButton value="2">
+          Visualizador
+        </NRadioButton>
+        <NRadioButton value="3">
+          Proprietário
+        </NRadioButton>
+      </NRadioGroup>
 
       <NFormItem v-if="formValue.userType == 3" label="Escolha os projetos" path="project" :show-require-mark="true">
-        <n-select v-model:value="formValue.project" multiple :options="options" />
+        <NSelect v-model:value="formValue.project" placeholder="Escolha os projetos" multiple :options="options" />
       </NFormItem>
 
       <!-- submit btn -->
-      <div class="flex gap-2 justify-end">
+      <div>
         <NButton  @click="submitForm" color="teal">
           <span v-if="isSubmitting === true" class="animate-ping"> Loading...</span>
-          <span v-else>Enviar</span>
+          <span v-else>Salvar</span>
         </NButton>
-        <NButton  @click="$router.push('/users')">Voltar</NButton>
       </div>
     </NForm>
   </div>
@@ -87,7 +86,7 @@ const nuxtApp = useNuxtApp()
 const router = useRouter()
 
 const props = defineProps({
-  userData: { type: Object, default: null, required: false }
+  props: { type: Object, default: null, required: false }
 });
 
 // refs | data
@@ -204,13 +203,21 @@ const submitForm = async (e) => {
   isSubmitting.value = false
 }
 
-onMounted(() => {
-  if (props.userData) {
-    formValue.value.email = props.userData.email,
-    formValue.value.guid = props.userData.guid,
-    formValue.value.name = props.userData.name,
-    formValue.value.project = [],
-    formValue.value.userType = props.userData.userType
+const getUserData = async () => {
+  const data =  await nuxtApp.$repo.user.getOneUser(props.props.guid)
+
+  if (data) {
+    formValue.value.email = data.email;
+    formValue.value.guid = data.guid;
+    formValue.value.name = data.name;
+    formValue.value.project = [];
+    formValue.value.userType = data.userType;
+  }
+}
+
+onMounted(async () => {
+  if (props.props.guid) {
+    await getUserData();
   }
 });
 

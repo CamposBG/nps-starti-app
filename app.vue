@@ -8,12 +8,14 @@
     </Html>
     <NConfigProvider preflight-style-disabled>
       <NDialogProvider >
+        <NNotificationProvider>
         <NMessageProvider>
           <NuxtLayout>
             <NuxtPage />
           </NuxtLayout>
           <LazyDrawer />
         </NMessageProvider>
+        </NNotificationProvider>
       </NDialogProvider>
     </NConfigProvider>
     <vue3-progress-bar />
@@ -22,7 +24,7 @@
 
 <script setup>
 import { useProgress } from '@marcoschulte/vue3-progress';
-import { NMessageProvider, NConfigProvider, NDialogProvider } from 'naive-ui'
+import { NMessageProvider, NConfigProvider, NDialogProvider, NNotificationProvider } from 'naive-ui'
 
 const nuxtApp = useNuxtApp();
 

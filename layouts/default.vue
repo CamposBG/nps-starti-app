@@ -17,7 +17,9 @@ import { useStorage } from 'vue3-storage';
 
 
 const store = useStorage();
+const nuxtApp = useNuxtApp();
 const user = store.getStorageSync('user')
+const router = useRouter();
 
 const mainMargin = ref('ml-[250px]')
 
@@ -30,10 +32,6 @@ const adjustMargin = (isSideBarToggled) => {
   }
 }
 
-const logOut = () => {
-  localStorage.clear()
-  router.push('/auth/login')
-}
 </script>
 
 <style scoped>

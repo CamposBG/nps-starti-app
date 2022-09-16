@@ -3,6 +3,7 @@
       v-model:show="openDrawer"
       placement="right"
       :default-width="550"
+      :mask-closable="maskClosable"
     >
       <NDrawerContent :title="title" closable>
         <component
@@ -25,6 +26,7 @@ const openDrawer = ref(false);
 const component = ref(null);
 const props = ref(null);
 const title = ref(null);
+const maskClosable = ref(null);
 const onClose = ref(null);
 const timeout = ref(null);
 
@@ -33,11 +35,13 @@ nuxtApp.$bus.on('drawer:open', (opts) => {
   if (timeout.value !== null) {
     clearTimeout(timeout.value);
     title.value = null;
+    maskClosable.value = null;
     onClose.value = null;
   }
   component.value = opts.component;
   props.value = opts.props;
   title.value = opts.title;
+  maskClosable.value = opts.maskClosable;
   openDrawer.value = true;
   if (typeof opts.onClose === 'function') {
     onClose.value = opts.onClose;

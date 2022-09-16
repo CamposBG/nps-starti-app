@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { useStorage } from 'vue3-storage';
 import { useProgress } from '@marcoschulte/vue3-progress';
+import {useMessage, useNotification} from "naive-ui";
+
 
 export default class BaseRepository {
     baseUrl = null;
@@ -8,6 +10,7 @@ export default class BaseRepository {
     context = null;
 
     _axios = null;
+
 
     constructor(context) {
         this.context = context;
@@ -36,7 +39,21 @@ export default class BaseRepository {
     }
 
     catchError(error) {
-        return error;
+        let msgError = '';
+
+        if (error.response && typeof error.response.data === 'object') {
+            const { data } = error.response;
+
+            if (data.errors !== undefined) {
+                data.errors.forEach((err) => {
+                    msgError += `${err.field} => ${err.message} <br>`;
+                });
+            } else if (data.error !== undefined) {
+                msgError = `[${data.error.code}] ${data.error.message}`;
+            }
+        }
+
+        return { error: msgError };
     }
 
     _getHeaders(bodyFormData = false) {

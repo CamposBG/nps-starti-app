@@ -7,8 +7,8 @@ export default class ProjectsRepository extends BaseRepository {
         this.baseUrl = baseUrl;
     }
 
-    async listProjects() {
-        return this.get('/');
+    async listProjects(search = '') {
+        return this.get(`/?search=${search}`);
     }
 
     async createProject(body) {
@@ -16,7 +16,7 @@ export default class ProjectsRepository extends BaseRepository {
     }
 
     async findOneProject(guid) {
-        return this.get(`/${guid}` + guid``)
+        return this.get(`/${guid}`)
     }
 
     async updateProject(guid, body) {
@@ -24,6 +24,6 @@ export default class ProjectsRepository extends BaseRepository {
     }
 
     async deleteProject(guid) {
-        return this.delete(`/${guid}` + guid``)
+        return this.delete(`/${guid}`)
     }
 }

@@ -27,16 +27,18 @@
 
 <script setup>
 import { Envelope, Lock, SignInAlt } from '@vicons/fa';
-import { NForm, NFormItem, NInput, NButton, NIcon, useMessage } from 'naive-ui'
+import {NForm, NFormItem, NInput, NButton, NIcon, useMessage, useNotification,} from 'naive-ui'
 import {useStorage} from "vue3-storage";
 
 const storage = useStorage();
 const router = useRouter();
+const nuxtApp = useNuxtApp();
 
 // refs | data
 const formRef = ref(null);
 const isSubmitting = ref(false);
 const message = useMessage();
+const notification = useNotification();
 const formValue = ref({
   email: "",
   password: "",
@@ -65,27 +67,46 @@ rules.value = {
 
 // methods
 const submitForm = (e) => {
+  isSubmitting.value = true;
   e.preventDefault();
   formRef.value?.validate(
-      (errors) => {
+      async (errors) => {
         if (!errors) {
-          isSubmitting.value = true;
-          setTimeout(async () => {
-            await storage.setStorage({
-              key: 'user',
-              data: {
-                token: 'djiqwjdj892j189d28dj128d2',
-                email: formValue.value.email
-              },
+          const response = await nuxtApp.$repo.auth.login(formValue.value);
+
+          if (response && response.token && response.user) {
+            const { user, token } = response
+            const  {id, name, email, user_type, guid} = user
+            storage.setStorageSync('user', {
+                id,
+                name,
+                email,
+                guid,
+                user_type,
+                token
             });
-            isSubmitting.value = false;
+
             router.push('/')
-            message.success("Login efetuado com sucesso");
-          }, 3000)
-        } else {
-          message.error("Erro ao realizar o login");
+            notification.success({
+              content: "Sucesso",
+              meta: "Login no sistema realizado",
+              duration: 2000,
+              keepAliveOnHover: false
+            });
+          } else if (response.error) {
+            notification.error({
+              content: "Erro",
+              meta: response.error,
+              duration: 2500,
+              keepAliveOnHover: true
+            });
+          }
         }
+        // else {
+        //   message.error("Erro ao realizar o login");
+        // }
       }
   );
+  isSubmitting.value = false;
 }
 </script>
