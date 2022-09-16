@@ -9,6 +9,19 @@ export default defineNuxtConfig({
     dirs: ['~/components'],
   },
 
+  vite: {
+    server: {
+      proxy: {
+        '/api': {
+          target: 'http://localhost:3333/ ',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+      },
+      hmr: true,
+    },
+  },
+
   css:['@/assets/css/tailwind.scss',],
   postcss: {
     plugins: {
