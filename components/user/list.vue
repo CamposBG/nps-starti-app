@@ -36,13 +36,15 @@
         <n-pagination v-model:page="currentPage" :page-count="pageMeta.last_page" />
       </div>
     </div>
-    <pre>
-    </pre>
   </div>
 </template>
 <script setup>
 import { CheckCircle, TimesCircle, Edit, Trash } from '@vicons/fa';
-import { NTable, useMessage, useDialog, NDataTable, NButton, NPagination } from 'naive-ui'
+import { NTable, useMessage, useDialog, NPagination } from 'naive-ui'
+
+const props = defineProps({
+  update: {type:Number}
+})
 
 const message = useMessage()
 const dialog = useDialog()
@@ -58,8 +60,6 @@ const { data: users, pending, refresh, error } = useLazyAsyncData(
   () => nuxtApp.$repo.user.listUsers(currentPage.value)
 )
 
-
-
 // data|refs
 
 //methods
@@ -74,6 +74,7 @@ const editUser = (guid) => {
     props: { guid }
   });
 }
+
 const deleteUser = (user) => {
   dialog.warning({
     title: 'Excluir usuário',
@@ -100,11 +101,12 @@ watch(users, () => {
     newUsers.value = users.value.data
   }
 })
-// onBeforeMount(()=>{
-//   refresh()
-// })
+
 watch(currentPage, ()=>{
-  console.log("aqui")
+  refresh()
+})
+
+watch(()=> props.update, ()=>{
   refresh()
 })
 </script>

@@ -19,7 +19,7 @@ export default class UserRepository extends BaseRepository {
     return this.put(`/users/${guid}`, body);
   }
 
-  async listUsers(page){
+  async listUsers(page = 1){
     return this.get(`/users/?page=${page}`)
   }
 
