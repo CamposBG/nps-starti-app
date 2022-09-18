@@ -1,24 +1,21 @@
 <template>
-    <NDrawer
+  <NDrawer
       v-model:show="openDrawer"
-      placement="right"
       :default-width="550"
       :mask-closable="maskClosable"
-    >
-      <NDrawerContent :title="title" closable>
-        <component
+      placement="right"
+  >
+    <NDrawerContent :title="title" closable>
+      <component
           :is="component"
           :props="props"
-        />
-      </NDrawerContent>
-    </NDrawer>
+      />
+    </NDrawerContent>
+  </NDrawer>
 </template>
 
 <script setup>
-import {
-  NDrawer,
-  NDrawerContent
-} from 'naive-ui';
+import {NDrawer, NDrawerContent} from 'naive-ui';
 
 const nuxtApp = useNuxtApp();
 
@@ -63,5 +60,10 @@ watch(openDrawer, (newValue) => {
       onClose.value = null;
     }, 1000);
   }
+});
+
+
+onBeforeUnmount(() => {
+  nuxtApp.$bus.off('drawer:open');
 });
 </script>
