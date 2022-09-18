@@ -1,30 +1,30 @@
 <template>
-    <div>
-        <n-input-group>
-          <n-button v-if="searchTerm" @click="clearSearch" type="primary"
-            >Limpar</n-button
-          >
-          <n-input
-            :style="{ width: '15%' }"
-            v-model:value="searchTerm"
-            placeholder="nome ou email"
-          />
-          <n-button type="primary" @click="search" ghost> Search </n-button>
-        </n-input-group>
-      </div>
+  <div>
+    <n-input-group>
+      <n-button v-if="searchTerm" @click="clearSearch" type="primary"
+        >Limpar</n-button
+      >
+      <n-input
+        :style="{ width: '15%' }"
+        v-model:value="searchTerm"
+        placeholder="nome ou email"
+      />
+      <n-button type="primary" @click="search" ghost> Search </n-button>
+    </n-input-group>
+  </div>
   <div>
     <div v-if="pending" class="m-auto w-fit my-40">
       <NSpin size="large" />
     </div>
     <div v-if="!pending" class="fade-in-left">
-        <NDataTable
-          remote
-          ref="table"
-          :columns="columns"
-          :data="newUsers"
-          :loading="loading"
-          :row-key="rowKey"
-        />
+      <NDataTable
+        remote
+        ref="table"
+        :columns="columns"
+        :data="newUsers"
+        :loading="loading"
+        :row-key="rowKey"
+      />
     </div>
     <div class="w-fit mx-auto mt-5">
       <n-pagination
@@ -52,7 +52,7 @@ const props = defineProps({
 });
 
 // providers
-const message = useMessage()
+const message = useMessage();
 const dialog = useDialog();
 const nuxtApp = useNuxtApp();
 
@@ -154,17 +154,16 @@ const columns = [
   },
 ];
 
-
 //methods
 const clearSearch = () => {
   searchTerm.value = null;
-  currentPage.value =1
+  currentPage.value = 1;
 
   refresh();
 };
 
 const search = () => {
-  currentPage.value =1
+  currentPage.value = 1;
 
   refresh();
 };
@@ -174,6 +173,8 @@ const editUser = (guid) => {
     component: "UserCreateForm",
     title: "Editar usuário",
     onClose: async () => {
+      searchTerm.value = null;
+      currentPage.value = 1;
       await refresh();
     },
     maskClosable: false,
@@ -194,7 +195,9 @@ const deleteUser = async (user) => {
       const response = await nuxtApp.$repo.user.deleteOneUser(user.guid);
       if (response.success === true) {
         message.success("Usuário removido com sucesso");
-        refresh()
+        searchTerm.value = null;
+        currentPage.value = 1;
+        await refresh();
       } else {
         message.error("Problema ao remover usuário");
       }
@@ -223,6 +226,17 @@ watch(
 </script>
 
 <style scoped>
-  .fade-in-left{animation:fade-in-left .4s cubic-bezier(.39,.575,.565,1.000) both}
-  @keyframes fade-in-left{0%{transform:translateX(-50px);opacity:0}100%{transform:translateX(0);opacity:1}}
+.fade-in-left {
+  animation: fade-in-left 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
+}
+@keyframes fade-in-left {
+  0% {
+    transform: translateX(-50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
 </style>
