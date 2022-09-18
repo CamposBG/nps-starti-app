@@ -19,6 +19,7 @@ const props = defineProps({
 
   user: { type: Object }
 })
+console.log(props.user.guid)
 
 
 // refs | data
@@ -58,8 +59,15 @@ const handleSelect = (key) => {
   return
   }
   if(key === 'editProfile'){
-    console.log('edit')
-    router.push(`/users/${props.guid}`)    
+    nuxtApp.$bus.emit("drawer:open", {
+    component: "UserCreateForm",
+    title: "Editar usuário",
+    onClose: async () => {
+      await refresh();
+    },
+    maskClosable: false,
+    props:  ({guid:props.user.guid}) ,
+  });   
   }
 }
  

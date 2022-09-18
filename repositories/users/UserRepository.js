@@ -23,4 +23,8 @@ export default class UserRepository extends BaseRepository {
     return this.get(`/users`, queryParams)
   }
 
+  async deleteOneUser(guid) {
+    return this.delete(`/users/${guid}`)
+  }
+
 }

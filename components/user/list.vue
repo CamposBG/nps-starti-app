@@ -1,48 +1,30 @@
 <template>
+    <div>
+        <n-input-group>
+          <n-button v-if="searchTerm" @click="clearSearch" type="primary"
+            >Limpar</n-button
+          >
+          <n-input
+            :style="{ width: '15%' }"
+            v-model:value="searchTerm"
+            placeholder="nome ou email"
+          />
+          <n-button type="primary" @click="search" ghost> Search </n-button>
+        </n-input-group>
+      </div>
   <div>
-    <div v-if="pending" class="m-auto w-fit mt-60">
+    <div v-if="pending" class="m-auto w-fit my-40">
       <NSpin size="large" />
     </div>
-    <div v-else>
-      <!-- <n-table :single-line="false">
-        <thead>
-          <tr>
-            <th>Nome</th>
-            <th>e-mail</th>
-            <th>Admin</th>
-            <th>opções</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(user, index) in users.data">
-            <td>{{user.name}}</td>
-            <td>{{user.email}}</td>
-            <td><span v-if="user.is_admin">
-                <CheckCircle class="w-5 h-5 text-green-600" />
-              </span> <span v-else>
-                <TimesCircle class="w-5 h-5 text-red-600" />
-              </span>
-            </td>
-            <td class=" flex gap-3">
-              <Edit class="w-5 h-5 hover:text-purple-800 hover:cursor-pointer"
-                @click="editUser(user.guid)" />
-              <Trash class="w-5 h-5 hover:text-rose-800 hover:cursor-pointer"
-                @click="deleteUser(user)" />
-            </td>
-          </tr>
-        </tbody>
-      </n-table>
-      <div class="w-fit mx-auto mt-5">
-        <n-pagination v-model:page="currentPage" :page-count="pageMeta.last_page" />
-      </div> -->
-      <NDataTable
-        remote
-        ref="table"
-        :columns="columns"
-        :data="newUsers"
-        :loading="loading"
-        :row-key="rowKey"
-      />
+    <div v-if="!pending" class="fade-in-left">
+        <NDataTable
+          remote
+          ref="table"
+          :columns="columns"
+          :data="newUsers"
+          :loading="loading"
+          :row-key="rowKey"
+        />
     </div>
     <div class="w-fit mx-auto mt-5">
       <n-pagination
@@ -50,13 +32,10 @@
         :page-count="pageMeta.last_page"
       />
     </div>
-    {{filterValues}}
   </div>
 </template>
 <script setup>
-import { CheckCircle, TimesCircle, Edit, Trash } from "@vicons/fa";
 import {
-  NTable,
   useMessage,
   useDialog,
   NPagination,
@@ -64,23 +43,30 @@ import {
   NDataTable,
   NButton,
   NTag,
-  NIcon,
+  NInput,
 } from "naive-ui";
 
+// props
 const props = defineProps({
   update: { type: Number },
 });
 
+// providers
+const message = useMessage()
 const dialog = useDialog();
 const nuxtApp = useNuxtApp();
+
+// data|refs
 const currentPage = ref(1);
 const pageMeta = ref({});
 const newUsers = ref({});
-// const resp = await nuxtApp.$repo.user.listUsers(1)
+const searchTerm = ref(null);
 const queryParams = reactive({
   page: currentPage,
-  // 'search':'bob'
+  search: searchTerm,
 });
+
+// async data
 const {
   data: users,
   pending,
@@ -88,7 +74,6 @@ const {
 } = useLazyAsyncData(`user-${Math.random()}`, () =>
   nuxtApp.$repo.user.listUsers(queryParams)
 );
-
 const columns = [
   {
     title: "Nome",
@@ -146,7 +131,7 @@ const columns = [
             onClick: () => editUser(rowData.guid),
           },
           // { default: () => h(NIcon, { component: Edit }) }
-          {default: () => 'Editar'}
+          { default: () => "Editar" }
           // {(NIcon) => ({component:'GameController', color:"#0e7a0d"})}
         ),
         h(
@@ -169,9 +154,20 @@ const columns = [
   },
 ];
 
-// data|refs
 
 //methods
+const clearSearch = () => {
+  searchTerm.value = null;
+  currentPage.value =1
+
+  refresh();
+};
+
+const search = () => {
+  currentPage.value =1
+
+  refresh();
+};
 
 const editUser = (guid) => {
   nuxtApp.$bus.emit("drawer:open", {
@@ -185,7 +181,7 @@ const editUser = (guid) => {
   });
 };
 
-const deleteUser = (user) => {
+const deleteUser = async (user) => {
   dialog.warning({
     title: "Excluir usuário",
     content: `Tem certeza que deseja deletar o usuário ${user.name}?`,
@@ -194,9 +190,14 @@ const deleteUser = (user) => {
     positiveButtonProps: {
       color: "teal",
     },
-    onPositiveClick: () => {
-      console.log("deletar");
-      /* TODO -> implementar rota de delete */
+    onPositiveClick: async () => {
+      const response = await nuxtApp.$repo.user.deleteOneUser(user.guid);
+      if (response.success === true) {
+        message.success("Usuário removido com sucesso");
+        refresh()
+      } else {
+        message.error("Problema ao remover usuário");
+      }
     },
     onNegativeClick: () => {},
     showIcon: false,
@@ -220,3 +221,8 @@ watch(
   }
 );
 </script>
+
+<style scoped>
+  .fade-in-left{animation:fade-in-left .4s cubic-bezier(.39,.575,.565,1.000) both}
+  @keyframes fade-in-left{0%{transform:translateX(-50px);opacity:0}100%{transform:translateX(0);opacity:1}}
+</style>
