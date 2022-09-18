@@ -1,8 +1,5 @@
 <template>
   <div>
-    Dashboard
+    <NuxtNestedPage />
   </div>
 </template>
-<script setup>
-
-</script>

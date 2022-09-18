@@ -1,10 +1,9 @@
 <template>
   <div>
-    <LazyConfigProjects />
+    <LazyConfigProjects/>
   </div>
 </template>
 <script setup>
-import { NPageHeader, NCard, NTabPane, NTabs } from 'naive-ui';
 
 const router = useRouter();
 

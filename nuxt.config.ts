@@ -1,4 +1,5 @@
-import { defineNuxtConfig } from 'nuxt'
+import { defineNuxtConfig } from "nuxt";
+import eslintPlugin from "vite-plugin-eslint";
 
 // https://v3.nuxtjs.org/api/configuration/nuxt.config
 export default defineNuxtConfig({
@@ -6,23 +7,26 @@ export default defineNuxtConfig({
 
   components: {
     global: true,
-    dirs: ['~/components'],
+    dirs: ["~/components"],
   },
 
   vite: {
     server: {
       proxy: {
-        '/api': {
-          target: 'http://localhost:3333/ ',
+        "/api": {
+          target: "http://localhost:3333/   ",
           changeOrigin: true,
-          rewrite: (path) => path.replace(/^\/api/, ''),
+          rewrite: (path) => path.replace(/^\/api/, ""),
         },
       },
       hmr: true,
     },
+    // plugins: [
+    //   eslintPlugin()
+    // ]
   },
 
-  css:['@/assets/css/tailwind.scss',],
+  css: ["@/assets/css/tailwind.scss"],
   postcss: {
     plugins: {
       tailwindcss: {},
@@ -30,7 +34,5 @@ export default defineNuxtConfig({
     },
   },
 
-  plugins: [
-    { ssr: false, src: '~/plugins/providers' }
-  ],
-})
+  plugins: [{ ssr: false, src: "~/plugins/providers" }],
+});

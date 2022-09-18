@@ -44,7 +44,7 @@
 
 <script setup>
 import { Envelope, Lock, SignInAlt } from '@vicons/fa';
-import {NForm, NInput NFormItem, NButton, NIcon, useMessage, useNotification, NSelect, NInputNumber, NSwitch} from 'naive-ui'
+import {NForm, NInput, NFormItem, NButton, NIcon, useMessage, useNotification, NSelect, NInputNumber, NSwitch} from 'naive-ui'
 import {useStorage} from "vue3-storage";
 
 const storage = useStorage();
