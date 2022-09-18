@@ -41,6 +41,7 @@ const finish = () => {
 
 const handleLogout = async () => {
   await nuxtApp.$repo.auth.logout({token: user.token});
+  nuxtApp.$bus.emit('drawer:close');
   storage.clearStorageSync();
   router.push("/auth/login");
 };
