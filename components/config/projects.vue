@@ -1,46 +1,46 @@
 <template>
   <div>
-    <NSpace class="mb-6" justify="space-between">
-      <NBreadcrumb separator=">">
-        <NBreadcrumbItem @click="$router.push('/')">
-          Home
-        </NBreadcrumbItem>
-        <NBreadcrumbItem>
-          Projetos
-        </NBreadcrumbItem>
-      </NBreadcrumb>
-      <div class="flex  justify-end gap-x-2 items-center">
-        <NButton color="teal" size="small" type="primary" @click="handleAddProject">
-          Adicionar projeto
-        </NButton>
-        <NInput v-model:value="search" placeholder="Pesquise um projeto..." round @input="changeSearch">
-          <template #prefix>
-            <Search class="w-3"/>
-          </template>
-        </NInput>
-      </div>
-    </NSpace>
-    <div v-if="pending" class="flex justify-center items-center">
-      <NSpin size="large"/>
-    </div>
-    <NEmpty v-else-if="projects.length === 0 && !search" description="Nenhum projeto cadastrado ainda">
-      <template #extra>
-        <NButton color="teal" size="small" type="primary" @click="handleAddProject">
-          Adicionar projeto
-        </NButton>
+    <NPageHeader>
+      <template #title>
+        Configuração dos projetos
       </template>
-    </NEmpty>
-    <NEmpty v-else-if="projects.length === 0 && search && !pending"
-            description="Nenhum projeto encontrado com esse nome"/>
-    <div v-else class="flex flex-wrap gap-x-16 gap-y-14 pl-10">
-      <LazyProjectsCard v-for="project in projects" :project-data="project" :title="project.name"
-                        @refresh-projects="refresh"/>
+      <template #extra>
+        <NSpace>
+          <NButton color="teal" size="small" type="primary" @click="handleAddProject">
+            Adicionar projeto
+          </NButton>
+          <NInput v-model:value="search" clearable placeholder="Pesquise um projeto..." round @input="changeSearch">
+            <template #prefix>
+              <Search class="w-3"/>
+            </template>
+          </NInput>
+        </NSpace>
+      </template>
+    </NPageHeader>
+
+    <div class="mt-5">
+      <div v-if="pending" class="flex justify-center items-center">
+        <NSpin size="large"/>
+      </div>
+      <NEmpty v-else-if="projects.length === 0 && !search" description="Nenhum projeto cadastrado ainda">
+        <template #extra>
+          <NButton color="teal" size="small" type="primary" @click="handleAddProject">
+            Adicionar projeto
+          </NButton>
+        </template>
+      </NEmpty>
+      <NEmpty v-else-if="projects.length === 0 && search && !pending"
+              description="Nenhum projeto encontrado com esse nome"/>
+      <div v-else class="flex flex-wrap gap-x-16 gap-y-14 pl-10">
+        <LazyProjectsCard v-for="project in projects" :project-data="project" :title="project.name"
+                          @refresh-projects="refresh"/>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import {NBreadcrumb, NBreadcrumbItem, NButton, NEmpty, NInput, NSpace, NSpin, useDialog, useMessage} from 'naive-ui';
+import {NButton, NEmpty, NInput, NPageHeader, NSpace, NSpin, useDialog, useMessage} from 'naive-ui';
 import {Search} from '@vicons/fa';
 
 const dialog = useDialog();

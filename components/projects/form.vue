@@ -13,20 +13,32 @@
     <NFormItem label="Visualizadores do projeto" path="viewers">
       <NSelect
           v-model:value="formValue.viewers"
-          :options="projectTypesMapped"
+          :options="usersMapped"
           multiple
-          placeholder="Escolha os usuários que visualizaram esse projeto"
-      />
+          placeholder="Escolha os usuários que visualizarão esse projeto"
+      >
+        <template #empty>
+          <span class="text-sm">
+            Nenhum usuário disponível
+          </span>
+        </template>
+      </NSelect>
     </NFormItem>
     <NFormItem label="Donos do projeto" path="owners">
       <NSelect
           v-model:value="formValue.owners"
-          :options="projectTypesMapped"
+          :options="usersMapped"
           multiple
           placeholder="Escolha os usuários que terão controle sobre esse projeto"
-      />
+      >
+        <template #empty>
+          <span class="text-sm">
+            Nenhum usuário disponível
+          </span>
+        </template>
+      </NSelect>
     </NFormItem>
-    <NButton :loading="isSubmitting" color="teal" @click="submitForm">
+    <NButton :loading="isSubmitting" color="teal" icon-placement="right" @click="submitForm">
       <template v-if="!isSubmitting" #icon>
         <NIcon>
           <Save/>
@@ -39,7 +51,7 @@
 
 <script setup>
 import {Save} from '@vicons/fa';
-import {NButton, NForm, NFormItem, NIcon, NInput, NSelect, useMessage} from 'naive-ui'
+import {NButton, NForm, NFormItem, NIcon, NInput, NSelect, useMessage, useNotification} from 'naive-ui'
 import {useStorage} from "vue3-storage";
 
 const nuxtApp = useNuxtApp();
@@ -54,25 +66,34 @@ const props = defineProps({
 const formRef = ref(null);
 const isSubmitting = ref(false);
 const message = useMessage();
+const notification = useNotification();
 const formValue = ref({
   name: '',
   type: null,
+  viewers: null,
+  owners: null,
   guid: ''
 });
 const rules = ref(null);
 const projectTypesMapped = ref(null);
-// let projectTypesMapped;
+const usersMapped = ref(null);
 
 rules.value = {
   name: {
     required: true,
-    message: "O nome do projeto é obrigatório",
+    message: "É obrigatório dar um nome ao projeto",
     trigger: ["blur"]
   },
   type: {
     required: true,
-    message: "O tipo de pesquisa do projeto é obrigatório",
-    trigger: ["blur"]
+    message: "O tipo de pesquisa do projeto deve ser escolhido",
+    // trigger: ["blur"]
+  },
+  viewers: {
+    required: false,
+  },
+  owners: {
+    required: false,
   },
 };
 
@@ -81,28 +102,49 @@ const submitForm = (e) => {
   isSubmitting.value = true;
 
   e.preventDefault();
+
   formRef.value?.validate(
       async (errors) => {
         if (!errors) {
           if (!formValue.value.guid) {
             const response = await nuxtApp.$repo.projects.createProject(formValue.value);
             if (response && response.success) {
-              message.success("Projeto adicionado com sucesso");
+              notification.success({
+                content: "Sucesso",
+                meta: "O projeto foi criado",
+                duration: 2000,
+                keepAliveOnHover: false
+              });
               nuxtApp.$bus.emit('drawer:close')
               isSubmitting.value = false;
             } else {
-              message.error("Erro ao adicionar o projeto");
+              notification.error({
+                content: "Erro",
+                meta: response.error,
+                duration: 2500,
+                keepAliveOnHover: true
+              });
               isSubmitting.value = false;
             }
           } else {
             const response = await nuxtApp.$repo.projects.updateProject(formValue.value.guid, formValue.value);
             if (response && response.success) {
-              message.success("Projeto atualizado com sucesso");
+              notification.success({
+                content: "Sucesso",
+                meta: "O projeto foi atualizado",
+                duration: 2000,
+                keepAliveOnHover: false
+              });
               nuxtApp.$bus.emit('drawer:close');
               isSubmitting.value = false;
 
             } else {
-              message.error("Erro ao atualizar o projeto");
+              notification.error({
+                content: "Erro",
+                meta: response.error,
+                duration: 2500,
+                keepAliveOnHover: true
+              });
               isSubmitting.value = false;
             }
           }
@@ -117,6 +159,9 @@ const getProjectData = async () => {
 
   if (response) {
     formValue.value.name = response.name;
+    formValue.value.type = response.type;
+    formValue.value.viewers = response.viewers;
+    formValue.value.owners = response.owners;
   }
 };
 
@@ -131,6 +176,17 @@ const getProjectTypes = async () => {
   }
 };
 
+const getUsers = async () => {
+  const users = await nuxtApp.$repo.user.usersDropDown();
+  if (users) {
+    usersMapped.value = users.map((user) => ({
+      label: user.name,
+      value: user.id,
+      disabled: false,
+    }));
+  }
+};
+
 
 onMounted(async () => {
   if (props.props?.guid) {
@@ -139,5 +195,6 @@ onMounted(async () => {
   }
 
   await getProjectTypes();
+  await getUsers();
 })
 </script>
