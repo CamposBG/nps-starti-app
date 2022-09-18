@@ -23,7 +23,7 @@ export default class UserRepository extends BaseRepository {
     return this.get(`/users`, queryParams)
   }
 
-  async listUsers(queryParams) {
+  async usersDropDown(queryParams) {
     return this.get('/dropdown/list', queryParams)
   }
 
