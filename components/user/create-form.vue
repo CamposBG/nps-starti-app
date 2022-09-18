@@ -48,8 +48,8 @@
       </div>
 
       <!-- user type radio -->
-      <NRadioGroup  v-model:value="formValue.userType" name="userTypeGroup" style="margin-bottom: 12px">
-        <NRadioButton :value="1" >
+      <NRadioGroup v-model:value="formValue.userType" name="userTypeGroup" style="margin-bottom: 12px">
+        <NRadioButton :value="1">
           Administrador
         </NRadioButton>
         <NRadioButton :value="2">
@@ -69,18 +69,19 @@
       <!-- submit btn -->
       <div>
         <NButton @click="submitForm" :loading="isSubmitting" color="teal">
-          <span v-if="isSubmitting === true" class="animate-ping"> Loading...</span>
+          <div v-if="isSubmitting === true" class="animate-ping">
+            <NSpin size="small" />
+          </div>
           <span v-else>Salvar</span>
         </NButton>
       </div>
     </NForm>
-    <div @click="formValue.projects.push(1)">BTN</div>
   </div>
 </template>
 
 <script setup>
 import { Envelope, Lock, User } from '@vicons/fa';
-import { NForm, NFormItem, NInput, useMessage, NSwitch, NButton, NRadioButton, NRadioGroup, NSelect } from 'naive-ui'
+import { NForm, NFormItem, NInput, useMessage, NSwitch, NButton, NRadioButton, NRadioGroup, NSelect, NSpin } from 'naive-ui'
 
 const emit = defineEmits(['submit']);
 
@@ -93,8 +94,10 @@ const props = defineProps({
 });
 
 const { data: projects } = await nuxtApp.$repo.projects.listProjects()
-console.log(("aqui"));
-console.log(projects)
+if(projects){
+  const projectsMaped = projects.map((element) => ({ label: element.name, value: element.id, disabled: false }))
+
+}
 
 
 // refs | data
@@ -111,7 +114,7 @@ const formValue = ref({
   projects: [],
   userType: null
 });
-const projectsMaped = projects.map((element) =>  ({label:element.name, value:element.id, disabled: false}) )
+// const projectsMaped = projects.map((element) => ({ label: element.name, value: element.id, disabled: false }))
 const rules = ref(null);
 rules.value = {
   name: {
