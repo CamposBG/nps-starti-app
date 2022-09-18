@@ -15,6 +15,7 @@ module.exports = {
     './pages/**/*.vue',
     './pages/**/**/*.vue',
     './pages/**/**/**/*.vue',
+    './pages/index.vue'
   ],
   darkMode: 'class',
   theme: {
