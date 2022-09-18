@@ -68,7 +68,7 @@ const menuOptions = ref([
         h(
             RouterLink,
             {
-              to: "projects",
+              to: "/projects",
             },
             {default: () => "Projetos"}
         ),
@@ -80,7 +80,7 @@ const menuOptions = ref([
         h(
             RouterLink,
             {
-              to: "users",
+              to: "/users",
             },
             {default: () => "Usuários"}
         ),
