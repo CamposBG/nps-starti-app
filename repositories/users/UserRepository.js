@@ -24,7 +24,7 @@ export default class UserRepository extends BaseRepository {
   }
 
   async usersDropDown(queryParams) {
-    return this.get('/dropdown/list', queryParams)
+    return this.get('/users/dropdown/list', queryParams)
   }
 
   async deleteOneUser(guid) {
