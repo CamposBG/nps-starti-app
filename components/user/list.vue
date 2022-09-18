@@ -86,22 +86,6 @@ const columns = [
   {
     title: "Tipo de usuário",
     key: "user_type",
-    filter: true,
-    filterOptionValues: [],
-    filterOptions: [
-      {
-        label: "Admin",
-        value: 1,
-      },
-      {
-        label: "Visualizador",
-        value: 2,
-      },
-      {
-        label: "Proprietário",
-        value: 3,
-      },
-    ],
     render: (rowData) => {
       if (rowData.user_type == 1) {
         return h(NTag, { type: "success" }, { default: () => "Admin" });
@@ -113,7 +97,7 @@ const columns = [
     },
   },
   {
-    title: "Action",
+    title: "Opções",
     width: 200,
     align: "center",
     key: "actions",
