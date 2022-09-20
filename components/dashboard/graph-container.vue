@@ -16,13 +16,15 @@
         />
       </div>
       <div id="graph-wrapper" class="p-5 max-h-96">
-        <div v-if="isLoading" class="skeleton-wrapper h-max">
+        <div v-if="!isLoading" class="skeleton-wrapper h-max">
           <n-skeleton height="300px" width="50px" />
           <n-skeleton height="150px" width="50px" />
           <n-skeleton height="200px" width="50px" />
           <n-skeleton height="70px" width="50px" />
         </div>
-        <div v-else></div>
+        <div v-else class="w-auto h-96">
+          <DashboardChart1 />
+        </div>
       </div>
     </div>
   </div>

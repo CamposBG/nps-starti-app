@@ -16,12 +16,12 @@
 
     <div id="main-content" class="grid grid-cols-2 gap-3">
       <DashboardGraphContainer
-        :title="'Titulo 1'"
+        :title="'Média dentro do período'"
         :user="user"
         :project-id="project"
       />
       <DashboardGraphContainer
-        :title="'Grafico 2'"
+        :title="'Média entre os períodos'"
         :user="user"
         :project-id="project"
       />
