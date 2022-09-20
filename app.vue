@@ -50,11 +50,16 @@ nuxtApp.hook("page:start", () => {
   progresses.push(useProgress().start());
 });
 
-nuxtApp.$bus.on("logout", async () => {
+nuxtApp.$bus.on('logout', async () => {
   await handleLogout();
 });
 
 nuxtApp.hook("page:finish", () => {
   finish();
+});
+
+
+onBeforeUnmount(() => {
+  nuxtApp.$bus.off('logout');
 });
 </script>

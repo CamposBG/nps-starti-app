@@ -31,7 +31,7 @@
       </NEmpty>
       <NEmpty v-else-if="projects.length === 0 && search && !pending"
               description="Nenhum projeto encontrado com esse nome"/>
-      <div v-else class="flex flex-wrap gap-x-16 gap-y-14 pl-10">
+      <div v-else class="flex gap-x-10 justify-center">
         <LazyProjectsCard v-for="project in projects" :project-data="project" :title="project.name"
                           @refresh-projects="refresh"/>
       </div>
@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import {NButton, NEmpty, NInput, NPageHeader, NSpace, NSpin, useDialog, useMessage} from 'naive-ui';
+import {NButton, NEmpty, NInput, NPageHeader, NSpin, useDialog, useMessage} from 'naive-ui';
 import {Search} from '@vicons/fa';
 
 const dialog = useDialog();
@@ -84,10 +84,6 @@ watch(response, () => {
 </script>
 
 <style lang="scss" scoped>
-.n-card {
-  max-width: 400px;
-}
-
 .n-input {
   max-width: 200px;
 

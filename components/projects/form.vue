@@ -1,57 +1,65 @@
 <template>
-  <NForm ref="formRef" :inline="false" :model="formValue" :rules="rules">
-    <NFormItem label="Nome do projeto" path="name">
-      <NInput v-model:value="formValue.name" placeholder="Digite o nome do projeto"/>
-    </NFormItem>
-    <NFormItem label="Tipo de pesquisa(NPS normal ou pesquisa com emoticons)" path="type">
-      <NSelect
-          v-model:value="formValue.type"
-          :options="projectTypesMapped"
-          placeholder="Escolha o tipo do projeto"
-      />
-    </NFormItem>
-    <NFormItem label="Visualizadores do projeto" path="viewers">
-      <NSelect
-          v-model:value="formValue.viewers"
-          :options="usersMapped"
-          multiple
-          placeholder="Escolha os usuários que visualizarão esse projeto"
-      >
-        <template #empty>
+  <div>
+    <NForm v-if="!isLoading" ref="formRef" :inline="false" :model="formValue" :rules="rules">
+      <NFormItem label="Nome do projeto" path="name">
+        <NInput v-model:value="formValue.name" placeholder="Digite o nome do projeto"/>
+      </NFormItem>
+      <NFormItem label="Tipo de pesquisa(NPS normal ou pesquisa com emoticons)" path="type">
+        <NSelect
+            v-model:value="formValue.type"
+            :disabled="formValue.guid"
+            :options="projectTypesMapped"
+            placeholder="Escolha o tipo do projeto"
+        />
+      </NFormItem>
+      <NFormItem label="Visualizadores do projeto" path="viewers">
+        <NSelect
+            v-model:value="formValue.viewers"
+            :options="usersMapped"
+            multiple
+            placeholder="Escolha os usuários que visualizarão esse projeto"
+        >
+          <template #empty>
           <span class="text-sm">
             Nenhum usuário disponível
           </span>
-        </template>
-      </NSelect>
-    </NFormItem>
-    <NFormItem label="Donos do projeto" path="owners">
-      <NSelect
-          v-model:value="formValue.owners"
-          :options="usersMapped"
-          multiple
-          placeholder="Escolha os usuários que terão controle sobre esse projeto"
-      >
-        <template #empty>
+          </template>
+        </NSelect>
+      </NFormItem>
+      <NFormItem label="Donos do projeto" path="owners">
+        <NSelect
+            v-model:value="formValue.owners"
+            :options="usersMapped"
+            multiple
+            placeholder="Escolha os usuários que terão controle sobre esse projeto"
+        >
+          <template #empty>
           <span class="text-sm">
             Nenhum usuário disponível
           </span>
+          </template>
+        </NSelect>
+      </NFormItem>
+      <NButton :loading="isSubmitting" color="teal" icon-placement="right" @click="submitForm">
+        <template v-if="!isSubmitting" #icon>
+          <NIcon>
+            <Save/>
+          </NIcon>
         </template>
-      </NSelect>
-    </NFormItem>
-    <NButton :loading="isSubmitting" color="teal" icon-placement="right" @click="submitForm">
-      <template v-if="!isSubmitting" #icon>
-        <NIcon>
-          <Save/>
-        </NIcon>
-      </template>
-      Salvar
-    </NButton>
-  </NForm>
+        Salvar
+      </NButton>
+    </NForm>
+    <div v-else class="flex justify-center items-center">
+      <NSpin size="large"/>
+    </div>
+  </div>
+
+
 </template>
 
 <script setup>
 import {Save} from '@vicons/fa';
-import {NButton, NForm, NFormItem, NIcon, NInput, NSelect, useMessage, useNotification} from 'naive-ui'
+import {NButton, NForm, NFormItem, NIcon, NInput, NSelect, NSpin, useMessage, useNotification} from 'naive-ui'
 import {useStorage} from "vue3-storage";
 
 const nuxtApp = useNuxtApp();
@@ -60,11 +68,13 @@ const router = useRouter();
 
 const props = defineProps({
   props: {type: Object, default: null},
+  guid: {type: String, default: null},
 });
 
 // refs | data
 const formRef = ref(null);
 const isSubmitting = ref(false);
+const isLoading = ref(true);
 const message = useMessage();
 const notification = useNotification();
 const formValue = ref({
@@ -72,7 +82,7 @@ const formValue = ref({
   type: null,
   viewers: null,
   owners: null,
-  guid: ''
+  guid: null
 });
 const rules = ref(null);
 const projectTypesMapped = ref(null);
@@ -87,7 +97,6 @@ rules.value = {
   type: {
     required: true,
     message: "O tipo de pesquisa do projeto deve ser escolhido",
-    // trigger: ["blur"]
   },
   viewers: {
     required: false,
@@ -155,13 +164,17 @@ const submitForm = (e) => {
 }
 
 const getProjectData = async () => {
-  const response = await nuxtApp.$repo.projects.findOneProject(formValue.value.guid);
-
+  const response = await nuxtApp.$repo.projects.findOneProject(props.props.guid);
   if (response) {
+    formValue.value.guid = response.guid;
     formValue.value.name = response.name;
     formValue.value.type = response.type;
-    formValue.value.viewers = response.viewers;
-    formValue.value.owners = response.owners;
+    if (response.viewers?.length > 0) {
+      formValue.value.viewers = response.viewers;
+    }
+    if (response.owners?.length > 0) {
+      formValue.value.owners = response.owners;
+    }
   }
 };
 
@@ -190,11 +203,11 @@ const getUsers = async () => {
 
 onMounted(async () => {
   if (props.props?.guid) {
-    formValue.value.guid = props.props.guid;
-    await getProjectData()
+    await getProjectData();
   }
 
   await getProjectTypes();
   await getUsers();
-})
+  isLoading.value = false;
+});
 </script>

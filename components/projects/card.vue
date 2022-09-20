@@ -95,6 +95,7 @@ const nuxtApp = useNuxtApp();
 const router = useRouter();
 const dialog = useDialog();
 const notification = useNotification();
+const showEditProjectForm = ref(false);
 
 const emit = defineEmits(['refresh-projects'])
 const props = defineProps({
@@ -110,9 +111,11 @@ const typeName = ref(null);
 
 const handleEditProject = (name, guid) => {
   nuxtApp.$bus.emit('drawer:open', {
-    component: 'ProjectsForm',
+    component: "ProjectsForm",
     title: 'Editar o projeto ' + name,
-    onClose: () => {
+    maskClosable: false,
+    onClose: async () => {
+      console.log('fechei')
     },
     props: {guid}
   });
@@ -185,6 +188,9 @@ await getProjectTypes();
 mountOwnersAndViewers();
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.n-card {
+  max-width: 400px;
+}
 
 </style>
