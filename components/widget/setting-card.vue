@@ -1,18 +1,18 @@
 <template>
-    <div v-if="projectData.is_configured === 1">
-      <NCard  title="Widget x" size="small" >
-        Conteudo da configuração do widget x
-      </NCard>
-    </div>
-    <div v-else>
-      <NEmpty description="Widget não configurado">
-        <template #extra>
-          <NButton type="default"  size="small"  @click="handleSettingNewWidget">
-            Configurar widget
-          </NButton>
-        </template>
-      </NEmpty>
-    </div>
+  <div v-if="projectData.is_configured === 1">
+    <NCard size="small" title="Widget x">
+      Conteudo da configuração do widget x
+    </NCard>
+  </div>
+  <div v-else>
+    <NEmpty description="Widget não configurado">
+      <template #extra>
+        <NButton size="small" type="default" @click="handleSettingNewWidget">
+          Configurar widget
+        </NButton>
+      </template>
+    </NEmpty>
+  </div>
 </template>
 
 <script setup>
@@ -20,10 +20,9 @@ import {NButton, NCard, NEmpty} from 'naive-ui';
 
 const nuxtApp = useNuxtApp();
 const props = defineProps({
-  title: { type: String, default: '', required: true },
-  projectData: { type: Object, default: null, required: true },
+  title: {type: String, default: '', required: true},
+  projectData: {type: Object, default: null, required: true},
 });
-
 
 
 const setting = ref(null);
@@ -39,15 +38,15 @@ const handleSettingNewWidget = () => {
 
 const handleGetSetting = () => {
 
-  setting.value =  {
-
-  };
+  setting.value = {};
 };
 
 handleGetSetting();
 
 </script>
 
-<style scoped>
-
-</style>
+<!--<style lang="scss" scoped>-->
+<!--.n-card {-->
+<!--  width: 600px;-->
+<!--}-->
+<!--</style>-->

@@ -35,11 +35,11 @@ const {data} = useLazyAsyncData(`project-${route.params.guid}-${Math.random()}`,
 
 // methods
 const handleAddWidget = () => {
-
+  router.push(`/projects/${route.params.guid}/widgets/create`);
 };
 
 const handleBack = () => {
-  router.push('/projects');
+  router.push(`/projects`);
 };
 
 </script>

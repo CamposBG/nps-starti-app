@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useStorage } from "vue3-storage";
-import { useProgress } from "@marcoschulte/vue3-progress";
+import {useStorage} from "vue3-storage";
+import {useProgress} from "@marcoschulte/vue3-progress";
 
 export default class BaseRepository {
   baseUrl = null;
@@ -40,14 +40,29 @@ export default class BaseRepository {
     );
   }
 
+
+  async handleLogout() {
+    const store = useStorage();
+
+    const userData = store.getStorageSync("user");
+    if (userData) {
+      await this.context.$repo.auth.logout({token: userData.token});
+      store.clearStorageSync()
+    }
+    this.context.$bus.emit('drawer:close');
+    this.context.$bus.emit('logout');
+  }
+
   catchError(error) {
     let msgError = "";
 
     if (error.response && typeof error.response.data === "object") {
-      const { data } = error.response;
+      const {data} = error.response;
 
       if (error.response.status === 401) {
-        this.context.$bus.emit("logout");
+        // this.context.$bus.emit("logout");
+        this.handleLogout();
+        return
       }
 
       if (data.errors !== undefined) {
@@ -59,7 +74,7 @@ export default class BaseRepository {
       }
     }
 
-    return { error: msgError };
+    return {error: msgError};
   }
 
   _getHeaders(bodyFormData = false) {

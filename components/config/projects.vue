@@ -5,7 +5,7 @@
         Configuração dos projetos
       </template>
       <template #extra>
-        <NSpace>
+        <NSpace align="center" justify="space-between">
           <NButton color="teal" size="small" type="primary" @click="handleAddProject">
             Adicionar projeto
           </NButton>
@@ -40,10 +40,9 @@
 </template>
 
 <script setup>
-import {NButton, NEmpty, NInput, NPageHeader, NSpin, useDialog, useMessage} from 'naive-ui';
+import {NButton, NEmpty, NInput, NPageHeader, NSpace, NSpin, useMessage} from 'naive-ui';
 import {Search} from '@vicons/fa';
 
-const dialog = useDialog();
 const message = useMessage();
 const nuxtApp = useNuxtApp();
 

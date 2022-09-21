@@ -39,27 +39,15 @@ const finish = () => {
   setTimeout(() => progresses.pop()?.finish(), 200);
 };
 
-const handleLogout = async () => {
-  await nuxtApp.$repo.auth.logout({token: user.token});
-  nuxtApp.$bus.emit('drawer:close');
-  storage.clearStorageSync();
+nuxtApp.$bus.on('logout', () => {
   router.push("/auth/login");
-};
+});
 
 nuxtApp.hook("page:start", () => {
   progresses.push(useProgress().start());
 });
 
-nuxtApp.$bus.on('logout', async () => {
-  await handleLogout();
-});
-
 nuxtApp.hook("page:finish", () => {
   finish();
-});
-
-
-onBeforeUnmount(() => {
-  nuxtApp.$bus.off('logout');
 });
 </script>

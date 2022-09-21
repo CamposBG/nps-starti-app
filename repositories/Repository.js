@@ -2,6 +2,7 @@ import BaseRepository from "~/repositories/BaseRepository";
 import UserRepository from "./users/UserRepository";
 import ProjectsRepository from "~/repositories/projects/ProjectsRepository";
 import AuthRepository from "~/repositories/auth/AuthRepository";
+import WidgetsRepository from "~/repositories/widgets/WidgetsRepository";
 
 export default class Repository {
   context = null;
@@ -9,10 +10,12 @@ export default class Repository {
   base = null;
 
   user = null;
-  
+
   projects = null;
 
   auth = null;
+
+  widgets = null;
 
 
   constructor(context) {
@@ -25,7 +28,9 @@ export default class Repository {
     this.auth = new AuthRepository('/api', this.context);
 
     this.user = new UserRepository('/api', this.context);
-    
+
     this.projects = new ProjectsRepository("/api/projects", this.context);
+
+    this.widgets = new WidgetsRepository("/api/widgets", this.context);
   }
 }
