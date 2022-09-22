@@ -3,6 +3,7 @@ import UserRepository from "./users/UserRepository";
 import ProjectsRepository from "~/repositories/projects/ProjectsRepository";
 import AuthRepository from "~/repositories/auth/AuthRepository";
 import WidgetsRepository from "~/repositories/widgets/WidgetsRepository";
+import DashBoardRepository from "~/repositories/dashBoard/DashBoardRepository";
 
 export default class Repository {
   context = null;
@@ -17,20 +18,21 @@ export default class Repository {
 
   widgets = null;
 
-
   constructor(context) {
     this.context = context;
 
     this.base = new BaseRepository(this.context);
 
-    this.projects = new ProjectsRepository('/api/projects', this.context);
+    this.projects = new ProjectsRepository("/api/projects", this.context);
 
-    this.auth = new AuthRepository('/api', this.context);
+    this.auth = new AuthRepository("/api", this.context);
 
-    this.user = new UserRepository('/api', this.context);
+    this.user = new UserRepository("/api", this.context);
 
     this.projects = new ProjectsRepository("/api/projects", this.context);
 
     this.widgets = new WidgetsRepository("/api/widgets", this.context);
+
+    this.dash = new DashBoardRepository("/api", this.context);
   }
 }

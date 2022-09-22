@@ -21,6 +21,16 @@ export default defineNuxtConfig({
       },
       hmr: true,
     },
+    build: {
+      minify: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            chart: ['vue3-echarts'],
+          },
+        },
+      },
+    },
     // plugins: [
     //   eslintPlugin()
     // ]
@@ -33,6 +43,7 @@ export default defineNuxtConfig({
       autoprefixer: {},
     },
   },
+
 
   plugins: [{ ssr: false, src: "~/plugins/providers" }],
 });

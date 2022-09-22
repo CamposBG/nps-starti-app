@@ -23,7 +23,12 @@
           <n-skeleton height="70px" width="50px" />
         </div>
         <div v-else class="w-auto h-96">
-          <DashboardChart1 />
+          <!-- <DashboardChart1 /> -->
+          <DashboardChart2
+            :user="user"
+            :project-id="projectId"
+            :period-selected="period"
+          />
         </div>
       </div>
     </div>
@@ -41,7 +46,6 @@ const props = defineProps({
 
 // ref|data
 const isLoading = ref(true);
-const periosSelected = ref();
 const period = ref(7);
 const periodMarks = {
   7: "7 dias",
@@ -50,9 +54,6 @@ const periodMarks = {
 };
 
 // methods
-const handleTimeOptions = (key) => {
-  periosSelected.value = key;
-};
 </script>
 
 <style scoped>

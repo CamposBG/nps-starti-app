@@ -1,8 +1,6 @@
 <template>
   <div>
-    <p class="flex justify-center text-2xl font-bold">
-      Bem-vindo ao sistema de NPS da Starti
-    </p>
+    <p class="flex text-2xl font-bold">Dashbord</p>
     <!-- project and time selector -->
     <div class="my-5 flex justify-end">
       <n-select
@@ -15,16 +13,17 @@
     <div v-if="userData.projects?.length === 0">Crie um projeto</div>
 
     <div id="main-content" class="grid grid-cols-2 gap-3">
-      <DashboardGraphContainer
+      <DashboardGraphContainer1
         :title="'Média dentro do período'"
         :user="user"
         :project-id="project"
       />
-      <DashboardGraphContainer
+      <DashboardGraphContainer2
         :title="'Média entre os períodos'"
         :user="user"
         :project-id="project"
       />
+
       <div
         id="tabela"
         class="col-span-2 border bg-slate-200 rounded-sm shadow-sm"
