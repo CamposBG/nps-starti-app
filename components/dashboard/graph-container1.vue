@@ -3,7 +3,7 @@
     <div id="graph-1" class="border border-gray-200 rounded-sm shadow-sm">
       <div class="w-full h-10 bg-slate-200 flex items-center pl-5 shadow-md">
         <h1 class="text-xl font-semibold text-gray-700 tracking-wide">
-          {{ title }}
+          {{ title }} {{ projectId }}
         </h1>
       </div>
       <div class="time-selector px-5">
@@ -32,7 +32,7 @@
 </template>
 
 <script setup>
-import { NSkeleton, NSlider } from "naive-ui";
+import { NSkeleton, NSlider, pProps } from "naive-ui";
 
 const props = defineProps({
   title: { type: String, defalt: "Titulo do grafico" },
@@ -42,6 +42,7 @@ const props = defineProps({
 // providers
 const nuxtApp = useNuxtApp();
 
+console.log("props projectId", props.projectId);
 //async data
 const {
   data: response,
@@ -77,10 +78,12 @@ watch(period, () => {
 });
 watch(
   () => props.projectId,
-  () => {
-    console.log("projectId mudou");
-
-    refresh();
+  (agora, antes) => {
+    console.log("projectId mudou de ", antes);
+    console.log("projectId mudou para ", agora);
+    setTimeout(() => {
+      refresh();
+    }, 150);
   }
 );
 </script>

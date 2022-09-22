@@ -10,9 +10,11 @@
         placeholder="Selecione o projeto"
       />
     </div>
-    <div v-if="userData.projects?.length === 0">Crie um projeto</div>
+    <div v-if="userData.projects?.length === 0">
+      <DashboardEmptyDash />
+    </div>
 
-    <div id="main-content" class="grid grid-cols-2 gap-3">
+    <div v-else id="main-content" class="grid grid-cols-2 gap-3">
       <DashboardGraphContainer1
         :title="'Média dentro do período'"
         :user="user"
@@ -35,7 +37,6 @@
         />
       </div>
     </div>
-    <pre></pre>
   </div>
 </template>
 
@@ -47,16 +48,25 @@ const nuxtApp = useNuxtApp();
 const storage = useStorage();
 
 // refs|data
-const project = ref([]);
+const project = ref(null);
 const user = storage.getStorageSync("user");
 const userData = await nuxtApp.$repo.user.getOneUser(user.guid);
 let mappedProjects;
-
-if (userData.projects) {
+console.log({ userData });
+if (userData.projects.length > 0) {
   mappedProjects = userData.projects.map((element) => ({
     label: element.name,
     value: element.id,
     disabled: false,
   }));
 }
+
+onMounted(() => {
+  if (mappedProjects) {
+    if (Object.keys(mappedProjects.length > 0)) {
+      console.log("aqui");
+      project.value = mappedProjects[0].value;
+    }
+  }
+});
 </script>
