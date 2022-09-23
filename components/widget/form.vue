@@ -1,179 +1,240 @@
 <template>
-  <NForm ref="formRef" :model="formValue" :rules="rules" :inline="false">
-    <NFormItem label="Frequência de aparição do widget" path="timesToShow">
-      <NSelect v-model:value="formValue.timesToShow" placeholder="Escolha uma opção" :options="timesToShowOptions" />
-    </NFormItem>
-    <NFormItem label="Tempo (em segundos) para mostrar o widget" path="secondsToShow">
-      <NInputNumber v-model:value="formValue.secondsToShow" clearable placeholder="Digite o tempo" />
-    </NFormItem>
-    <NFormItem label="Tempo (em segundos) para esconder automaticamente o widget" path="secondsToHide">
-      <NInputNumber v-model:value="formValue.secondsToHide" clearable placeholder="Digite o tempo" />
-    </NFormItem>
-    <NFormItem label="Posição do widget na tela" path="widgetPosition">
-      <NSelect v-model:value="formValue.widgetPosition" placeholder="Escolha uma opção" :options="widgetPositionOptions" />
-    </NFormItem>
-    <div class="mb-3">
-      Habilitar para celular?
-      <NSwitch  v-model:value="formValue.enableMobile"/>
-    </div>
-    <div class="mb-3">
-      Habilitar mensagem customizável?
-      <NSwitch  v-model:value="formValue.enableCustomMessage"/>
-      <div v-if="formValue.enableCustomMessage">
-        <NInput
-            v-model:value="formValue.message"
-            type="textarea"
-            placeholder="Basic Textarea"
-        />
-      </div>
-    </div>
-    <div class="mb-3">
-      Trocar senha?
-      <NSwitch  v-model:value="formValue.enableCustomThanksMessage"/>
-    </div>
-    <NButton color="#1C52FF" block @click="submitForm" :loading="isSubmitting">
-      <template #icon>
-        <NIcon>
-          <SignInAlt />
-        </NIcon>
-      </template>
-      Entrar no sistema
-    </NButton>
+  <div v-if="isLoading">
+    <NSpin size="large"/>
+  </div>
+  <NForm v-else ref="formRef" :inline="false" :model="formValue" :rules="rules">
+    <NGrid :cols="2" x-gap="12" y-gap="12">
+      <NGi>
+        <LazyWidgetTimeConfigCard :formValue="formValue"
+                                  @updateForm="value => formValue.value = {...formValue.value, ...value}"/>
+      </NGi>
+      <NGi>
+        <LazyWidgetPositionConfigCard :formValue="formValue"/>
+      </NGi>
+      <NGi>
+        <LazyWidgetMessagesConfigCard :formValue="formValue"/>
+      </NGi>
+      <NGi>
+        <LazyWidgetDomainConfigCard :formValue="formValue"/>
+      </NGi>
+      <NGi>
+        <LazyWidgetColorConfigCard :formValue="formValue"/>
+      </NGi>
+      <NGi :span="2">
+        <NSpace>
+          <NButton :loading="isSubmitting" color="teal" icon-placement="right" type="primary"
+                   @click="handleSubmitConfig(true)">
+            Salvar e ativar configuração
+            <template #icon>
+              <NIcon>
+                <Save/>
+              </NIcon>
+            </template>
+          </NButton>
+          <NButton :loading="isSubmitting" icon-placement="right"
+                   @click="handleSubmitConfig(false)">
+            Salvar configuração como inativa
+          </NButton>
+        </NSpace>
+      </NGi>
+    </NGrid>
   </NForm>
 </template>
 
 <script setup>
-import { Envelope, Lock, SignInAlt } from '@vicons/fa';
-import {NForm, NInput, NFormItem, NButton, NIcon, useMessage, useNotification, NSelect, NInputNumber, NSwitch} from 'naive-ui'
-import {useStorage} from "vue3-storage";
+import {Save} from '@vicons/fa';
 
-const storage = useStorage();
-const router = useRouter();
+import {NButton, NForm, NGi, NGrid, NIcon, NSpace, NSpin, useNotification} from 'naive-ui';
+
 const nuxtApp = useNuxtApp();
-
-// refs | data
-const formRef = ref(null);
-const isSubmitting = ref(false);
-const message = useMessage();
+const route = useRoute();
+const router = useRouter();
 const notification = useNotification();
+
+const props = defineProps({
+  guid: {type: String, default: '', required: false}
+});
+
+const rules = ref(null);
+const formRef = ref(null);
+const isLoading = ref(false);
+const isSubmitting = ref(false);
 const formValue = ref({
+  description: null,
   timesToShow: null,
   secondsToShow: 2,
   secondsToHide: 15,
-  widgetPosition: null,
   enableMobile: false,
+  // widgetPosition: 'box1-left-bottom',
+  widgetPosition: null,
+  probabilityToShow: 10,
   enableCustomMessage: false,
-  enableCustomThanksMessage: false
+  message: null,
+  enableCustomThanksMessage: false,
+  thanksMessage: null,
+  domains: [],
+  color: '#FFFFFF'
 });
-const rules = ref(null);
-const timesToShowOptions = ref([
-  {
-    label: 'Uma única vez',
-    value: 1
-  },
-  {
-    label: 'Uma vez por semana',
-    value: 2
-  },
-  {
-    label: 'Uma vez a cada 15 dias',
-    value: 3
-  },
-  {
-    label: 'Uma vez por mês',
-    value: 4
-  }
-]);
-const widgetPositionOptions = ref([
-  {
-    label: 'Esquerda',
-    value: 'left'
-  },
-  {
-    label: 'Em cima',
-    value: 'up'
-  },
-  {
-    label: 'Direita',
-    value: 'right'
-  },
-  {
-    label: 'Embaixo',
-    value: 'bottom'
-  }
-]);
 
 rules.value = {
-  email: {
+  description: {
     required: true,
-    validator(rule, value) {
-      if (!value) {
-        return new Error("E-mail é obrigatório");
-      } else if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(value)) {
-        return new Error("Deve ser um em-mail válido");
-      }
-      return true;
-    },
+    message: "A descrição é obrigatória",
     trigger: ["blur"]
   },
-  password: {
+  message: {
     required: true,
-    message: "A senha é obrigatória",
+    message: "A mensagem personalizada é obrigatória",
     trigger: ["blur"]
+  },
+  thanksMessage: {
+    required: true,
+    message: "A mensagem de agradecimento personalizada é obrigatória",
+    trigger: ["blur"]
+  },
+  color: {
+    required: true,
+    message: "A cor é obrigatória",
+    trigger: ["blur"]
+  },
+  timesToShow: {
+    required: true,
+    trigger: ["blur"],
+    validator(rule, value) {
+      if (value === null || value === undefined) {
+        return new Error("É necessário escolher uma frequência")
+      }
+    }
+  },
+  secondsToShow: {
+    required: true,
+    trigger: ["blur", "input"],
+    validator(rule, value) {
+      if (value === null || value === undefined) {
+        return new Error("É necessário escolher o tempo para o widget ser exibido")
+      } else if (value < 1) {
+        return new Error("O tempo deve ser maior que 0")
+      } else if (!/^\d*$/.test(value)) {
+        return new Error("O tempo deve ser um número")
+      }
+    }
+  },
+  secondsToHide: {
+    required: true,
+    trigger: ["blur", "input"],
+    validator(rule, value) {
+      if (value === null || value === undefined) {
+        return new Error("É necessário escolher o tempo para esconder o widget")
+      } else if (value < 1) {
+        return new Error("O tempo deve ser maior que 0")
+      } else if (!/^\d*$/.test(value)) {
+        return new Error("O tempo deve ser um número")
+      }
+    }
+  },
+  widgetPosition: {
+    required: true,
+    trigger: ["blur"],
+    validator(rule, value) {
+      if (value === null || value === undefined) {
+        return new Error("É necessário escolher uma posição onde o widget irá aparecer")
+      }
+    }
+  },
+  probabilityToShow: {
+    required: true,
+    trigger: ["blur", "input"],
+    validator(rule, value) {
+      if (value === null || value === undefined) {
+        return new Error("É necessário escolher o tempo para o widget ser exibido")
+      }
+    }
   }
 };
 
 // methods
-const submitForm = (e) => {
+const handleBack = () => {
+  router.push(`/projects/${route.params.guid}/widgets`);
+};
+
+const handleSubmitConfig = async (isActive) => {
   isSubmitting.value = true;
-  e.preventDefault();
   formRef.value?.validate(
       async (errors) => {
         if (!errors) {
-          const response = await nuxtApp.$repo.auth.login(formValue.value);
+          formValue.value.isActive = isActive
 
-          if (response && response.token && response.user) {
-            const { user, token } = response
-            const  {id, name, email, user_type, guid} = user
-            storage.setStorageSync('user', {
-              id,
-              name,
-              email,
-              guid,
-              user_type,
-              token
-            });
+          if (!props.guid) {
+            const response = await nuxtApp.$repo.widgets.createWidget(route.params.guid, formValue.value);
 
-            router.push('/')
-            notification.success({
-              content: "Sucesso",
-              meta: "Login no sistema realizado",
-              duration: 2000,
-              keepAliveOnHover: false
-            });
-          } else if (response.error) {
-            notification.error({
-              content: "Erro",
-              meta: response.error,
-              duration: 2500,
-              keepAliveOnHover: true
-            });
+            if (response && !response.error) {
+              router.push(`/projects/${route.params.guid}/widgets`)
+              notification.success({
+                content: "Sucesso",
+                meta: "Configuração de widget criada",
+                duration: 2000,
+                keepAliveOnHover: false
+              });
+            } else {
+              notification.error({
+                content: "Erro",
+                meta: response?.error,
+                duration: 2500,
+                keepAliveOnHover: true
+              });
+            }
+          } else {
+            const response = await nuxtApp.$repo.widgets.updateWidget(props.guid, formValue.value);
+
+            if (response && !response.error) {
+              router.push(`/projects/${route.params.guid}/widgets`)
+              notification.success({
+                content: "Sucesso",
+                meta: "Configuração de widget atualizada",
+                duration: 2000,
+                keepAliveOnHover: false
+              });
+            } else {
+              notification.error({
+                content: "Erro",
+                meta: response?.error,
+                duration: 2500,
+                keepAliveOnHover: true
+              });
+            }
           }
         }
-        // else {
-        //   message.error("Erro ao realizar o login");
-        // }
       }
   );
   isSubmitting.value = false;
-}
-</script>
+};
 
-{
-"timesToShow": 2,
-"secondsToShow": 2,
-"secondsToHide": 15,
-"enableMobile": true,
-"enableCustomMessage": true,
-"enableCustomThanksMessage": false
-}
+onBeforeMount(async () => {
+  if (props.guid) {
+    isLoading.value = true;
+    const response = await nuxtApp.$repo.widgets.getOneWidget(props.guid);
+
+    if (response && !response.error) {
+      formValue.value.description = response.description;
+      formValue.value.timesToShow = response.times_to_show;
+      formValue.value.secondsToShow = response.seconds_to_show;
+      formValue.value.secondsToHide = response.seconds_to_hide;
+      formValue.value.enableMobile = response.enable_mobile;
+      formValue.value.widgetPosition = response.widget_position;
+      formValue.value.probabilityToShow = response.probability_to_show;
+      formValue.value.enableCustomMessage = response.enable_custom_message;
+      formValue.value.message = response.message;
+      formValue.value.enableCustomThanksMessage = response.enable_custom_thanks_message;
+      formValue.value.thanksMessage = response.thanks_message;
+      formValue.value.domains = [];
+      formValue.value.color = response.color;
+      formValue.value.isActive = response.is_active;
+    } else {
+      router.push(`/projects`)
+    }
+
+    isLoading.value = false;
+  }
+});
+
+</script>

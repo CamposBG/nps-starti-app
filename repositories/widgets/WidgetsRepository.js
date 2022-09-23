@@ -14,4 +14,12 @@ export default class WidgetsRepository extends BaseRepository {
   async updateWidgetStatus(guid, body) {
     return this.put(`/update-status/${guid}`, body);
   }
+
+  async getOneWidget(guid) {
+    return this.get(`/${guid}`);
+  }
+
+  async updateWidget(guid, body) {
+    return this.put(`/${guid}`, body);
+  }
 }

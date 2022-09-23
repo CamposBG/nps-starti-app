@@ -2,15 +2,16 @@
   <div class="w-full">
     <NPageHeader class="mb-4" subtitle="" @back="handleBack">
       <template #title>
-        <p class="flex text-2xl font-bold">Configurando novo widget</p>
+        <p class="flex text-2xl font-bold">Editando configuração de widget</p>
       </template>
     </NPageHeader>
-    <LazyWidgetForm/>
+    <LazyWidgetForm :guid="route.params.widgetGuid"/>
   </div>
 </template>
 
 <script setup>
 import {NPageHeader} from 'naive-ui';
+
 
 const nuxtApp = useNuxtApp();
 const route = useRoute();
@@ -23,4 +24,5 @@ const formRef = ref(null);
 const handleBack = () => {
   router.push(`/projects/${route.params.guid}/widgets`);
 };
+
 </script>

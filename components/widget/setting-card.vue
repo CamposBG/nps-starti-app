@@ -1,6 +1,7 @@
 <template>
   <div class="hover:cursor-default">
-    <NCard :title="widgetData.description">
+    <NCard :title="widgetData.description" class="hover:cursor-pointer" hoverable
+           @click="handleEditWidget(widgetData.guid)">
       <template #header-extra>
         <NSpace align="center">
           <NTooltip placement="top" trigger="hover">
@@ -55,7 +56,11 @@
 import {NCard, NGi, NGrid, NNumberAnimation, NSpace, NStatistic, NSwitch, NTooltip, useNotification} from 'naive-ui';
 
 const nuxtApp = useNuxtApp();
+const route = useRoute();
+const router = useRouter();
 const notification = useNotification();
+
+
 const props = defineProps({
   description: {type: String, default: '', required: true},
   widgetData: {type: Object, default: null, required: true},
@@ -97,6 +102,10 @@ const handleIsWidgetActive = async (value) => {
     });
   }
   loading.value = false;
+};
+
+const handleEditWidget = (guid) => {
+  router.push(`/projects/${route.params.guid}/widgets/${guid}/edit`)
 };
 
 props.widgetData.is_active = props.widgetData.is_active === 1;

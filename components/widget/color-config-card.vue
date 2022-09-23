@@ -5,12 +5,12 @@
         <NFormItem label="Cor principal do widget" path="color">
           <NColorPicker v-model:value="props.formValue.color" :show-alpha="false"/>
         </NFormItem>
-        <NFormItem label="Visualizar widget?" label-placement="left">
+        <NFormItem label="Visualizar um exemplo do widget?" label-placement="left">
           <NSwitch v-model:value="preview"/>
         </NFormItem>
       </NForm>
       <div v-if="preview" class="flex flex-col items-center gap-y-8">
-        <div :style="{backgroundColor: `${props.formValue.color}`}" class="w-96 bg-amber-100 h-48 rounded-md">
+        <div :style="{backgroundColor: `${props.formValue.color}`}" class="w-96 bg-amber-100 h-48 rounded-md mb-4">
           <span :class="[props.formValue.color === '#FFFFFF' ? '' : 'text-white']" class="p-2">
             Pesquisa de satisfação
           </span>
@@ -20,18 +20,6 @@
                  class="p-2 w-1/2 flex justify-center rounded-md">
               onde será dada a nota
             </div>
-          </div>
-        </div>
-        <div class="flex gap-x-4">
-          <div :class="[props.formValue.color === '#FFFFFF' ? '' : 'text-white']"
-               :style="{backgroundColor: `${props.formValue.color}`}"
-               class="p-2 w-1/2 flex justify-center items-center rounded-md">
-            Mensagem padrão/personalizada
-          </div>
-          <div :class="[props.formValue.color === '#FFFFFF' ? '' : 'text-white']"
-               :style="{backgroundColor: `${props.formValue.color}`}"
-               class="p-2 w-1/2 flex justify-center items-center rounded-md">
-            Mensagem de agradecimento padrão/personalizada
           </div>
         </div>
       </div>
