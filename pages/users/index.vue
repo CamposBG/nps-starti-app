@@ -1,15 +1,20 @@
 <template>
-  <div class="flex items-center justify-between flex-auto mb-4">
-    <NBreadcrumb separator=">">
-      <NBreadcrumbItem @click="$router.push('/')"> Home</NBreadcrumbItem>
-      <NBreadcrumbItem> Usuários</NBreadcrumbItem>
-    </NBreadcrumb>
-    <NButton color="teal" @click="handleCreateUser"> Adicionar</NButton>
+  <NPageHeader>
+    <template #title>
+      Lista de usuários
+    </template>
+    <template #extra>
+      <NSpace align="center" justify="space-between">
+        <NButton color="teal" size="small" @click="handleCreateUser"> Adicionar usuário</NButton>
+      </NSpace>
+    </template>
+  </NPageHeader>
+  <div class="mt-5">
+    <LazyUserList :update="refreshList"/>
   </div>
-  <LazyUserList :update="refreshList"/>
 </template>
 <script setup>
-import {NBreadcrumb, NBreadcrumbItem, NButton} from "naive-ui  ";
+import {NButton, NPageHeader, NSpace} from "naive-ui";
 
 const nuxtApp = useNuxtApp();
 

@@ -5,11 +5,11 @@
       <!-- name -->
       <NFormItem :show-require-mark="true" label="Nome do usuário" path="name">
         <NInput
-          v-model:value="formValue.name"
-          placeholder="Digite o nome do usuário"
+            v-model:value="formValue.name"
+            placeholder="Digite o nome do usuário"
         >
           <template #prefix>
-            <User class="w-3" />
+            <User class="w-3"/>
           </template>
         </NInput>
       </NFormItem>
@@ -17,11 +17,11 @@
       <!-- email -->
       <NFormItem :show-require-mark="true" label="E-mail" path="email">
         <NInput
-          v-model:value="formValue.email"
-          placeholder="Digite o seu e-mail"
+            v-model:value="formValue.email"
+            placeholder="Digite o seu e-mail"
         >
           <template #prefix>
-            <Envelope class="w-3" />
+            <Envelope class="w-3"/>
           </template>
         </NInput>
       </NFormItem>
@@ -29,38 +29,38 @@
       <!-- password -->
       <div v-if="formValue.guid" class="mb-3">
         Trocar senha?
-        <NSwitch v-model:value="isChangingPassword" />
+        <NSwitch v-model:value="isChangingPassword"/>
       </div>
       <div v-if="isChangingPassword || !formValue.guid">
         <NFormItem :show-require-mark="true" label=" Senha" path="password">
           <NInput
-            v-model:value="formValue.password"
-            placeholder="Digite a sua senha"
-            type="password"
-            @input="handlePasswordInput"
-            @keydown.enter.prevent
+              v-model:value="formValue.password"
+              placeholder="Digite a sua senha"
+              type="password"
+              @input="handlePasswordInput"
+              @keydown.enter.prevent
           >
             <template #prefix>
-              <Lock class="w-3" />
+              <Lock class="w-3"/>
             </template>
           </NInput>
         </NFormItem>
 
         <!-- confirmPassword -->
         <NFormItem
-          ref="confirmPasswordRef"
-          :show-require-mark="true"
-          label="Confirme a senha"
-          path="confirmPassword"
+            ref="confirmPasswordRef"
+            :show-require-mark="true"
+            label="Confirme a senha"
+            path="confirmPassword"
         >
           <NInput
-            v-model:value="formValue.confirmPassword"
-            placeholder="Digite a sua senha"
-            type="password"
-            @keydown.enter.prevent
+              v-model:value="formValue.confirmPassword"
+              placeholder="Digite a sua senha"
+              type="password"
+              @keydown.enter.prevent
           >
             <template #prefix>
-              <Lock class="w-3" />
+              <Lock class="w-3"/>
             </template>
           </NInput>
         </NFormItem>
@@ -69,9 +69,9 @@
       <div v-if="isAdmin">
         <!-- user type radio -->
         <NRadioGroup
-          v-model:value="formValue.userType"
-          name="userTypeGroup"
-          style="margin-bottom: 12px"
+            v-model:value="formValue.userType"
+            name="userTypeGroup"
+            style="margin-bottom: 12px"
         >
           <NRadioButton :value="1"> Administrador</NRadioButton>
           <NRadioButton :value="2"> Visualizador</NRadioButton>
@@ -80,27 +80,29 @@
 
         <!-- project -->
         <NFormItem
-          v-if="formValue.userType != 1"
-          :show-require-mark="true"
-          label="Escolha os projetos"
-          path="projects"
+            v-if="formValue.userType != 1"
+            :show-require-mark="true"
+            label="Escolha os projetos"
+            path="projects"
         >
           <NSelect
-            v-model:value="formValue.projects"
-            :options="projectsMapped"
-            multiple
-            placeholder="Escolha os projetos"
+              v-model:value="formValue.projects"
+              :options="projectsMapped"
+              multiple
+              placeholder="Escolha os projetos"
           />
         </NFormItem>
       </div>
 
       <!-- submit btn -->
       <div>
-        <NButton :loading="isSubmitting" color="teal" @click="submitForm">
-          <div v-if="isSubmitting === true" class="animate-ping">
-            <NSpin size="small" />
-          </div>
-          <span v-else>Salvar</span>
+        <NButton :loading="isSubmitting" color="teal" icon-placement="right" @click="submitForm">
+          Salvar
+          <template v-if="!isSubmitting" #icon>
+            <NIcon>
+              <Save/>
+            </NIcon>
+          </template>
         </NButton>
       </div>
     </NForm>
@@ -108,16 +110,16 @@
 </template>
 
 <script setup>
-import { Envelope, Lock, User } from "@vicons/fa";
+import {Envelope, Lock, Save, User} from "@vicons/fa";
 import {
   NButton,
   NForm,
   NFormItem,
+  NIcon,
   NInput,
   NRadioButton,
   NRadioGroup,
   NSelect,
-  NSpin,
   NSwitch,
   useMessage,
 } from "naive-ui";
@@ -129,10 +131,10 @@ const router = useRouter();
 let projectsMapped;
 
 const props = defineProps({
-  props: { type: Object, default: null, required: false },
+  props: {type: Object, default: null, required: false},
 });
 
-const { data: projects } = await nuxtApp.$repo.projects.listProjects();
+const {data: projects} = await nuxtApp.$repo.projects.listProjects();
 if (projects) {
   projectsMapped = projects.map((element) => ({
     label: element.name,
@@ -210,7 +212,7 @@ function validatePasswordSame(rule, value) {
 
 function handlePasswordInput() {
   if (formRef.value.reenteredPassword) {
-    rPasswordFormItemRef.value?.validate({ trigger: "password-input" });
+    rPasswordFormItemRef.value?.validate({trigger: "password-input"});
   }
 }
 
@@ -229,8 +231,8 @@ const submitForm = async (e) => {
         }
       } else {
         const response = await nuxtApp.$repo.user.editUser(
-          formValue.value.guid,
-          formValue.value
+            formValue.value.guid,
+            formValue.value
         );
         if (response?.success === true) {
           message.success("Usuário atualizado com sucesso");

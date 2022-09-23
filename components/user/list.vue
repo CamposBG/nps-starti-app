@@ -1,54 +1,50 @@
 <template>
-  <div>
-    <n-input-group>
-      <n-button v-if="searchTerm" @click="clearSearch" type="primary"
-        >Limpar</n-button
+  <div class="mb-1">
+    <NInputGroup>
+      <NButton v-if="searchTerm" ghost type="primary" @click="clearSearch"
+      >Limpar
+      </NButton
       >
       <n-input
-        :style="{ width: '15%' }"
-        v-model:value="searchTerm"
-        placeholder="nome ou email"
+          v-model:value="searchTerm"
+          :style="{ width: '15%' }"
+          placeholder="Nome ou e-mail"
       />
-      <n-button type="primary" @click="search" ghost> Search </n-button>
-    </n-input-group>
+      <NButton color="teal" type="primary" @click="search"> Pesquisar</NButton>
+    </NInputGroup>
   </div>
   <div>
     <div v-if="pending" class="m-auto w-fit my-40">
-      <NSpin size="large" />
+      <NSpin size="large"/>
     </div>
     <div v-if="!pending" class="fade-in-left">
       <NDataTable
-        remote
-        ref="table"
-        :columns="columns"
-        :data="newUsers"
-        :loading="loading"
-        :row-key="rowKey"
-      />
+          ref="table"
+          :columns="columns"
+          :data="newUsers"
+          :loading="loading"
+          :row-key="rowKey"
+          remote
+      >
+        <template #empty>
+          Nenhum usuário encontrado
+        </template>
+      </NDataTable>
     </div>
     <div class="w-fit mx-auto mt-5">
       <n-pagination
-        v-model:page="currentPage"
-        :page-count="pageMeta.last_page"
+          v-model:page="currentPage"
+          :page-count="pageMeta.last_page"
       />
     </div>
   </div>
 </template>
 <script setup>
-import {
-  useMessage,
-  useDialog,
-  NPagination,
-  NSpin,
-  NDataTable,
-  NButton,
-  NTag,
-  NInput,
-} from "naive-ui";
+import {NButton, NDataTable, NInput, NInputGroup, NPagination, NSpin, NTag, useDialog, useMessage,} from "naive-ui";
 
 // props
 const props = defineProps({
-  update: { type: Number },
+  update: {type: Number},
 });
 
 // providers
@@ -72,7 +68,7 @@ const {
   pending,
   refresh,
 } = useLazyAsyncData(`user-${Math.random()}`, () =>
-  nuxtApp.$repo.user.listUsers(queryParams)
+    nuxtApp.$repo.user.listUsers(queryParams)
 );
 const columns = [
   {
@@ -88,11 +84,11 @@ const columns = [
     key: "user_type",
     render: (rowData) => {
       if (rowData.user_type == 1) {
-        return h(NTag, { type: "success" }, { default: () => "Admin" });
+        return h(NTag, {type: "success"}, {default: () => "Admin"});
       } else if (rowData.user_type == 2) {
-        return h(NTag, { type: "warning" }, { default: () => "Visualizador" });
+        return h(NTag, {type: "warning"}, {default: () => "Visualizador"});
       } else {
-        return h(NTag, { type: "info" }, { default: () => "Proprietário" });
+        return h(NTag, {type: "info"}, {default: () => "Proprietário"});
       }
     },
   },
@@ -104,33 +100,33 @@ const columns = [
     render(rowData) {
       const actions = [
         h(
-          NButton,
-          {
-            size: "small",
-            // circle: true,
-            tertiary: true,
-            style: {
-              marginRight: "6px",
+            NButton,
+            {
+              size: "small",
+              // circle: true,
+              tertiary: true,
+              style: {
+                marginRight: "6px",
+              },
+              onClick: () => editUser(rowData.guid),
             },
-            onClick: () => editUser(rowData.guid),
-          },
-          // { default: () => h(NIcon, { component: Edit }) }
-          { default: () => "Editar" }
-          // {(NIcon) => ({component:'GameController', color:"#0e7a0d"})}
+            // { default: () => h(NIcon, { component: Edit }) }
+            {default: () => "Editar"}
+            // {(NIcon) => ({component:'GameController', color:"#0e7a0d"})}
         ),
         h(
-          NButton,
+            NButton,
 
-          {
-            size: "small",
-            tertiary: true,
+            {
+              size: "small",
+              tertiary: true,
 
-            style: {
-              marginRight: "6px",
+              style: {
+                marginRight: "6px",
+              },
+              onClick: () => deleteUser(rowData),
             },
-            onClick: () => deleteUser(rowData),
-          },
-          { default: () => "Deletar" }
+            {default: () => "Deletar"}
         ),
       ];
       return actions;
@@ -162,7 +158,7 @@ const editUser = (guid) => {
       await refresh();
     },
     maskClosable: false,
-    props: { guid },
+    props: {guid},
   });
 };
 
@@ -186,7 +182,8 @@ const deleteUser = async (user) => {
         message.error("Problema ao remover usuário");
       }
     },
-    onNegativeClick: () => {},
+    onNegativeClick: () => {
+    },
     showIcon: false,
   });
 };
@@ -202,10 +199,10 @@ watch(currentPage, () => {
 });
 
 watch(
-  () => props.update,
-  () => {
-    refresh();
-  }
+    () => props.update,
+    () => {
+      refresh();
+    }
 );
 </script>
 
@@ -213,6 +210,7 @@ watch(
 .fade-in-left {
   animation: fade-in-left 0.4s cubic-bezier(0.39, 0.575, 0.565, 1) both;
 }
+
 @keyframes fade-in-left {
   0% {
     transform: translateX(-50px);
