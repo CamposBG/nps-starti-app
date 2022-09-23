@@ -16,6 +16,14 @@
       <div v-if="data.widgets.length === 0" class="mt-5">
         <NEmpty description="Nenhum widget cadastrado ainda"/>
       </div>
+      <div v-else-if="data.widgets.length > 0" class="mt-5 flex">
+        <NGrid :cols="3" x-gap="12" y-gap="12">
+          <NGi v-for="widget in data.widgets" :key="widget.isActive">
+            <LazyWidgetSettingCard :description="widget.description" :widget-data="widget"/>
+          </NGi>
+        </NGrid>
+
+      </div>
     </div>
     <div v-else class="flex justify-center items-center">
       <NSpin size="large"/>
@@ -24,7 +32,7 @@
 </template>
 
 <script setup>
-import {NButton, NEmpty, NPageHeader, NSpace, NSpin} from 'naive-ui';
+import {NButton, NEmpty, NGi, NGrid, NPageHeader, NSpace, NSpin} from 'naive-ui';
 
 // composables
 const router = useRouter();

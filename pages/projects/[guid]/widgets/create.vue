@@ -24,15 +24,21 @@
           <LazyWidgetColorConfigCard :formValue="formValue"/>
         </NGi>
         <NGi :span="2">
-          <NButton :loading="isSubmitting" color="teal" icon-placement="right" type="primary"
-                   @click="handleSubmitConfig">
-            Salvar configuração
-            <template #icon>
-              <NIcon>
-                <Save/>
-              </NIcon>
-            </template>
-          </NButton>
+          <NSpace>
+            <NButton :loading="isSubmitting" color="teal" icon-placement="right" type="primary"
+                     @click="handleSubmitConfig(true)">
+              Salvar e ativar configuração
+              <template #icon>
+                <NIcon>
+                  <Save/>
+                </NIcon>
+              </template>
+            </NButton>
+            <NButton :loading="isSubmitting" icon-placement="right"
+                     @click="handleSubmitConfig(false)">
+              Salvar configuração como inativa
+            </NButton>
+          </NSpace>
         </NGi>
       </NGrid>
     </NForm>
@@ -42,7 +48,7 @@
 <script setup>
 import {Save} from '@vicons/fa';
 
-import {NButton, NForm, NGi, NGrid, NIcon, NPageHeader, useNotification} from 'naive-ui';
+import {NButton, NForm, NGi, NGrid, NIcon, NPageHeader, NSpace, useNotification} from 'naive-ui';
 
 const nuxtApp = useNuxtApp();
 const route = useRoute();
@@ -66,8 +72,7 @@ const formValue = ref({
   enableCustomThanksMessage: false,
   thanksMessage: null,
   domains: [],
-  color: '#FFFFFF',
-
+  color: '#FFFFFF'
 });
 
 rules.value = {
@@ -151,25 +156,26 @@ const handleBack = () => {
   router.push(`/projects/${route.params.guid}/widgets`);
 };
 
-const handleSubmitConfig = async () => {
+const handleSubmitConfig = async (isActive) => {
   isSubmitting.value = true;
   formRef.value?.validate(
       async (errors) => {
         if (!errors) {
+          formValue.value.isActive = isActive
           const response = await nuxtApp.$repo.widgets.createWidget(route.params.guid, formValue.value);
 
-          if (response) {
-            router.push(`/projects/${route.params.guid}`)
+          if (response && !response.error) {
+            router.push(`/projects/${route.params.guid}/widgets`)
             notification.success({
               content: "Sucesso",
               meta: "Configuração de widget criada",
               duration: 2000,
               keepAliveOnHover: false
             });
-          } else if (response.error) {
+          } else {
             notification.error({
               content: "Erro",
-              meta: response.error,
+              meta: response?.error,
               duration: 2500,
               keepAliveOnHover: true
             });

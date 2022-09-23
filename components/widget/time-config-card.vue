@@ -37,15 +37,15 @@ const timesToShowOptions = ref([
   },
   {
     label: 'Uma vez por semana',
-    value: 2
+    value: 7
   },
   {
     label: 'Uma vez a cada 15 dias',
-    value: 3
+    value: 15
   },
   {
     label: 'Uma vez por mês',
-    value: 4
+    value: 30
   }
 ]);
 </script>

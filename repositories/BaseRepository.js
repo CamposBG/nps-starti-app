@@ -53,15 +53,18 @@ export default class BaseRepository {
     this.context.$bus.emit('logout');
   }
 
-  catchError(error) {
+  async catchError(error) {
+    const store = useStorage();
+
+    const userData = store.getStorageSync("user");
     let msgError = "";
 
     if (error.response && typeof error.response.data === "object") {
       const {data} = error.response;
 
-      if (error.response.status === 401) {
+      if (error.response.status === 401 && userData) {
         // this.context.$bus.emit("logout");
-        this.handleLogout();
+        await this.handleLogout();
         return
       }
 

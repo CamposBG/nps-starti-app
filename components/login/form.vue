@@ -1,5 +1,5 @@
 <template>
-  <NForm ref="formRef" :model="formValue" :rules="rules" :inline="false">
+  <NForm ref="formRef" :inline="false" :model="formValue" :rules="rules">
     <NFormItem label="E-mail" path="email">
       <NInput v-model:value="formValue.email" placeholder="Digite o seu e-mail">
         <template #prefix>
@@ -8,16 +8,16 @@
       </NInput>
     </NFormItem>
     <NFormItem label="Sua senha" path="password">
-      <NInput  v-model:value="formValue.password" placeholder="Digite a sua senha" type="password">
+      <NInput v-model:value="formValue.password" placeholder="Digite a sua senha" type="password">
         <template #prefix>
           <Lock class="w-3"/>
         </template>
       </NInput>
     </NFormItem>
-    <NButton color="#1C52FF" block @click="submitForm" :loading="isSubmitting">
+    <NButton :loading="isSubmitting" block color="#1C52FF" @click="submitForm">
       <template #icon>
         <NIcon>
-          <SignInAlt />
+          <SignInAlt/>
         </NIcon>
       </template>
       Entrar no sistema
@@ -26,8 +26,8 @@
 </template>
 
 <script setup>
-import { Envelope, Lock, SignInAlt } from '@vicons/fa';
-import {NForm, NFormItem, NInput, NButton, NIcon, useMessage, useNotification,} from 'naive-ui'
+import {Envelope, Lock, SignInAlt} from '@vicons/fa';
+import {NButton, NForm, NFormItem, NIcon, NInput, useMessage, useNotification,} from 'naive-ui'
 import {useStorage} from "vue3-storage";
 
 const storage = useStorage();
@@ -74,16 +74,17 @@ const submitForm = (e) => {
         if (!errors) {
           const response = await nuxtApp.$repo.auth.login(formValue.value);
 
+          console.log({response})
           if (response && response.token && response.user) {
-            const { user, token } = response
-            const  {id, name, email, user_type, guid} = user
+            const {user, token} = response
+            const {id, name, email, user_type, guid} = user
             storage.setStorageSync('user', {
-                id,
-                name,
-                email,
-                guid,
-                user_type,
-                token
+              id,
+              name,
+              email,
+              guid,
+              user_type,
+              token
             });
 
             router.push('/')

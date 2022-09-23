@@ -34,7 +34,7 @@
 </template>
 
 <script setup>
-import {ChartPie, Cogs, UserFriends} from "@vicons/fa";
+import {ChartPie, Cogs, Envelope, UserFriends} from "@vicons/fa";
 
 import {h} from "vue";
 import {NIcon, NLayout, NLayoutSider, NMenu} from "naive-ui";
@@ -86,6 +86,17 @@ const menuOptions = ref([
         ),
     key: "users",
     icon: renderIcon(UserFriends),
+  }, {
+    label: () =>
+        h(
+            RouterLink,
+            {
+              to: "/config-email",
+            },
+            {default: () => "Configuração de e-mail"}
+        ),
+    key: "config-email",
+    icon: renderIcon(Envelope),
   },
 ]);
 
