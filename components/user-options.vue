@@ -1,31 +1,25 @@
 <template>
   <div>
-    <n-dropdown :options="options" trigger="hover" @select="handleSelect">
-      <n-button>{{ user.name || user.email }}</n-button>
-    </n-dropdown>
+    <NDropdown :options="options" trigger="hover" @select="handleSelect">
+      <NButton>{{ user.name || user.email }}</NButton>
+    </NDropdown>
   </div>
 </template>
 
 <script setup>
-import { NButton, NDropdown, NIcon } from "naive-ui";
-import { SignOutAlt, UserEdit } from "@vicons/fa";
-import { useStorage } from "vue3-storage";
+import {NButton, NDropdown, NIcon} from "naive-ui";
+import {SignOutAlt, UserEdit} from "@vicons/fa";
+import {useStorage} from "vue3-storage";
 
 const storage = useStorage();
 const router = useRouter();
 const nuxtApp = useNuxtApp();
-
-const props = defineProps({
-<<<<<<< Updated upstream
-
-  user: { type: Object }
-})
-console.log(props.user.guid)
-
-=======
-  user: { type: Object },
+const user = reactive({
+  name: null,
+  email: null,
+  guid: null,
+  token: null
 });
->>>>>>> Stashed changes
 
 // refs | data
 const renderIcon = (icon) => {
@@ -35,6 +29,12 @@ const renderIcon = (icon) => {
     });
   };
 };
+
+user.name = storage.getStorageSync('user').name;
+user.email = storage.getStorageSync('user').email;
+user.guid = storage.getStorageSync('user').guid;
+user.token = storage.getStorageSync('user').token;
+
 
 const options = [
   {
@@ -52,34 +52,29 @@ const options = [
 //methods
 
 const handleLogout = async () => {
-  await nuxtApp.$repo.auth.logout({ token: user.token });
-  store.clearStorageSync();
-  router.push("/auth/login");
+  // await nuxtApp.$repo.auth.logout({token: user.token});
+  // storage.clearStorageSync();
+  // router.push("/auth/login");
 };
 
-const handleSelect = (key) => {
+const handleSelect = async (key) => {
   if (key === "logout") {
-    // localStorage.clear()
+    await nuxtApp.$repo.auth.logout({token: user.token});
+    storage.clearStorageSync()
     nuxtApp.$bus.emit("logout");
-    // router.push('/auth/login')
     return;
   }
-<<<<<<< Updated upstream
-  if(key === 'editProfile'){
+  if (key === 'editProfile') {
     nuxtApp.$bus.emit("drawer:open", {
-    component: "UserCreateForm",
-    title: "Editar usuário",
-    onClose: async () => {
-      await refresh();
-    },
-    maskClosable: false,
-    props:  ({guid:props.user.guid}) ,
-  });   
-=======
-  if (key === "editProfile") {
-    console.log("edit");
-    router.push(`/users/${props.guid}`);
->>>>>>> Stashed changes
+      component: "UserCreateForm",
+      title: "Editar usuário",
+      onClose: async () => {
+        // await refresh();
+      },
+      maskClosable: false,
+      props: ({guid: user.guid}),
+    });
   }
 };
+
 </script>

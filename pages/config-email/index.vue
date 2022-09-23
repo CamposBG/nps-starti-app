@@ -2,7 +2,7 @@
   <div>
     <NPageHeader>
       <template #title>
-        Configuração de integração de envio de e-mail
+        <p class="flex text-2xl font-bold">Configuração de integração de envio de e-mail</p>
       </template>
     </NPageHeader>
     <LazyConfigEmail v-if="!isLoading"/>

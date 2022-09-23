@@ -46,7 +46,6 @@ export default class BaseRepository {
 
     const userData = store.getStorageSync("user");
     if (userData) {
-      await this.context.$repo.auth.logout({token: userData.token});
       store.clearStorageSync()
     }
     this.context.$bus.emit('drawer:close');

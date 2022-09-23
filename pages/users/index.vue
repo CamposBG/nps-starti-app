@@ -1,7 +1,7 @@
 <template>
   <NPageHeader>
     <template #title>
-      Lista de usuários
+      <p class="flex text-2xl font-bold">Lista de usuários</p>
     </template>
     <template #extra>
       <NSpace align="center" justify="space-between">

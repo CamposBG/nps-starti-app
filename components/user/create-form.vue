@@ -68,19 +68,21 @@
 
       <div v-if="isAdmin">
         <!-- user type radio -->
-        <NRadioGroup
-            v-model:value="formValue.userType"
-            name="userTypeGroup"
-            style="margin-bottom: 12px"
-        >
-          <NRadioButton :value="1"> Administrador</NRadioButton>
-          <NRadioButton :value="2"> Visualizador</NRadioButton>
-          <NRadioButton :value="3"> Proprietário</NRadioButton>
-        </NRadioGroup>
+        <NFormItem label="Tipo do usuário" path="userType">
+          <NRadioGroup
+              v-model:value="formValue.userType"
+              name="userTypeGroup"
+              style="margin-bottom: 12px"
+          >
+            <NRadioButton :value="1"> Administrador</NRadioButton>
+            <NRadioButton :value="2"> Visualizador</NRadioButton>
+            <NRadioButton :value="3"> Proprietário</NRadioButton>
+          </NRadioGroup>
+        </NFormItem>
 
         <!-- project -->
         <NFormItem
-            v-if="formValue.userType != 1"
+            v-if="formValue.userType !== 1 && formValue.userType !== null"
             :show-require-mark="true"
             label="Escolha os projetos"
             path="projects"
@@ -123,11 +125,13 @@ import {
   NSwitch,
   useMessage,
 } from "naive-ui";
+import {useStorage} from "vue3-storage";
 
 const emit = defineEmits(["submit"]);
 
 const nuxtApp = useNuxtApp();
 const router = useRouter();
+const storage = useStorage();
 let projectsMapped;
 
 const props = defineProps({
@@ -158,6 +162,7 @@ const formValue = ref({
   userType: null,
 });
 const isAdmin = ref(false);
+isAdmin.value = storage.getStorageSync('user').user_type === 1;
 // const projectsMapped = projects.map((element) => ({ label: element.name, value: element.id, disabled: false }))
 
 const rules = ref(null);
@@ -182,13 +187,20 @@ rules.value = {
   password: [
     {
       required: true,
-      message: "A senha é obrigatória",
-      trigger: ["input", "blur"],
+      // message: "A senha é obrigatória",
+      trigger: ["blur"],
+      validator(rule, value) {
+        if (!value) {
+          return new Error('A senha é obrigatória')
+        } else if (value.length < 6) {
+          return new Error('A senha deve conter pelo menos 6 caracteres')
+        }
+      }
     },
     {
       validator: validatePasswordSame,
       required: true,
-      message: "Passwods devem ser identicos",
+      message: "As senhas devem ser identicas",
       // trigger: ["blur", 'input',"password-input"]
     },
   ],
@@ -202,10 +214,19 @@ rules.value = {
     },
     trigger: ["blur"],
   },
+  userType: {
+    required: true,
+    message: "O tipo do usuário é obrigatório",
+  },
 };
 const isChangingPassword = ref(false);
 
 // methods
+function validatePasswordLength(rule, value) {
+  console.log(value.length)
+  return value.length < 6;
+}
+
 function validatePasswordSame(rule, value) {
   return value === formValue.value.confirmPassword;
 }
@@ -265,9 +286,10 @@ const getUserData = async () => {
 onMounted(async () => {
   if (props.props?.guid) {
     await getUserData();
-    if (formValue.value.userType == 1) {
-      isAdmin.value = true;
-    }
+  }
+
+  if (formValue.value.userType == 1) {
+    isAdmin.value = true;
   }
 });
 </script>

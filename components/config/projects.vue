@@ -2,7 +2,8 @@
   <div>
     <NPageHeader>
       <template #title>
-        Configuração dos projetos
+        <p class="flex text-2xl font-bold">Configuração dos projetos</p>
+
       </template>
       <template #extra>
         <NSpace align="center" justify="space-between">
