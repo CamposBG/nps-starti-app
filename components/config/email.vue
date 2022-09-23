@@ -1,56 +1,73 @@
 <template>
-  É necessário ter uma conta criada no SendGrid
-  Para configurar essa integração, crie uma conta no SendGrid
-  <a
-      href="https://signup.sendgrid.com/"
-      target="_blank"
-      class="blue item"
-      data-vivaldi-spatnav-clickable="1"
-  >clicando aqui.</a
-  <NForm ref="formRef" :inline="false" :model="formValue" :rules="rules">
-    <NFormItem label="API key do SendGrid" path="api">
+  <div class="mt-2">
+    <NAlert closable title="Conta no SendGrid" type="info">
+      É necessário ter uma conta criada no SendGrid para configurar essa integração, crie uma conta no SendGrid
       <a
-          href="https://sendgrid.com/docs/ui/account-and-settings/api-keys/"
-          target="_blank"
-          class="blue item"
+          class="text-blue-400"
           data-vivaldi-spatnav-clickable="1"
-      >Saiba como criar a API Key no SendGrid</a
-      >
-      <NInput v-model:value="formValue.apiKey" placeholder="Digite a api key fornecida no site " show-password-toggle
-              type="password"/>
-    </NFormItem>
-    <NFormItem label="Remetente configurado no SendGrid" path="sender">
-      <a
-          href="https://sendgrid.com/docs/ui/sending-email/sender-verification/"
+          href="https://signup.sendgrid.com/"
           target="_blank"
-          class="blue item"
-          data-vivaldi-spatnav-clickable="1"
-      >Saiba como configurar o E-mail e nome do remetente</a
-      >
-      <NInput v-model:value="formValue.sender" placeholder="Digite o remetente configurado no SendGrid"/>
-    </NFormItem>
-    <NButton :loading="isSubmitting" color="teal" icon-placement="right" @click="handleSaveEmailConfig">
-      <template v-if="!isSubmitting" #icon>
-        <NIcon>
-          <Save/>
-        </NIcon>
-      </template>
-      Salvar
-    </NButton>
-  </NForm>
+      >clicando aqui.</a>
+    </NAlert>
+    <NForm ref="formRef" :inline="false" :model="formValue" :rules="rules" class="mt-2">
+      <NFormItem label="API key do SendGrid" path="api">
+        <div>
+          <NInput v-model:value="formValue.apiKey" placeholder="Digite a api key fornecida no site "
+                  showPasswordOn="click"
+                  type="password"/>
+          <span class="text-xs">
+        Saiba como criar a API Key no SendGrid
+        <a
+            class="text-blue-400"
+            href="https://sendgrid.com/docs/ui/account-and-settings/api-keys/"
+            target="_blank"
+        >clicando aqui</a>
+      </span>
+        </div>
+      </NFormItem>
+      <NFormItem label="E-mail de remetente configurado no SendGrid" path="fromEmail">
+        <div>
+          <NInput v-model:value="formValue.fromEmail" placeholder="Digite o remetente configurado no SendGrid"/>
+          <span class="text-xs">
+          Saiba como configurar o e-mail e nome do remetente
+          <a
+              class="text-blue-400"
+              href="https://sendgrid.com/docs/ui/sending-email/sender-verification/"
+              target="_blank"
+          >clicando aqui</a>
+        </span>
+        </div>
+      </NFormItem>
+      <NFormItem label="Nome do remetente" path="fromName">
+        <div class="w-96">
+          <NInput v-model:value="formValue.fromName" block placeholder="Digite o remetente configurado no SendGrid"/>
+        </div>
+      </NFormItem>
+      <NButton :loading="isSubmitting" color="teal" icon-placement="right" @click="handleSaveEmailConfig">
+        <template #icon>
+          <NIcon>
+            <Save/>
+          </NIcon>
+        </template>
+        Salvar
+      </NButton>
+    </NForm>
+  </div>
 </template>
 
 <script setup>
-import {NButton, NForm, NFormItem, NIcon, NInput, useNotification} from 'naive-ui';
+import {NAlert, NButton, NForm, NFormItem, NIcon, NInput} from 'naive-ui';
+import {Save} from '@vicons/fa';
 
-const notification = useNotification();
+// const notification = useNotification();
 const nuxtApp = useNuxtApp();
 
 const isSubmitting = ref(false);
 
 const formValue = ref({
   apiKey: "",
-  sender: "",
+  fromEmail: "",
+  fromName: "",
 });
 
 const rules = ref(null);

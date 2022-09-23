@@ -1,6 +1,11 @@
 <template>
   <div>
-    <LazyConfigEmail v-if="isLoading"/>
+    <NPageHeader>
+      <template #title>
+        Configuração de integração de envio de e-mail
+      </template>
+    </NPageHeader>
+    <LazyConfigEmail v-if="!isLoading"/>
     <div v-else class="flex justify-center items-center">
       <NSpin size="large"/>
     </div>
@@ -10,7 +15,7 @@
 </template>
 
 <script setup>
-import {NSpin, useMessage, useNotification} from 'naive-ui'
+import {NPageHeader, NSpin, useMessage, useNotification,} from 'naive-ui'
 import {useStorage} from "vue3-storage";
 
 const nuxtApp = useNuxtApp();
