@@ -15,6 +15,11 @@
 </template>
 
 <script setup>
+
+definePageMeta({
+  userType: 1,
+});
+
 import {NPageHeader, NSpin, useMessage, useNotification,} from 'naive-ui'
 import {useStorage} from "vue3-storage";
 

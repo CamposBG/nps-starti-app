@@ -18,6 +18,10 @@ import {NButton, NPageHeader, NSpace} from "naive-ui";
 
 const nuxtApp = useNuxtApp();
 
+definePageMeta({
+  userType: 1,
+});
+
 const refreshList = ref(0)
 
 const handleCreateUser = () => {

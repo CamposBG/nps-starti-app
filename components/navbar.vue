@@ -47,12 +47,16 @@ import {ChartPie, Cogs, Envelope, UserFriends} from "@vicons/fa";
 import {h} from "vue";
 import {NIcon, NLayout, NLayoutSider, NMenu} from "naive-ui";
 import {RouterLink} from "vue-router";
+import {useStorage} from "vue3-storage";
 
 const route = useRoute();
+const storage = useStorage();
 
 // ref|data
 const collapsed = ref(false);
 const activeKey = ref(null);
+const user = ref(null);
+user.value = storage.getStorageSync('user');
 
 const renderIcon = (icon) => {
   return () => h(NIcon, null, {default: () => h(icon)});
@@ -70,6 +74,7 @@ const menuOptions = ref([
         ),
     key: "dashboard",
     icon: renderIcon(ChartPie),
+    permission: '*'
   },
   {
     label: () =>
@@ -82,6 +87,7 @@ const menuOptions = ref([
         ),
     key: "projects",
     icon: renderIcon(Cogs),
+    permission: '*'
   },
   {
     label: () =>
@@ -94,7 +100,9 @@ const menuOptions = ref([
         ),
     key: "users",
     icon: renderIcon(UserFriends),
-  }, {
+    permission: 1
+  },
+  {
     label: () =>
         h(
             RouterLink,
@@ -105,8 +113,11 @@ const menuOptions = ref([
         ),
     key: "config-email",
     icon: renderIcon(Envelope),
+    permission: 1
   },
 ]);
+
+menuOptions.value = menuOptions.value.filter((menu) => (menu.permission === user.value.user_type || menu.permission === '*'));
 
 onBeforeMount(() => {
   if (!route.path.split("/")[1]) {
