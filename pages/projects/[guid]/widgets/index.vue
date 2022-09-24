@@ -7,7 +7,7 @@
         </template>
         <template #extra>
           <NSpace>
-            <NButton color="teal" size="small" type="primary" @click="handleAddWidget">
+            <NButton v-if="isUserAdmin" color="teal" size="small" type="primary" @click="handleAddWidget">
               Configurar widget
             </NButton>
           </NSpace>
@@ -33,11 +33,17 @@
 
 <script setup>
 import {NButton, NEmpty, NGi, NGrid, NPageHeader, NSpace, NSpin} from 'naive-ui';
+import {useStorage} from "vue3-storage";
 
 // composables
 const router = useRouter();
 const route = useRoute();
 const nuxtApp = useNuxtApp();
+const storage = useStorage();
+
+const isUserAdmin = ref(null);
+
+isUserAdmin.value = storage.getStorageSync('user').user_type === 1;
 
 const {data} = useLazyAsyncData(`project-${route.params.guid}-${Math.random()}`, () => nuxtApp.$repo.projects.findOneProject(route.params.guid))
 

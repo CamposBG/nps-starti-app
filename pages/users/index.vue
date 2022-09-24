@@ -5,7 +5,7 @@
     </template>
     <template #extra>
       <NSpace align="center" justify="space-between">
-        <NButton color="teal" size="small" @click="handleCreateUser"> Adicionar usuário</NButton>
+        <NButton v-if="isUserAdmin" color="teal" size="small" @click="handleCreateUser"> Adicionar usuário</NButton>
       </NSpace>
     </template>
   </NPageHeader>
@@ -15,14 +15,19 @@
 </template>
 <script setup>
 import {NButton, NPageHeader, NSpace} from "naive-ui";
+import {useStorage} from "vue3-storage";
 
 const nuxtApp = useNuxtApp();
+const storage = useStorage();
 
 definePageMeta({
   userType: 1,
 });
 
-const refreshList = ref(0)
+const refreshList = ref(0);
+const isUserAdmin = ref(null);
+
+isUserAdmin.value = storage.getStorageSync('user').user_type === 1;
 
 const handleCreateUser = () => {
   nuxtApp.$bus.emit('drawer:open', {

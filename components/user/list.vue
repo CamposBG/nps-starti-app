@@ -1,16 +1,15 @@
 <template>
   <div class="mb-1">
     <NInputGroup>
-      <NButton v-if="searchTerm" ghost type="primary" @click="clearSearch"
-      >Limpar
-      </NButton
-      >
-      <n-input
+      <NIput
           v-model:value="searchTerm"
           :style="{ width: '15%' }"
           placeholder="Nome ou e-mail"
       />
       <NButton color="teal" type="primary" @click="search"> Pesquisar</NButton>
+      <NButton v-if="searchTerm" ghost type="primary" @click="clearSearch"
+      >Limpar
+      </NButton>
     </NInputGroup>
   </div>
   <div>
@@ -40,7 +39,8 @@
   </div>
 </template>
 <script setup>
-import {NButton, NDataTable, NInput, NInputGroup, NPagination, NSpin, NTag, useDialog, useMessage,} from "naive-ui";
+import {NButton, NDataTable, NInputGroup, NPagination, NSpin, NTag, useDialog, useMessage,} from "naive-ui";
+import {useStorage} from "vue3-storage";
 
 // props
 const props = defineProps({
@@ -51,6 +51,7 @@ const props = defineProps({
 const message = useMessage();
 const dialog = useDialog();
 const nuxtApp = useNuxtApp();
+const storage = useStorage();
 
 // data|refs
 const currentPage = ref(1);
@@ -61,6 +62,9 @@ const queryParams = reactive({
   page: currentPage,
   search: searchTerm,
 });
+const isUserAdmin = ref(null);
+
+isUserAdmin.value = storage.getStorageSync('user').user_type === 1;
 
 // async data
 const {
@@ -111,7 +115,7 @@ const columns = [
               onClick: () => editUser(rowData.guid),
             },
             // { default: () => h(NIcon, { component: Edit }) }
-            {default: () => "Editar"}
+            {default: () => "Editar"},
             // {(NIcon) => ({component:'GameController', color:"#0e7a0d"})}
         ),
         h(
@@ -129,7 +133,12 @@ const columns = [
             {default: () => "Deletar"}
         ),
       ];
-      return actions;
+
+      if (isUserAdmin.value) {
+        return actions;
+      } else {
+        return [];
+      }
     },
   },
 ];

@@ -56,7 +56,7 @@
         </div>
       </div>
     </div>
-    <template #action>
+    <template v-if="isUserAdmin" #action>
       <NSpace>
         <NButton color="teal" size="small" type="primary"
                  @click="handleEditProject(projectData.name, projectData.guid)">
@@ -90,12 +90,13 @@ import {
   useDialog,
   useNotification
 } from 'naive-ui';
+import {useStorage} from "vue3-storage";
 
 const nuxtApp = useNuxtApp();
 const router = useRouter();
+const storage = useStorage();
 const dialog = useDialog();
 const notification = useNotification();
-const showEditProjectForm = ref(false);
 
 const emit = defineEmits(['refresh-projects'])
 const props = defineProps({
@@ -108,6 +109,9 @@ const viewers = ref([]);
 const viewersExcess = ref(0);
 const ownersExcess = ref(0);
 const typeName = ref(null);
+const isUserAdmin = ref(null);
+
+isUserAdmin.value = storage.getStorageSync('user').user_type === 1;
 
 const handleEditProject = (name, guid) => {
   nuxtApp.$bus.emit('drawer:open', {

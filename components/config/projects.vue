@@ -7,7 +7,7 @@
       </template>
       <template #extra>
         <NSpace align="center" justify="space-between">
-          <NButton color="teal" size="small" type="primary" @click="handleAddProject">
+          <NButton v-if="isUserAdmin" color="teal" size="small" type="primary" @click="handleAddProject">
             Adicionar projeto
           </NButton>
           <NInput v-model:value="search" clearable placeholder="Pesquise um projeto..." round @input="changeSearch">
@@ -38,12 +38,17 @@
 <script setup>
 import {NButton, NEmpty, NInput, NPageHeader, NSpace, NSpin, useMessage} from 'naive-ui';
 import {Search} from '@vicons/fa';
+import {useStorage} from "vue3-storage";
 
 const message = useMessage();
 const nuxtApp = useNuxtApp();
+const storage = useStorage();
 
 const projects = ref([]);
 const search = ref('');
+const isUserAdmin = ref(null);
+
+isUserAdmin.value = storage.getStorageSync('user').user_type === 1;
 
 const {
   data: response,
