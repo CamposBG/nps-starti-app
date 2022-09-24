@@ -40,9 +40,8 @@ import { VueEcharts } from "vue3-echarts";
 
 // props
 const props = defineProps({
-  graphData: { type: Number },
+  graphData: { type: String },
 });
-
 // providers
 
 // data|refs
@@ -95,30 +94,18 @@ const chartData = {
         formatter: "{value}",
         color: "auto",
       },
-      data: [9],
+      data: [props.graphData],
     },
   ],
 };
-
 //fake data
-setInterval(function () {
-  graph.value.setOption({
-    series: [
-      {
-        data: [
-          {
-            value: +Math.floor(Math.random() * (10 - 1) + 1),
-          },
-        ],
-      },
-    ],
-  });
-}, 2000);
-
-watch(
-  () => props.graphData,
-  () => {
-    //mudar grafico
-  }
-);
+// onMounted(() => {
+//   graph.value.setOption({
+//     series: [
+//       {
+//         data: [props.graphData],
+//       },
+//     ],
+//   });
+// });
 </script>

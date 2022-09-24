@@ -5,11 +5,11 @@
       <!-- name -->
       <NFormItem :show-require-mark="true" label="Nome do usuário" path="name">
         <NInput
-            v-model:value="formValue.name"
-            placeholder="Digite o nome do usuário"
+          v-model:value="formValue.name"
+          placeholder="Digite o nome do usuário"
         >
           <template #prefix>
-            <User class="w-3"/>
+            <User class="w-3" />
           </template>
         </NInput>
       </NFormItem>
@@ -17,11 +17,11 @@
       <!-- email -->
       <NFormItem :show-require-mark="true" label="E-mail" path="email">
         <NInput
-            v-model:value="formValue.email"
-            placeholder="Digite o seu e-mail"
+          v-model:value="formValue.email"
+          placeholder="Digite o seu e-mail"
         >
           <template #prefix>
-            <Envelope class="w-3"/>
+            <Envelope class="w-3" />
           </template>
         </NInput>
       </NFormItem>
@@ -29,38 +29,38 @@
       <!-- password -->
       <div v-if="formValue.guid" class="mb-3">
         Trocar senha?
-        <NSwitch v-model:value="isChangingPassword"/>
+        <NSwitch v-model:value="isChangingPassword" />
       </div>
       <div v-if="isChangingPassword || !formValue.guid">
         <NFormItem :show-require-mark="true" label=" Senha" path="password">
           <NInput
-              v-model:value="formValue.password"
-              placeholder="Digite a sua senha"
-              type="password"
-              @input="handlePasswordInput"
-              @keydown.enter.prevent
+            v-model:value="formValue.password"
+            placeholder="Digite a sua senha"
+            type="password"
+            @input="handlePasswordInput"
+            @keydown.enter.prevent
           >
             <template #prefix>
-              <Lock class="w-3"/>
+              <Lock class="w-3" />
             </template>
           </NInput>
         </NFormItem>
 
         <!-- confirmPassword -->
         <NFormItem
-            ref="confirmPasswordRef"
-            :show-require-mark="true"
-            label="Confirme a senha"
-            path="confirmPassword"
+          ref="confirmPasswordRef"
+          :show-require-mark="true"
+          label="Confirme a senha"
+          path="confirmPassword"
         >
           <NInput
-              v-model:value="formValue.confirmPassword"
-              placeholder="Digite a sua senha"
-              type="password"
-              @keydown.enter.prevent
+            v-model:value="formValue.confirmPassword"
+            placeholder="Digite a sua senha"
+            type="password"
+            @keydown.enter.prevent
           >
             <template #prefix>
-              <Lock class="w-3"/>
+              <Lock class="w-3" />
             </template>
           </NInput>
         </NFormItem>
@@ -70,9 +70,9 @@
         <!-- user type radio -->
         <NFormItem label="Tipo do usuário" path="userType">
           <NRadioGroup
-              v-model:value="formValue.userType"
-              name="userTypeGroup"
-              style="margin-bottom: 12px"
+            v-model:value="formValue.userType"
+            name="userTypeGroup"
+            style="margin-bottom: 12px"
           >
             <NRadioButton :value="1"> Administrador</NRadioButton>
             <NRadioButton :value="2"> Visualizador</NRadioButton>
@@ -82,27 +82,32 @@
 
         <!-- project -->
         <NFormItem
-            v-if="formValue.userType !== 1 && formValue.userType !== null"
-            :show-require-mark="true"
-            label="Escolha os projetos"
-            path="projects"
+          v-if="formValue.userType !== 1 && formValue.userType !== null"
+          :show-require-mark="true"
+          label="Escolha os projetos"
+          path="projects"
         >
           <NSelect
-              v-model:value="formValue.projects"
-              :options="projectsMapped"
-              multiple
-              placeholder="Escolha os projetos"
+            v-model:value="formValue.projects"
+            :options="projectsMapped"
+            multiple
+            placeholder="Escolha os projetos"
           />
         </NFormItem>
       </div>
 
       <!-- submit btn -->
       <div>
-        <NButton :loading="isSubmitting" color="teal" icon-placement="right" @click="submitForm">
+        <NButton
+          :loading="isSubmitting"
+          color="teal"
+          icon-placement="right"
+          @click="submitForm"
+        >
           Salvar
           <template v-if="!isSubmitting" #icon>
             <NIcon>
-              <Save/>
+              <Save />
             </NIcon>
           </template>
         </NButton>
@@ -112,7 +117,7 @@
 </template>
 
 <script setup>
-import {Envelope, Lock, Save, User} from "@vicons/fa";
+import { Envelope, Lock, Save, User } from "@vicons/fa";
 import {
   NButton,
   NForm,
@@ -125,7 +130,7 @@ import {
   NSwitch,
   useMessage,
 } from "naive-ui";
-import {useStorage} from "vue3-storage";
+import { useStorage } from "vue3-storage";
 
 const emit = defineEmits(["submit"]);
 
@@ -135,10 +140,10 @@ const storage = useStorage();
 let projectsMapped;
 
 const props = defineProps({
-  props: {type: Object, default: null, required: false},
+  props: { type: Object, default: null, required: false },
 });
 
-const {data: projects} = await nuxtApp.$repo.projects.listProjects();
+const { data: projects } = await nuxtApp.$repo.projects.listProjects();
 if (projects) {
   projectsMapped = projects.map((element) => ({
     label: element.name,
@@ -162,7 +167,7 @@ const formValue = ref({
   userType: null,
 });
 const isAdmin = ref(false);
-isAdmin.value = storage.getStorageSync('user').user_type === 1;
+isAdmin.value = storage.getStorageSync("user").user_type === 1;
 // const projectsMapped = projects.map((element) => ({ label: element.name, value: element.id, disabled: false }))
 
 const rules = ref(null);
@@ -191,11 +196,11 @@ rules.value = {
       trigger: ["blur"],
       validator(rule, value) {
         if (!value) {
-          return new Error('A senha é obrigatória')
+          return new Error("A senha é obrigatória");
         } else if (value.length < 6) {
-          return new Error('A senha deve conter pelo menos 6 caracteres')
+          return new Error("A senha deve conter pelo menos 6 caracteres");
         }
-      }
+      },
     },
     {
       validator: validatePasswordSame,
@@ -223,7 +228,6 @@ const isChangingPassword = ref(false);
 
 // methods
 function validatePasswordLength(rule, value) {
-  console.log(value.length)
   return value.length < 6;
 }
 
@@ -233,7 +237,7 @@ function validatePasswordSame(rule, value) {
 
 function handlePasswordInput() {
   if (formRef.value.reenteredPassword) {
-    rPasswordFormItemRef.value?.validate({trigger: "password-input"});
+    rPasswordFormItemRef.value?.validate({ trigger: "password-input" });
   }
 }
 
@@ -252,8 +256,8 @@ const submitForm = async (e) => {
         }
       } else {
         const response = await nuxtApp.$repo.user.editUser(
-            formValue.value.guid,
-            formValue.value
+          formValue.value.guid,
+          formValue.value
         );
         if (response?.success === true) {
           message.success("Usuário atualizado com sucesso");

@@ -24,7 +24,7 @@
         </div>
         <div v-else class="w-auto h-96">
           <!-- <DashboardChart1 /> -->
-          <DashboardChart1 :graph-data="graphData" />
+          <DashboardChart1 :graph-data="dataFilterd2[0].score" />
         </div>
       </div>
     </div>
@@ -42,7 +42,6 @@ const props = defineProps({
 // providers
 const nuxtApp = useNuxtApp();
 
-console.log("props projectId", props.projectId);
 //async data
 const {
   data: response,
@@ -73,19 +72,54 @@ watch(response, () => {
   }
 });
 watch(period, () => {
-  console.log("periodo mudou");
   refresh();
 });
 watch(
   () => props.projectId,
   (agora, antes) => {
-    console.log("projectId mudou de ", antes);
-    console.log("projectId mudou para ", agora);
     setTimeout(() => {
       refresh();
     }, 150);
   }
 );
+
+// FAKE DATA
+const graphData1 = {
+  success: true,
+  data: [],
+};
+
+function generateRandom(min, max, isInteger) {
+  const randownNumber = Math.random() * (max - min + 1) + min;
+  if (isInteger) {
+    return Math.floor(randownNumber);
+  } else {
+    return randownNumber.toFixed(2);
+  }
+}
+
+function populateG1Fake() {
+  graphData1.data = [
+    {
+      period: 7,
+      score: generateRandom(1, 10, false),
+    },
+    {
+      period: 15,
+      score: generateRandom(1, 10, false),
+    },
+    {
+      period: 30,
+      score: generateRandom(1, 10, false),
+    },
+  ];
+}
+populateG1Fake();
+
+//computed
+const dataFilterd2 = computed(() => {
+  return graphData1.data.filter((vote) => vote.period === period.value);
+});
 </script>
 
 <style scoped>
