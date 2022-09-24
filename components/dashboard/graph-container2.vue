@@ -15,19 +15,19 @@
           :min="0"
         />
       </div>
-      <div id="graph-wrapper" class="p-5 max-h-96">
+      <div id="graph-wrapper" class="max-h-96">
         <div v-if="!isLoading" class="skeleton-wrapper h-max">
           <n-skeleton height="300px" width="50px" />
           <n-skeleton height="150px" width="50px" />
           <n-skeleton height="200px" width="50px" />
           <n-skeleton height="70px" width="50px" />
         </div>
-        <div v-else class="w-auto h-96">
-          <!-- <DashboardChart1 /> -->
+        <div v-else class="h-fit">
           <DashboardChart2
             :user="user"
             :project-id="projectId"
             :period-selected="period"
+            :chart-data="graphFakeData.data"
           />
         </div>
       </div>
@@ -54,6 +54,37 @@ const periodMarks = {
 };
 
 // methods
+let graphFakeData = {
+  success: true,
+  data: [],
+};
+
+function generateRandom(min, max, isInteger) {
+  const randownNumber = Math.random() * (max - min) + min;
+  if (isInteger) {
+    return Math.floor(randownNumber);
+  } else {
+    return randownNumber.toFixed(2);
+  }
+}
+
+function populateG2Fake(period) {
+  let InitialDay = 1;
+  for (let index = 0; index < period; index++) {
+    graphFakeData.data.push({
+      date: `2022-09-${InitialDay}`,
+      score: generateRandom(1, 10, false),
+    });
+    InitialDay++;
+  }
+}
+populateG2Fake(period.value);
+
+watch(period, () => {
+  graphFakeData.data = [];
+  populateG2Fake(period.value);
+  console.log(graphFakeData);
+});
 </script>
 
 <style scoped>

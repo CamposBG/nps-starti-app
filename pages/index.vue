@@ -17,12 +17,12 @@
     <div v-else id="main-content" class="grid grid-cols-2 gap-3">
       <DashboardGraphContainer1
         :project-id="project"
-        :title="'Média dentro do período'"
+        :title="'Média dentro do período (FAKE DATA)'"
         :user="user"
       />
       <DashboardGraphContainer2
         :project-id="project"
-        :title="'Média entre os períodos'"
+        :title="'Média entre os períodos (FAKE DATA)'"
         :user="user"
       />
 
@@ -31,10 +31,6 @@
         class="col-span-2 border bg-slate-200 rounded-sm shadow-sm"
       >
         Tabela
-        <img
-          alt=""
-          src="https://mrkremerscience.files.wordpress.com/2013/08/data-table-example1.png"
-        />
       </div>
     </div>
   </div>
