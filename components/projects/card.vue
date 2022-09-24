@@ -115,7 +115,7 @@ const handleEditProject = (name, guid) => {
     title: 'Editar o projeto ' + name,
     maskClosable: false,
     onClose: async () => {
-      console.log('fechei')
+      emit('refresh-projects');
     },
     props: {guid}
   });

@@ -24,11 +24,6 @@
         <NSpin size="large"/>
       </div>
       <NEmpty v-else-if="projects.length === 0 && !search" description="Nenhum projeto cadastrado ainda">
-        <template #extra>
-          <NButton color="teal" size="small" type="primary" @click="handleAddProject">
-            Adicionar projeto
-          </NButton>
-        </template>
       </NEmpty>
       <NEmpty v-else-if="projects.length === 0 && search && !pending"
               description="Nenhum projeto encontrado com esse nome"/>
