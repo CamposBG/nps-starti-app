@@ -4,6 +4,7 @@
   </div>
 </template>
 <script script setup>
+import { forEach } from "lodash";
 import { VueEcharts } from "vue3-echarts";
 
 const props = defineProps({
@@ -17,6 +18,20 @@ const graph = ref(null);
 const chartData = {
   tooltip: {
     trigger: "axis",
+    formatter: (seriesName) => {
+      console.log(seriesName[0].axisValue);
+      const date = new Date(seriesName[0].axisValue);
+      const formattedDate =
+        date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
+      return `${formattedDate} <br> nota: ${seriesName[0].value} <br> ${
+        seriesName[0].value <= 6
+          ? "<strong>Detrator<strong>"
+          : seriesName[0].value <= 8
+          ? "<strong>Passivo<strong>"
+          : "<strong>Promotor<strong>"
+      } `;
+      // return formattedDate + "<br> nota: " + seriesName[0].value + ;
+    },
   },
   xAxis: {
     type: "category",

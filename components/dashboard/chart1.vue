@@ -32,7 +32,6 @@ onMounted(() => {
 <template>
   <div>
     <VueEcharts :option="chartData" class="h-96" ref="graph" />
-    >
   </div>
 </template>
 <script setup>

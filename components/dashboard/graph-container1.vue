@@ -15,7 +15,7 @@
           :min="0"
         />
       </div>
-      <div id="graph-wrapper" class="p-5 max-h-96">
+      <div id="graph-wrapper" class="max-h-96">
         <div v-if="pending" class="skeleton-wrapper h-max">
           <n-skeleton height="300px" width="50px" />
           <n-skeleton height="150px" width="50px" />

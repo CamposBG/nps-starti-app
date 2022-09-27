@@ -22,16 +22,12 @@
       />
       <DashboardGraphContainer2
         :project-id="project"
-        :title="'Média entre os períodos (FAKE DATA)'"
+        :title="'Médias diárias (FAKE DATA)'"
         :user="user"
       />
-
-      <div
-        id="tabela"
-        class="col-span-2 border bg-slate-200 rounded-sm shadow-sm"
-      >
-        Tabela
-      </div>
+    </div>
+    <div class="mt-10">
+      <DashboardTable />
     </div>
   </div>
 </template>
