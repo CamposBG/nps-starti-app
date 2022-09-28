@@ -4,7 +4,13 @@
       <NFormItem label="Descrição" path="description">
         <NInput v-model:value="props.formValue.description" placeholder="Digite a descrição do widget"/>
       </NFormItem>
-      <NFormItem label="Frequência de aparição do widget" path="timesToShow">
+      <NFormItem path="timesToShow" require-mark-placement="left">
+        <template #label>
+          <div class="flex flex-col">
+            Recorência da aparição do widget
+            <small>Intervalo para usuários que já votaram, votarem novamente</small>
+          </div>
+        </template>
         <NSelect v-model:value="props.formValue.timesToShow" :options="timesToShowOptions"
                  placeholder="Escolha uma opção"/>
       </NFormItem>

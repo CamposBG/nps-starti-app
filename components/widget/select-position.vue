@@ -54,6 +54,10 @@ const positionSelected = ref(null);
 
 const emit = defineEmits(["selectPosition"]);
 
+const props = defineProps({
+  initialValue: {type: String, default: '', required: false}
+});
+
 const selectBox = (e) => {
   positionSelected.value = e.target.attributes.name.value;
 };
@@ -65,6 +69,10 @@ const getXPosition = (boxName) => {
     return "bg-slate-300";
   }
 };
+
+if (props.initialValue) {
+  positionSelected.value = props.initialValue;
+}
 
 watch(positionSelected, () => {
   emit("selectPosition", positionSelected.value);

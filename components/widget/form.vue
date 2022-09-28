@@ -66,14 +66,15 @@ const formValue = ref({
   secondsToHide: 15,
   enableMobile: false,
   // widgetPosition: 'box1-left-bottom',
-  widgetPosition: null,
+  widgetPosition: '0-15-15-0',
   probabilityToShow: 10,
   enableCustomMessage: false,
   message: null,
   enableCustomThanksMessage: false,
   thanksMessage: null,
   domains: [],
-  color: '#FFFFFF'
+  color: '#FFFFFF',
+  showVoteButton: false
 });
 
 rules.value = {
