@@ -5,27 +5,28 @@
       <div class="flex gap-9">
         <div class="w-96">
           <div class="flex gap-1">
-            <NDatePicker v-model:value="range" type="daterange" clearable />
-            <n-button type="tertiary"> Limpar </n-button>
+            <NDatePicker v-model:value="range" :actions="null" clearable close-on-select type="daterange"/>
+            <NButton type="tertiary" @click="range = null"> Limpar</NButton>
           </div>
         </div>
         <div class="flex items-center gap-2 text-gray-400">
           <p>Tipo de voto:</p>
-          <n-popselect v-model:value="score" :options="scoreOptions">
+          <NPopselect v-model:value="score" :on-update:value="(value) => handleChangeVoteType(value)"
+                      :options="scoreOptions">
             <n-button type="tertiary">{{ currentScoreLabel }}</n-button>
-          </n-popselect>
+          </NPopselect>
         </div>
       </div>
       <div class="flex items-center">
         <NInputGroup>
           <NInput
-            v-model:value="searchTerm"
-            :style="{ width: '100%' }"
-            placeholder="Nome ou e-mail"
+              v-model:value="searchTerm"
+              :style="{ width: '100%' }"
+              placeholder="Nome ou e-mail"
           />
           <NButton type="tertiary" @click="search"> Pesquisar</NButton>
           <NButton v-if="searchTerm" ghost type="primary" @click="clearSearch"
-            >Limpar
+          >Limpar
           </NButton>
         </NInputGroup>
       </div>
@@ -35,32 +36,65 @@
     </div> -->
 
     <!-- Table  -->
-    <div class="mt-2">
-      <n-data-table
-        remote
-        ref="table"
-        :columns="columns"
-        :data="data"
-        :loading="loading"
-        :pagination="pagination"
-        :row-key="rowKey"
-        @update:sorter="handleSorterChange"
-        @update:filters="handleFiltersChange"
-        @update:page="handlePageChange"
-      />
+    <div class="mt-4">
+      <!--      <n-data-table-->
+      <!--        remote-->
+      <!--        ref="table"-->
+      <!--        :columns="columns"-->
+      <!--        :data="data"-->
+      <!--        :loading="loading"-->
+      <!--        :pagination="pagination"-->
+      <!--        :row-key="rowKey"-->
+      <!--        @update:sorter="handleSorterChange"-->
+      <!--        @update:filters="handleFiltersChange"-->
+      <!--        @update:page="handlePageChange"-->
+      <!--      />-->
+      <NScrollbar class="hover:cursor-default" style="max-height: 550px; width: 50%;" trigger="hover">
+        <NTimeline size="large">
+          <NTimelineItem v-for="item in data" :key="item.user"
+                         :title="item.user"
+                         :type="item.vote <=  6 ? 'error' : item.vote >= 7 && item.vote <= 8 ? 'warning' : 'success'">
+            <template #icon>
+              <NIcon size="15">
+                <SmileRegular v-if="item.vote > 8"/>
+                <MehRegular v-else-if="item.vote >= 7"/>
+                <AngryRegular v-else-if="item.vote <= 6"/>
+              </NIcon>
+            </template>
+            <p v-if="item.comment">
+              {{ item.comment }}
+            </p>
+            <template #header>
+              <div class="flex items-center">
+                <p>{{ item.user }}</p><small>({{ item.widget }})</small>
+              </div>
+            </template>
+            <template #footer>
+              Deu nota {{ item.vote }}
+              <small>
+                {{ new Date(item.date).toLocaleDateString() }}
+              </small>
+            </template>
+          </NTimelineItem>
+        </NTimeline>
+      </NScrollbar>
     </div>
   </div>
 </template>
 
 <script setup>
 import {
-  NDatePicker,
   NButton,
-  NPopselect,
+  NDatePicker,
+  NIcon,
   NInput,
   NInputGroup,
-  NDataTable,
+  NPopselect,
+  NScrollbar,
+  NTimeline,
+  NTimelineItem
 } from "naive-ui";
+import {AngryRegular, MehRegular, SmileRegular} from '@vicons/fa';
 
 // ref|data
 // search and filter variables
@@ -73,15 +107,15 @@ const scoreOptions = [
   },
   {
     label: "Detratores",
-    value: "0-6", // 0-6
+    value: "detractors", // 0-6
   },
   {
     label: "Passivos",
-    value: "7-8", // 7-8
+    value: "passives", // 7-8
   },
   {
     label: "Promotores",
-    value: "9-10", // 9-10
+    value: "promoters", // 9-10
   },
 ];
 const range = ref(null);
@@ -116,13 +150,37 @@ const columns = [
     sortOrder: false,
   },
 ];
-const data = [
-  { date: "2022-09-13", user: "Usuário 1", widget: "login page", vote: 5 },
-  { date: "2022-09-14", user: "Usuário 2", widget: "home page", vote: 3 },
-  { date: "2022-09-15", user: "Usuário 3", widget: "returning", vote: 9 },
-  { date: "2022-09-23", user: "Usuário 4", widget: "new user", vote: 4 },
-  { date: "2022-09-30", user: "Usuário 5", widget: "login page", vote: 10 },
-];
+let data = ref([
+  {date: "2022-09-13", user: "Usuário 1", widget: "login page", vote: 5},
+  {date: "2022-09-13", user: "Usuário 1", widget: "login page", vote: 5},
+  {date: "2022-09-13", user: "Usuário 1", widget: "login page", vote: 5},
+  {date: "2022-09-13", user: "Usuário 1", widget: "login page", vote: 5},
+  {
+    date: "2022-09-13",
+    user: "Usuário 1",
+    widget: "login page",
+    vote: 5,
+    comment: 'Plataforma trava muito, então sugiro que seja feito uma alteração assim, e bla bla bla bla '
+  },
+  {date: "2022-09-13", user: "Usuário 1", widget: "login page", vote: 5},
+  {date: "2022-09-13", user: "Usuário 1", widget: "login page", vote: 5},
+  {date: "2022-09-14", user: "Usuário 2", widget: "home page", vote: 3},
+  {date: "2022-09-14", user: "Usuário 2", widget: "home page", vote: 3},
+  {date: "2022-09-15", user: "Usuário 3", widget: "returning", vote: 9},
+  {date: "2022-09-15", user: "Usuário 3", widget: "returning", vote: 9},
+  {date: "2022-09-23", user: "Usuário 4", widget: "new user", vote: 8},
+  {date: "2022-09-23", user: "Usuário 4", widget: "new user", vote: 3},
+  {date: "2022-09-23", user: "Usuário 4", widget: "new user", vote: 7, comment: 'Plataforma boa'},
+  {date: "2022-09-23", user: "Usuário 4", widget: "new user", vote: 9},
+  {date: "2022-09-23", user: "Usuário 4", widget: "new user", vote: 4},
+  {date: "2022-09-23", user: "Usuário 4", widget: "new user", vote: 7},
+  {date: "2022-09-30", user: "Usuário 5", widget: "login page", vote: 10, comment: 'Plataforma excelente'},
+  {date: "2022-09-30", user: "Usuário 5", widget: "login page", vote: 1},
+  {date: "2022-09-30", user: "Usuário 5", widget: "login page", vote: 10},
+  {date: "2022-09-30", user: "Usuário 5", widget: "login page", vote: 7},
+  {date: "2022-09-30", user: "Usuário 5", widget: "login page", vote: 10, comment: 'Plataforma muito boa'},
+  {date: "2022-09-30", user: "Usuário 5", widget: "login page", vote: 8,},
+]);
 const table = ref(null);
 const loadingRef = ref(true);
 const dataRef = ref([]);
@@ -140,16 +198,33 @@ const paginationReactive = reactive({
 // methods
 const search = () => {
   console.log("searchName");
+  dataRef.value = data.value;
+  data.value = data.value.filter((item) => (item.user.includes(searchTerm.value.toLowerCase())));
+  console.log({data})
 };
 
-const cleaclearSearch = () => {
+const clearSearch = () => {
   console.log("clearn search");
+  data.value = dataRef.value;
+  searchTerm.value = null;
 };
 
 const handleSorterChange = (sorter) => {
-  console.log(sorter);
-  // table.value.sort(a.columnKey, "ascend");
-  // a.order = "ascend";
-  // console.log(a);
+
+};
+
+const handleChangeVoteType = (value) => {
+  console.log({value})
+  dataRef.value = data.value;
+  score.value = value;
+  if (score.value === 'all') {
+    data.value = dataRef.value;
+  } else if (score.value === 'detractors') {
+    data.value = data.value.filter((item) => item.vote <= 6);
+  } else if (score.value === 'passives') {
+    data.value = data.value.filter((item) => item.vote > 6 && item.vote <= 8);
+  } else {
+    data.value = data.value.filter((item) => item.vote > 8);
+  }
 };
 </script>
