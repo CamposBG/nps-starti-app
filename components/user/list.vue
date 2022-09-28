@@ -1,7 +1,7 @@
 <template>
   <div class="mb-1">
     <NInputGroup>
-      <NIput
+      <NInput
           v-model:value="searchTerm"
           :style="{ width: '15%' }"
           placeholder="Nome ou e-mail"
@@ -39,7 +39,7 @@
   </div>
 </template>
 <script setup>
-import {NButton, NDataTable, NInputGroup, NPagination, NSpin, NTag, useDialog, useMessage,} from "naive-ui";
+import {NButton, NDataTable, NInput, NInputGroup, NPagination, NSpin, NTag, useDialog, useMessage,} from "naive-ui";
 import {useStorage} from "vue3-storage";
 
 // props
