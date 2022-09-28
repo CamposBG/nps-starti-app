@@ -5,7 +5,9 @@
       <div class="flex gap-9">
         <div class="w-96">
           <div class="flex gap-1">
-            <NDatePicker v-model:value="range" :actions="null" clearable close-on-select type="daterange"/>
+            <NDatePicker v-model:value="range" :actions="null" clearable close-on-select end-placeholder="Data final"
+                         start-placeholder="Data inicial"
+                         type="daterange"/>
             <NButton type="tertiary" @click="range = null"> Limpar</NButton>
           </div>
         </div>
