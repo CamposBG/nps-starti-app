@@ -10,7 +10,7 @@
       >clicando aqui.</a>
     </NAlert>
     <NForm ref="formRef" :inline="false" :model="formValue" :rules="rules" class="mt-2">
-      <NFormItem label="API key do SendGrid" path="api">
+      <NFormItem label="API key do SendGrid" path="apiKey">
         <div>
           <NInput v-model:value="formValue.apiKey" placeholder="Digite a api key fornecida no site "
                   showPasswordOn="click"
@@ -29,18 +29,13 @@
         <div>
           <NInput v-model:value="formValue.fromEmail" placeholder="Digite o remetente configurado no SendGrid"/>
           <span class="text-xs">
-          Saiba como configurar o e-mail e nome do remetente
+          Saiba como configurar o e-mail remetente
           <a
               class="text-blue-400"
               href="https://sendgrid.com/docs/ui/sending-email/sender-verification/"
               target="_blank"
           >clicando aqui</a>
         </span>
-        </div>
-      </NFormItem>
-      <NFormItem label="Nome do remetente" path="fromName">
-        <div class="w-96">
-          <NInput v-model:value="formValue.fromName" block placeholder="Digite o remetente configurado no SendGrid"/>
         </div>
       </NFormItem>
       <NButton :loading="isSubmitting" color="teal" icon-placement="right" @click="handleSaveEmailConfig">
@@ -56,18 +51,18 @@
 </template>
 
 <script setup>
-import {NAlert, NButton, NForm, NFormItem, NIcon, NInput} from 'naive-ui';
+import {NAlert, NButton, NForm, NFormItem, NIcon, NInput, useNotification} from 'naive-ui';
 import {Save} from '@vicons/fa';
 
-// const notification = useNotification();
+const notification = useNotification();
 const nuxtApp = useNuxtApp();
 
 const isSubmitting = ref(false);
+const formRef = ref(null);
 
 const formValue = ref({
   apiKey: "",
   fromEmail: "",
-  fromName: "",
 });
 
 const rules = ref(null);
@@ -78,9 +73,9 @@ rules.value = {
     message: "A API Key do SendGrid é obrigatória",
     trigger: ["blur"]
   },
-  sender: {
+  fromEmail: {
     required: true,
-    message: "O remetente é obrigatório",
+    message: "O e-mail remetente é obrigatório",
     trigger: ["blur"]
   }
 };
@@ -88,61 +83,41 @@ rules.value = {
 const handleSaveEmailConfig = () => {
   isSubmitting.value = true;
 
-  e.preventDefault();
-
   formRef.value?.validate(
       async (errors) => {
         if (!errors) {
-          if (!formValue.value.guid) {
-            // const response = await nuxtApp.$repo.projects.createProject(formValue.value);
-            // if (response && response.success) {
-            //   notification.success({
-            //     content: "Sucesso",
-            //     meta: "O projeto foi criado",
-            //     duration: 2000,
-            //     keepAliveOnHover: false
-            //   });
-            //   nuxtApp.$bus.emit('drawer:close')
-            //   isSubmitting.value = false;
-            // } else {
-            //   notification.error({
-            //     content: "Erro",
-            //     meta: response.error,
-            //     duration: 2500,
-            //     keepAliveOnHover: true
-            //   });
-            //   isSubmitting.value = false;
-            // }
-          } else {
-            // const response = await nuxtApp.$repo.projects.updateProject(formValue.value.guid, formValue.value);
-            // if (response && response.success) {
-            //   notification.success({
-            //     content: "Sucesso",
-            //     meta: "O projeto foi atualizado",
-            //     duration: 2000,
-            //     keepAliveOnHover: false
-            //   });
-            //   nuxtApp.$bus.emit('drawer:close');
-            //   isSubmitting.value = false;
-            //
-            // } else {
-            //   notification.error({
-            //     content: "Erro",
-            //     meta: response.error,
-            //     duration: 2500,
-            //     keepAliveOnHover: true
-            //   });
-            //   isSubmitting.value = false;
-            // }
-          }
+            const response = await nuxtApp.$repo.configEmail.saveConfig(formValue.value);
+            if (response && response.success) {
+              notification.success({
+                content: "Sucesso",
+                meta: "Configuração de e-mail salva",
+                duration: 2000,
+                keepAliveOnHover: false
+              });
+              nuxtApp.$bus.emit('drawer:close')
+              isSubmitting.value = false;
+            } else {
+              notification.error({
+                content: "Erro",
+                meta: response.error,
+                duration: 2500,
+                keepAliveOnHover: true
+              });
+              isSubmitting.value = false;
+            }
         }
       }
   );
   isSubmitting.value = false;
 };
 
+// lifecycle
+onBeforeMount(async (state) => {
+  const response = await nuxtApp.$repo.configEmail.getConfig();
+  if (response?.data) {
+    const { apiKey, fromEmail } = response.data;
+    formValue.value.apiKey = apiKey;
+    formValue.value.fromEmail = fromEmail;
+  }
+});
 </script>
-
-<style scoped>
-
-</style>
