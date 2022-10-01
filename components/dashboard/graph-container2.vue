@@ -8,27 +8,31 @@
       </div>
       <div class="time-selector px-5">
         <n-slider
-          v-model:value="period"
-          :marks="periodMarks"
-          step="periodMarks"
-          :max="30"
-          :min="0"
+            v-model:value="period"
+            :marks="periodMarks"
+            :max="30"
+            :min="0"
+            step="periodMarks"
         />
       </div>
       <div id="graph-wrapper" class="max-h-96">
-        <div v-if="!isLoading" class="skeleton-wrapper h-max">
-          <n-skeleton height="300px" width="50px" />
-          <n-skeleton height="150px" width="50px" />
-          <n-skeleton height="200px" width="50px" />
-          <n-skeleton height="70px" width="50px" />
+        <div v-if="isLoading" class="skeleton-wrapper h-96">
+          <NSkeleton height="300px" width="50px"/>
+          <NSkeleton height="150px" width="50px"/>
+          <NSkeleton height="200px" width="50px"/>
+          <NSkeleton height="70px" width="50px"/>
         </div>
         <div v-else class="h-fit">
-          <DashboardChart2
-            :user="user"
-            :project-id="projectId"
-            :period-selected="period"
-            :chart-data="graphFakeData.data"
+          <LazyDashboardChart2
+              v-show="graphData && graphData.length > 0"
+              :chart-data="graphData"
+              :period-selected="period"
+              :project-id="projectId"
+              :user="user"
           />
+          <div v-show="graphData && graphData.length === 0 && !isLoading" class="h-96 flex justify-center items-center">
+            <NEmpty description="Não há dados no período selecionado"/>
+          </div>
         </div>
       </div>
     </div>
@@ -36,54 +40,73 @@
 </template>
 
 <script setup>
-import { NSkeleton, NSlider } from "naive-ui";
+import {NEmpty, NSkeleton, NSlider} from "naive-ui";
 
 const props = defineProps({
-  title: { type: String, defalt: "Titulo do grafico" },
-  user: { type: Object },
-  projectId: { type: Number },
+  title: {type: String, default: "Titulo do grafico"},
+  projectId: {type: Number},
+  interval: {type: Number, default: 30000}
 });
 
+// providers
+const nuxtApp = useNuxtApp();
+
+//async data
+const {
+  data: response,
+  refresh,
+  pending: isLoading,
+} = await useLazyAsyncData(`graph-second-key-${Math.random()}`, () =>
+    nuxtApp.$repo.dash.secondGraph({
+      projectId: props.projectId,
+      periodSelected: period.value,
+    })
+);
+
 // ref|data
-const isLoading = ref(true);
 const period = ref(7);
 const periodMarks = {
   7: "7 dias",
   15: "15 dias",
   30: "1 mês",
 };
+const graphData = ref([]);
+const intervalToRefresh = ref(null);
+
 
 // methods
-let graphFakeData = {
-  success: true,
-  data: [],
-};
-
-function generateRandom(min, max, isInteger) {
-  const randownNumber = Math.random() * (max - min) + min;
-  if (isInteger) {
-    return Math.floor(randownNumber);
-  } else {
-    return randownNumber.toFixed(2);
-  }
+const refreshData = () => {
+  intervalToRefresh.value = setInterval(async () => {
+    await refresh()
+  }, props.interval);
 }
 
-function populateG2Fake(period) {
-  let InitialDay = 1;
-  for (let index = 0; index < period; index++) {
-    graphFakeData.data.push({
-      date: `2022-09-${InitialDay}`,
-      score: generateRandom(1, 10, false),
-    });
-    InitialDay++;
+// watchs 
+watch(response, () => {
+  if (response.value && response.value.avgNotes) {
+    graphData.value = response.value.avgNotes;
   }
-}
-populateG2Fake(period.value);
+});
 
-watch(period, () => {
-  graphFakeData.data = [];
-  populateG2Fake(period.value);
-  console.log(graphFakeData);
+watch(period, async () => {
+  graphData.value = [];
+  await refresh();
+});
+
+watch(
+    () => props.projectId,
+    () => {
+      setTimeout(() => {
+        refresh();
+      }, 150);
+    }
+);
+
+refreshData();
+
+
+onBeforeUnmount(() => {
+  clearInterval(intervalToRefresh.value)
 });
 </script>
 

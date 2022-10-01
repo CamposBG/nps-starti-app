@@ -3,28 +3,27 @@
     <div id="graph-1" class="border border-gray-200 rounded-sm shadow-sm">
       <div class="w-full h-10 bg-slate-200 flex items-center pl-5 shadow-md">
         <h1 class="text-xl font-semibold text-gray-700 tracking-wide">
-          {{ title }} {{ projectId }}
+          {{ title }}
         </h1>
       </div>
       <div class="time-selector px-5">
         <n-slider
-          v-model:value="period"
-          :marks="periodMarks"
-          step="periodMarks"
-          :max="30"
-          :min="0"
+            v-model:value="period"
+            :marks="periodMarks"
+            :max="30"
+            :min="0"
+            step="periodMarks"
         />
       </div>
       <div id="graph-wrapper" class="max-h-96">
-        <div v-if="pending" class="skeleton-wrapper h-max">
-          <n-skeleton height="300px" width="50px" />
-          <n-skeleton height="150px" width="50px" />
-          <n-skeleton height="200px" width="50px" />
-          <n-skeleton height="70px" width="50px" />
+        <div v-if="isLoading" class="skeleton-wrapper h-96">
+          <NSkeleton circle height="290px"/>
         </div>
         <div v-else class="w-auto h-96">
-          <!-- <DashboardChart1 /> -->
-          <DashboardChart1 :graph-data="dataFilterd2[0].score" />
+          <LazyDashboardChart1 v-show="graphData" :graph-data="graphData"/>
+          <div v-show="!graphData && !isLoading" class="h-96 flex justify-center items-center">
+            <NEmpty description="Não há dados no período selecionado"/>
+          </div>
         </div>
       </div>
     </div>
@@ -32,12 +31,12 @@
 </template>
 
 <script setup>
-import { NSkeleton, NSlider, pProps } from "naive-ui";
+import {NEmpty, NSkeleton, NSlider} from "naive-ui";
 
 const props = defineProps({
-  title: { type: String, defalt: "Titulo do grafico" },
-  user: { type: Object },
-  projectId: { type: Number },
+  title: {type: String, default: "Titulo do grafico"},
+  projectId: {type: Number},
+  interval: {type: Number, default: 30000}
 });
 // providers
 const nuxtApp = useNuxtApp();
@@ -46,13 +45,12 @@ const nuxtApp = useNuxtApp();
 const {
   data: response,
   refresh,
-  pending,
+  pending: isLoading,
 } = await useLazyAsyncData(`graph-key-${Math.random()}`, () =>
-  nuxtApp.$repo.dash.firstGraph({
-    userId: props.user.id,
-    projectId: props.projectId,
-    periodSelected: period.value,
-  })
+    nuxtApp.$repo.dash.firstGraph({
+      projectId: props.projectId,
+      periodSelected: period.value,
+    })
 );
 
 // ref|data
@@ -63,67 +61,46 @@ const periodMarks = {
   15: "15 dias",
   30: "1 mês",
 };
+const intervalToRefresh = ref(null);
 
 // methods
 
 watch(response, () => {
-  if (response.susses === true) {
-    graphData.value = response;
+  graphData.value = null;
+  if (response.value && response.value.avgNote) {
+    graphData.value = response.value.avgNote;
   }
 });
-watch(period, () => {
-  refresh();
+watch(period, async () => {
+  graphData.value = null;
+  await refresh();
 });
 watch(
-  () => props.projectId,
-  (agora, antes) => {
-    setTimeout(() => {
-      refresh();
-    }, 150);
-  }
+    () => props.projectId,
+    () => {
+      graphData.value = null;
+      setTimeout(async () => {
+        await refresh();
+      }, 150);
+    }
 );
 
-// FAKE DATA
-const graphData1 = {
-  success: true,
-  data: [],
-};
-
-function generateRandom(min, max, isInteger) {
-  const randownNumber = Math.random() * (max - min + 1) + min;
-  if (isInteger) {
-    return Math.floor(randownNumber);
-  } else {
-    return randownNumber.toFixed(2);
-  }
+// methods
+const refreshData = () => {
+  intervalToRefresh.value = setInterval(async () => {
+    await refresh()
+  }, props.interval);
 }
 
-function populateG1Fake() {
-  graphData1.data = [
-    {
-      period: 7,
-      score: generateRandom(1, 10, false),
-    },
-    {
-      period: 15,
-      score: generateRandom(1, 10, false),
-    },
-    {
-      period: 30,
-      score: generateRandom(1, 10, false),
-    },
-  ];
-}
-populateG1Fake();
+refreshData();
 
-//computed
-const dataFilterd2 = computed(() => {
-  return graphData1.data.filter((vote) => vote.period === period.value);
+onBeforeUnmount(() => {
+  clearInterval(intervalToRefresh.value)
 });
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .skeleton-wrapper {
-  @apply flex gap-2 justify-center  rotate-180;
+  @apply flex gap-2 justify-center items-center;
 }
 </style>

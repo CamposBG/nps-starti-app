@@ -10,4 +10,8 @@ export default class DashBoardRepository extends BaseRepository {
   async firstGraph(body) {
     return this.get("/dashboard", body);
   }
+
+  async secondGraph(body) {
+    return this.get("/dashboard/avg-by-day", body);
+  }
 }
