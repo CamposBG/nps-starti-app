@@ -36,7 +36,7 @@
     </div>
     <div class="mt-10">
       <!-- <LazyDashboardTable/> -->
-      <LazyDashboardNewTable :project-id="project" />
+      <LazyDashboardTimeline :project-id="project" />
     </div>
   </div>
 </template>

@@ -264,12 +264,12 @@ const loadMore = () => {
    * tem um watch vai disparar o refresh(), dando push nos novos dados
    */
 
-  /* 
+  /*
    if(pageMeta.next_page_url){
     currentPage.value++;
-   } 
+   }
    */
-
+  currentPage.value++;
   // FAKE DATA
   console.log("loadMore");
   fakeData.push({
@@ -309,11 +309,11 @@ const queryParams = computed(() => ({
 
 // watch
 watch(response, () => {
-  /*   
-  espero receber uma response com paginação, ai para fazer o loading de mais 
-  dados, estou usando o método loadMore()  que incrementa a currentPage e dispara o watch 
+  /*
+  espero receber uma response com paginação, ai para fazer o loading de mais
+  dados, estou usando o método loadMore()  que incrementa a currentPage e dispara o watch
   do queryParams que por sua vez dispara esse,
-  eu vou dando push dos novos resultados no array cumulativeTableDataReactive 
+  eu vou dando push dos novos resultados no array cumulativeTableDataReactive
   */
   console.log("watch response");
   if (response?.data) {
@@ -323,8 +323,21 @@ watch(response, () => {
   }
 });
 
-watch(queryParams, async () => {
+watch(queryParams, async (newValue, oldValue) => {
   console.log("watch queryParams");
-  await refresh();
+  //Só esvazia o array se algum query param mudar sem ser a pagina
+  if (
+    newValue.projectId === oldValue.projectId &&
+    newValue.search === oldValue.search &&
+    newValue.score === oldValue.score &&
+    newValue.period === oldValue.period &&
+    newValue.page !== oldValue.page
+  ) {
+    console.log("AQUI");
+    await refresh();
+  } else {
+    cumulativeTableDataReactive.splice(0, cumulativeTableDataReactive.length);
+    await refresh();
+  }
 });
 </script>

@@ -16,8 +16,6 @@ export default class DashBoardRepository extends BaseRepository {
   }
 
   async getDashTableData(queryParams) {
-    console.log("aqui");
-    console.log({ queryParams });
     return this.get("/dashboard/table", queryParams);
   }
 }
