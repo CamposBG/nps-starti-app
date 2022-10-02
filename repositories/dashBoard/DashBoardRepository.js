@@ -14,4 +14,10 @@ export default class DashBoardRepository extends BaseRepository {
   async secondGraph(body) {
     return this.get("/dashboard/avg-by-day", body);
   }
+
+  async getDashTableData(queryParams) {
+    console.log("aqui");
+    console.log({ queryParams });
+    return this.get("/dashboard/table", queryParams);
+  }
 }
