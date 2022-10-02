@@ -42,16 +42,15 @@
         </NInputGroup>
       </div>
     </div>
-    QUERY-PARAMS
-    {{ queryParams }}
     <!-- timeline -->
     <div
+      v-for="dates in fakeData"
       id="vote"
-      class="p-5 mb-4 bg-gray-50 rounded-lg border border-gray-100 dark:bg-gray-800 dark:border-gray-700"
+      class="p-5 mb-4 bg-gray-50 rounded-lg border border-gray-100 dark:bg-gray-800 dark:border-gray-700 mt-5"
     >
       <time class="text-lg font-semibold text-gray-900 dark:text-white">
         {{
-          new Date().toLocaleDateString("pt-BR", {
+          new Date(dates.date).toLocaleDateString("pt-BR", {
             weekday: "long",
             year: "numeric",
             month: "long",
@@ -60,21 +59,21 @@
         }}
       </time>
       <ol class="mt-3 divide-y divider-gray-200 dark:divide-gray-700">
-        <li>
+        <li v-for="votes in dates.votes">
           <a
             class="block items-center p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700"
             href="#"
           >
             <div
               class="mr-3 mb-3 w-12 h-12 rounded-full sm:mb-0 flex justify-center items-center border-double border-4 border-gray-200"
-              :class="voteBgColor(6)"
+              :class="voteBgColor(votes.vote)"
             >
-              <p class="text-3xl text-gray-200">6</p>
+              <p class="text-3xl text-gray-200">{{ votes.vote }}</p>
             </div>
             <div class="text-gray-600 dark:text-gray-400">
               <div class="text-base font-normal">
                 <n-tag
-                  v-if="true"
+                  v-if="votes.name === 'Anonymus'"
                   rounded
                   size="small"
                   round
@@ -86,107 +85,20 @@
                   Anônimo
                 </n-tag>
 
-                <span v-else class="font-medium text-gray-900 dark:text-white"
-                  >Nome do voter</span
+                <span
+                  v-else
+                  class="font-medium text-gray-900 dark:text-white"
+                  >{{ votes.name }}</span
                 >
               </div>
-              <div class="text-sm font-normal">
-                "comentário do voto, caso exista"
+              <div v-if="votes.comment?.length > 0" class="text-sm font-normal">
+                "{{ votes.comment }}"
               </div>
               <div
                 class="flex items-center gap-1 text-xs font-normal text-gray-500 dark:text-gray-400"
               >
                 <Globe class="w-3" />
-                <p>Nome da Widget</p>
-              </div>
-            </div>
-          </a>
-        </li>
-        <!-- outro ex -->
-        <li>
-          <a
-            class="block items-center p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700"
-            href="#"
-          >
-            <div
-              class="mr-3 mb-3 w-12 h-12 rounded-full sm:mb-0 flex justify-center items-center border-double border-4 border-gray-200"
-              :class="voteBgColor(9)"
-            >
-              <p class="text-3xl text-gray-200">9</p>
-            </div>
-            <div class="text-gray-600 dark:text-gray-400">
-              <div class="text-base font-normal">
-                <n-tag
-                  v-if="false"
-                  rounded
-                  size="small"
-                  round
-                  style="background-color: #bfb5ff; border-color;: #571b86"
-                >
-                  <template #icon>
-                    <Mask class="w-4 text-violet-900" />
-                  </template>
-                  Anônimo
-                </n-tag>
-
-                <span v-else class="font-medium text-gray-900 dark:text-white"
-                  >Nome do voter</span
-                >
-              </div>
-              <div class="text-sm font-normal">
-                Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                Facilis officia labore maiores asperiores minima eveniet!
-                Aliquid beatae, ipsam facilis explicabo, modi, ducimus quibusdam
-                incidunt dolorem necessitatibus excepturi odio illum eaque.
-              </div>
-              <div
-                class="flex items-center gap-1 text-xs font-normal text-gray-500 dark:text-gray-400"
-              >
-                <Globe class="w-3" />
-                <p>Nome da Widget</p>
-              </div>
-            </div>
-          </a>
-        </li>
-        <!-- outro ex -->
-        <li>
-          <a
-            class="block items-center p-3 sm:flex hover:bg-gray-100 dark:hover:bg-gray-700"
-            href="#"
-          >
-            <div
-              class="mr-3 mb-3 w-12 h-12 rounded-full sm:mb-0 flex justify-center items-center border-double border-4 border-gray-200"
-              :class="voteBgColor(8)"
-            >
-              <p class="text-3xl text-gray-200">8</p>
-            </div>
-            <div class="text-gray-600 dark:text-gray-400">
-              <div class="text-base font-normal">
-                <n-tag
-                  v-if="false"
-                  rounded
-                  size="small"
-                  round
-                  style="background-color: #bfb5ff; border-color;: #571b86"
-                >
-                  <template #icon>
-                    <Mask class="w-4 text-violet-900" />
-                  </template>
-                  Anônimo
-                </n-tag>
-
-                <span v-else class="font-medium text-gray-900 dark:text-white"
-                  >Nome do voter</span
-                >
-              </div>
-              <div class="text-sm font-normal">
-                "comentário do voto, caso exista"
-              </div>
-              <div
-                class="flex items-center gap-1 text-xs font-normal text-gray-500 dark:text-gray-400"
-              >
-                <Globe class="w-3" />
-                <p>Nome da Widget</p>
+                <p>{{ votes.widget }}</p>
               </div>
             </div>
           </a>
@@ -253,6 +165,56 @@ const scoreOptions = [
     value: "promoters", // 9-10
   },
 ];
+const cumulativeTableDataReactive = reactive([]);
+const pageMeta = ref({});
+const currentPage = ref(1);
+
+// FAKE DATA
+const fakeData = reactive([
+  {
+    date: "2022-10-01",
+    votes: [
+      {
+        name: "Anonymus",
+        vote: 5,
+        comment: "",
+        widget: "Minha widget",
+      },
+      {
+        name: "Roberto",
+        vote: 9,
+        comment:
+          "Lorem ipsum dolor, sit amet consectetur adipisicing elit.acilis officia labore maiores asperiores minima eveniet! Aliquid beatae, ipsam facilis explicabo, modi, ducimus quibusdam  incidunt dolorem necessitatibus excepturi odio illum eaque.",
+        widget: "Minha widget",
+      },
+      {
+        name: "Bia",
+        vote: 8,
+        comment: " achei mais ou menos",
+        widget: "Widget numero 1",
+      },
+    ],
+  },
+  {
+    date: "2022-10-02",
+    votes: [
+      {
+        name: "Matheus",
+        vote: 10,
+        comment:
+          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis officia labore maiores asperiores minima eveniet! Aliquid beatae",
+        widget: "Minha widget",
+      },
+      {
+        name: "Anonymus",
+        vote: 2,
+        comment:
+          "Aliquid beatae, ipsam facilis explicabo, modi, ducimus quibusdam  incidunt dolorem necessitatibus excepturi odio illum eaque",
+        widget: "Widget numero 1",
+      },
+    ],
+  },
+]);
 
 // methods
 const handleChangeVoteType = (value) => {
@@ -295,6 +257,42 @@ const clearSearch = () => {
   searchTerm.value = null;
 };
 
+const loadMore = () => {
+  /**
+   * Aqui a ideia era ver se existe uma próxima página, se sim incrementa a ref currentPage
+   * que vai mudar a variavel computed query params que por sua vez
+   * tem um watch vai disparar o refresh(), dando push nos novos dados
+   */
+
+  /* 
+   if(pageMeta.next_page_url){
+    currentPage.value++;
+   } 
+   */
+
+  // FAKE DATA
+  console.log("loadMore");
+  fakeData.push({
+    date: "2022-10-03",
+    votes: [
+      {
+        name: "Vanessa",
+        vote: 10,
+        comment:
+          "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facilis officia labore maiores asperiores minima eveniet! Aliquid beatae",
+        widget: "Minha widget",
+      },
+      {
+        name: "Guilgalade",
+        vote: 9,
+        comment:
+          "Aliquid beatae, ipsam facilis explicabo, modi, ducimus quibusdam  incidunt dolorem necessitatibus excepturi odio illum eaque",
+        widget: "Widget numero 1",
+      },
+    ],
+  });
+};
+
 // computed
 const currentScoreLabel = computed(() => {
   const label = scoreOptions.filter((e) => e.value === score.value);
@@ -303,23 +301,30 @@ const currentScoreLabel = computed(() => {
 
 const queryParams = computed(() => ({
   projectId: props.projectId,
-  page: 1,
+  page: currentPage.value,
   search: searchTerm.value,
   score: score.value,
   period: getPeriodFormatted(),
 }));
 
-const loadMore = () => {
-  console.log("loadMore");
-};
-
 // watch
 watch(response, () => {
-  tableData.value = response;
-  console.log(tableData.value);
+  /*   
+  espero receber uma response com paginação, ai para fazer o loading de mais 
+  dados, estou usando o método loadMore()  que incrementa a currentPage e dispara o watch 
+  do queryParams que por sua vez dispara esse,
+  eu vou dando push dos novos resultados no array cumulativeTableDataReactive 
+  */
+  console.log("watch response");
+  if (response?.data) {
+    tableData.value = response.data;
+    pageMeta.value = response.meta;
+    cumulativeTableDataReactive.push(...response.data);
+  }
 });
 
 watch(queryParams, async () => {
+  console.log("watch queryParams");
   await refresh();
 });
 </script>
