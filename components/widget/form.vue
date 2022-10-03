@@ -20,7 +20,7 @@
       <NGi>
         <LazyWidgetColorConfigCard :formValue="formValue"/>
       </NGi>
-         <NGi v-if="formValue.guid != null">
+         <NGi v-if="formValue.widget_guid != null">
         <LazyWidgetCode :formValue="formValue" />
       </NGi>
       <NGi :span="2">
@@ -78,7 +78,7 @@ const formValue = ref({
   domains: [],
   color: '#FFFFFF',
   showVoteButton: false,
-  guid: null
+  widget_guid: null
 });
 
 rules.value = {
@@ -235,7 +235,7 @@ onBeforeMount(async () => {
       formValue.value.color = response.color;
       formValue.value.isActive = response.is_active;
       formValue.value.showVoteButton = response.show_vote_button === 1;
-      formValue.value.guid = response.guid;
+      formValue.value.widget_guid = response.widget_guid;
     } else {
       router.push(`/projects`)
     }

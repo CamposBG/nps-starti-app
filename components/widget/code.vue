@@ -31,7 +31,7 @@ const props = defineProps({
 
 const base_url = window.origin;
 const tooltipText = ref('Copiar código');
-const widgetGuid = props.formValue.guid;
+const widgetGuid = props.formValue.widget_guid;
 
 const widgetCode = ref(`\<\script
   id="wd-nps" 
