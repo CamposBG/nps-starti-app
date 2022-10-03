@@ -20,6 +20,9 @@
       <NGi>
         <LazyWidgetColorConfigCard :formValue="formValue"/>
       </NGi>
+         <NGi v-if="formValue.guid != null">
+        <LazyWidgetCode :formValue="formValue" />
+      </NGi>
       <NGi :span="2">
         <NSpace>
           <NButton :loading="isSubmitting" color="teal" icon-placement="right" type="primary"
@@ -74,7 +77,8 @@ const formValue = ref({
   thanksMessage: null,
   domains: [],
   color: '#FFFFFF',
-  showVoteButton: false
+  showVoteButton: false,
+  guid: null
 });
 
 rules.value = {
@@ -230,6 +234,8 @@ onBeforeMount(async () => {
       formValue.value.domains = response.domains.length > 0 ? response.domains.split(',') : [];
       formValue.value.color = response.color;
       formValue.value.isActive = response.is_active;
+      formValue.value.showVoteButton = response.show_vote_button === 1;
+      formValue.value.guid = response.guid;
     } else {
       router.push(`/projects`)
     }
