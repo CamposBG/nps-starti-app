@@ -227,7 +227,7 @@ onBeforeMount(async () => {
       formValue.value.message = response.message;
       formValue.value.enableCustomThanksMessage = response.enable_custom_thanks_message;
       formValue.value.thanksMessage = response.thanks_message;
-      formValue.value.domains = [];
+      formValue.value.domains = response.domains.length > 0 ? response.domains.split(',') : [];
       formValue.value.color = response.color;
       formValue.value.isActive = response.is_active;
     } else {
