@@ -44,19 +44,12 @@
     </div>
     <!-- timeline -->
     <div
-      v-for="dates in tableData"
+      v-for="dates in fakeData"
       id="vote"
       class="p-5 mb-4 bg-gray-50 rounded-lg border border-gray-100 dark:bg-gray-800 dark:border-gray-700 mt-5"
     >
       <time class="text-lg font-semibold text-gray-900 dark:text-white">
-        {{
-          new Date(dates.date).toLocaleDateString("pt-BR", {
-            weekday: "long",
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })
-        }}
+        {{ formatDate(dates.date) }}
       </time>
       <ol class="mt-3 divide-y divider-gray-200 dark:divide-gray-700">
         <li v-for="votes in dates.votes">
@@ -65,10 +58,10 @@
             href="#"
           >
             <div
-              class="mr-3 mb-3 w-12 h-12 rounded-full sm:mb-0 flex justify-center items-center border-double border-4 border-gray-200"
+              class="mr-3 mb-3 w-10 h-10 flex-shrink-0 rounded-full sm:mb-0 flex justify-center items-center border-double border-4 border-gray-200"
               :class="voteBgColor(votes.vote)"
             >
-              <p class="text-3xl text-gray-200">{{ votes.vote }}</p>
+              <p class="text-2xl text-gray-200">{{ votes.vote }}</p>
             </div>
             <div class="text-gray-600 dark:text-gray-400">
               <div class="text-base font-normal">
@@ -184,7 +177,7 @@ const fakeData = reactive([
         name: "Roberto",
         vote: 9,
         comment:
-          "Lorem ipsum dolor, sit amet consectetur adipisicing elit.acilis officia labore maiores asperiores minima eveniet! Aliquid beatae, ipsam facilis explicabo, modi, ducimus quibusdam  incidunt dolorem necessitatibus excepturi odio illum eaque.",
+          "Lorem ipsum dolor, sit amet consectetur adipisicing elit.acilis officia labore maiores asperiores minima officia labore maiores asperiores minima eveniet! A officia labore maiores asperiores minima eveniet! officia labore maiores asperiores minima eveniet! Aofficia labore maiores asperiores minima eveniet! Aofficia labore maiores asperiores minima eveniet! Aofficia labore maiores asperiores minima eveniet! Aofficia labore maiores asperiores minima eveniet! Aofficia labore maiores asperiores minima eveniet! AAofficia labore maiores asperiores minima eveniet! A officia labore maiores asperiores minima eveniet! Aeveniet! Aliquid beatae, ipsam facilis explicabo, modi, ducimus quibusdam  incidunt dolorem necessitatibus excepturi odio illum eaque.",
         widget: "Minha widget",
       },
       {
@@ -307,6 +300,14 @@ const queryParams = computed(() => ({
   period: getPeriodFormatted(),
 }));
 
+const formatDate = (date) => {
+  return new Date(date.split("-")).toLocaleDateString("pt-BR", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
 // watch
 watch(response, () => {
   /*
@@ -326,7 +327,7 @@ watch(response, () => {
 watch(queryParams, async (newValue, oldValue) => {
   console.log("watch queryParams");
   //Só esvazia o array se algum query param mudar sem ser a pagina
-  await refresh()
+  await refresh();
   // if (
   //   newValue.projectId === oldValue.projectId &&
   //   newValue.search === oldValue.search &&
