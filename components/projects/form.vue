@@ -169,11 +169,12 @@ const getProjectData = async () => {
     formValue.value.guid = response.guid;
     formValue.value.name = response.name;
     formValue.value.type = response.type;
+
     if (response.viewers?.length > 0) {
-      formValue.value.viewers = response.viewers;
+      formValue.value.viewers = response.viewers.map((item) => item.id);
     }
     if (response.owners?.length > 0) {
-      formValue.value.owners = response.owners;
+      formValue.value.owners = response.owners.map((item) => item.id);
     }
   }
 };

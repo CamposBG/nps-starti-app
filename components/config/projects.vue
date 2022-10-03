@@ -28,8 +28,13 @@
       <NEmpty v-else-if="projects.length === 0 && search && !pending"
               description="Nenhum projeto encontrado com esse nome"/>
       <div v-else class="flex gap-x-10 justify-center">
-        <LazyProjectsCard v-for="project in projects" :project-data="project" :title="project.name"
-                          @refresh-projects="refresh"/>
+        <LazyProjectsCard 
+          v-for="project in projects" 
+          :project-data="project" 
+          :title="project.name" 
+          :key="`project-${project.id}`"
+          @refresh-projects="refresh"
+        />
       </div>
     </div>
   </div>
