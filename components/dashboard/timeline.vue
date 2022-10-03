@@ -44,7 +44,7 @@
     </div>
     <!-- timeline -->
     <div
-      v-for="dates in fakeData"
+      v-for="dates in tableData"
       id="vote"
       class="p-5 mb-4 bg-gray-50 rounded-lg border border-gray-100 dark:bg-gray-800 dark:border-gray-700 mt-5"
     >
