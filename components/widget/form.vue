@@ -230,6 +230,7 @@ onBeforeMount(async () => {
       formValue.value.domains = response.domains.length > 0 ? response.domains.split(',') : [];
       formValue.value.color = response.color;
       formValue.value.isActive = response.is_active;
+      formValue.value.showVoteButton = response.show_vote_button === 1;
     } else {
       router.push(`/projects`)
     }
