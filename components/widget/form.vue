@@ -20,9 +20,6 @@
       <NGi>
         <LazyWidgetColorConfigCard :formValue="formValue"/>
       </NGi>
-      <NGi v-if="formValue.guid != null">
-        <LazyWidgetCode :formValue="formValue" />
-      </NGi>
       <NGi :span="2">
         <NSpace>
           <NButton :loading="isSubmitting" color="teal" icon-placement="right" type="primary"
@@ -230,10 +227,9 @@ onBeforeMount(async () => {
       formValue.value.message = response.message;
       formValue.value.enableCustomThanksMessage = response.enable_custom_thanks_message;
       formValue.value.thanksMessage = response.thanks_message;
-      formValue.value.domains = [];
+      formValue.value.domains = response.domains.length > 0 ? response.domains.split(',') : [];
       formValue.value.color = response.color;
       formValue.value.isActive = response.is_active;
-      formValue.value.guid = response.guid;
     } else {
       router.push(`/projects`)
     }
