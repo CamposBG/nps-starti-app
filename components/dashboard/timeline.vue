@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="max-w-6xl mx-auto">
     <!-- filters and search  -->
     <div class="flex justify-between">
       <div class="flex gap-9">
@@ -100,11 +100,11 @@
     </div>
 
     <!-- load More -->
-    <div class="w-fit mx-auto">
+    <!-- <div class="w-fit mx-auto">
       <NButton :loading="isLoading" icon-placement="left" @click="loadMore">
         Carregar mais
       </NButton>
-    </div>
+    </div> -->
   </div>
 </template>
 <script setup>
