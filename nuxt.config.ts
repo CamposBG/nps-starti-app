@@ -14,7 +14,7 @@ export default defineNuxtConfig({
     server: {
       proxy: {
         "/api": {
-          target: "http://localhost:3333/   ",
+          target: "http://localhost/api/",
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ""),
         },

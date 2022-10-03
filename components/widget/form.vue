@@ -20,6 +20,9 @@
       <NGi>
         <LazyWidgetColorConfigCard :formValue="formValue"/>
       </NGi>
+      <NGi v-if="formValue.guid != null">
+        <LazyWidgetCode :formValue="formValue" />
+      </NGi>
       <NGi :span="2">
         <NSpace>
           <NButton :loading="isSubmitting" color="teal" icon-placement="right" type="primary"
@@ -230,6 +233,7 @@ onBeforeMount(async () => {
       formValue.value.domains = [];
       formValue.value.color = response.color;
       formValue.value.isActive = response.is_active;
+      formValue.value.guid = response.guid;
     } else {
       router.push(`/projects`)
     }
