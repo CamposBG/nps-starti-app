@@ -4,46 +4,46 @@
     <div class="my-5 flex gap-3 justify-end">
       <NFormItem label="Recarregar dados">
         <NSelect
-          v-model:value="interval"
-          :options="mappedIntervals"
-          placeholder="Selecione um intervalo"
-          style="width: 200px"
+            v-model:value="interval"
+            :options="mappedIntervals"
+            placeholder="Selecione um intervalo"
+            style="width: 200px"
         />
       </NFormItem>
       <NFormItem label="Selecione um projeto">
         <NSelect
-          v-model:value="project"
-          :options="mappedProjects"
-          placeholder="Selecione o projeto"
-          style="width: 200px"
+            v-model:value="project"
+            :options="mappedProjects"
+            placeholder="Selecione o projeto"
+            style="width: 200px"
         />
       </NFormItem>
     </div>
     <div v-if="userData.projects?.length === 0">
-      <LazyDashboardEmptyDash />
+      <LazyDashboardEmptyDash/>
     </div>
 
     <div v-else-if="project" id="main-content" class="grid grid-cols-2 gap-3">
       <LazyDashboardGraphContainer1
-        :interval="interval"
-        :project-id="project"
-        :title="'Média dentro do período'"
+          :interval="interval"
+          :project-id="project"
+          :title="'Média dentro do período'"
       />
       <LazyDashboardGraphContainer2
-        :project-id="project"
-        :title="'Médias diárias'"
+          :project-id="project"
+          :title="'Médias diárias'"
       />
     </div>
-    <div class="mt-10">
+    <div v-if="project" class="mt-10">
       <!-- <LazyDashboardTable/> -->
-      <LazyDashboardTimeline :project-id="project" />
+      <LazyDashboardTimeline :project-id="project"/>
     </div>
   </div>
 </template>
 
 <script setup>
-import { NFormItem, NSelect } from "naive-ui";
-import { useStorage } from "vue3-storage";
+import {NFormItem, NSelect} from "naive-ui";
+import {useStorage} from "vue3-storage";
 
 const nuxtApp = useNuxtApp();
 const storage = useStorage();

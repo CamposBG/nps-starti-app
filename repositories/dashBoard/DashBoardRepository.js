@@ -16,6 +16,6 @@ export default class DashBoardRepository extends BaseRepository {
   }
 
   async getDashTableData(queryParams) {
-    return this.get("/dashboard/table", queryParams);
+    return this.get("/dashboard/votes-by-day", queryParams);
   }
 }

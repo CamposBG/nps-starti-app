@@ -44,7 +44,7 @@
     </div>
     <!-- timeline -->
     <div
-      v-for="dates in fakeData"
+      v-for="dates in tableData"
       id="vote"
       class="p-5 mb-4 bg-gray-50 rounded-lg border border-gray-100 dark:bg-gray-800 dark:border-gray-700 mt-5"
     >
@@ -73,7 +73,7 @@
             <div class="text-gray-600 dark:text-gray-400">
               <div class="text-base font-normal">
                 <n-tag
-                  v-if="votes.name === 'Anonymus'"
+                  v-if="votes.name === 'anonymous'"
                   rounded
                   size="small"
                   round
@@ -301,9 +301,9 @@ const currentScoreLabel = computed(() => {
 
 const queryParams = computed(() => ({
   projectId: props.projectId,
-  page: currentPage.value,
+  // page: currentPage.value,
   search: searchTerm.value,
-  score: score.value,
+  voteType: score.value,
   period: getPeriodFormatted(),
 }));
 
@@ -316,28 +316,29 @@ watch(response, () => {
   eu vou dando push dos novos resultados no array cumulativeTableDataReactive
   */
   console.log("watch response");
-  if (response?.data) {
-    tableData.value = response.data;
-    pageMeta.value = response.meta;
-    cumulativeTableDataReactive.push(...response.data);
+  if (response.value?.votes) {
+    tableData.value = response.value.votes;
+    // pageMeta.value = response.meta;
+    // cumulativeTableDataReactive.push(...response.data);
   }
 });
 
 watch(queryParams, async (newValue, oldValue) => {
   console.log("watch queryParams");
   //Só esvazia o array se algum query param mudar sem ser a pagina
-  if (
-    newValue.projectId === oldValue.projectId &&
-    newValue.search === oldValue.search &&
-    newValue.score === oldValue.score &&
-    newValue.period === oldValue.period &&
-    newValue.page !== oldValue.page
-  ) {
-    console.log("AQUI");
-    await refresh();
-  } else {
-    cumulativeTableDataReactive.splice(0, cumulativeTableDataReactive.length);
-    await refresh();
-  }
+  await refresh()
+  // if (
+  //   newValue.projectId === oldValue.projectId &&
+  //   newValue.search === oldValue.search &&
+  //   newValue.score === oldValue.score &&
+  //   newValue.period === oldValue.period &&
+  //   newValue.page !== oldValue.page
+  // ) {
+  //   console.log("AQUI");
+  //   await refresh();
+  // } else {
+  //   cumulativeTableDataReactive.splice(0, cumulativeTableDataReactive.length);
+  //   await refresh();
+  // }
 });
 </script>
