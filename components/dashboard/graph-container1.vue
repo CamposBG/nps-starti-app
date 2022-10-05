@@ -8,21 +8,24 @@
       </div>
       <div class="time-selector px-5">
         <n-slider
-            v-model:value="period"
-            :marks="periodMarks"
-            :max="30"
-            :min="0"
-            step="periodMarks"
+          v-model:value="period"
+          :marks="periodMarks"
+          :max="30"
+          :min="0"
+          step="periodMarks"
         />
       </div>
       <div id="graph-wrapper" class="max-h-96">
         <div v-if="isLoading" class="skeleton-wrapper h-96">
-          <NSkeleton circle height="290px"/>
+          <NSkeleton circle height="290px" />
         </div>
         <div v-else class="w-auto h-96">
-          <LazyDashboardChart1 v-show="graphData" :graph-data="graphData"/>
-          <div v-show="!graphData && !isLoading" class="h-96 flex justify-center items-center">
-            <NEmpty description="Não há dados no período selecionado"/>
+          <LazyDashboardChart1 v-show="graphData" :graph-data="graphData" />
+          <div
+            v-show="!graphData && !isLoading"
+            class="h-96 flex justify-center items-center"
+          >
+            <NEmpty description="Não há dados no período selecionado" />
           </div>
         </div>
       </div>
@@ -31,12 +34,12 @@
 </template>
 
 <script setup>
-import {NEmpty, NSkeleton, NSlider} from "naive-ui";
+import { NEmpty, NSkeleton, NSlider } from "naive-ui";
 
 const props = defineProps({
-  title: {type: String, default: "Titulo do grafico"},
-  projectId: {type: Number},
-  interval: {type: Number, default: 30000}
+  title: { type: String, default: "Titulo do grafico" },
+  projectId: { type: Number },
+  interval: { type: Number, default: 0 },
 });
 // providers
 const nuxtApp = useNuxtApp();
@@ -47,10 +50,10 @@ const {
   refresh,
   pending: isLoading,
 } = await useLazyAsyncData(`graph-key-${Math.random()}`, () =>
-    nuxtApp.$repo.dash.firstGraph({
-      projectId: props.projectId,
-      periodSelected: period.value,
-    })
+  nuxtApp.$repo.dash.firstGraph({
+    projectId: props.projectId,
+    periodSelected: period.value,
+  })
 );
 
 // ref|data
@@ -64,6 +67,18 @@ const periodMarks = {
 const intervalToRefresh = ref(null);
 
 // methods
+const refreshData = () => {
+  if (props.interval) {
+    console.log("dentro do refresh cont 1", props.interval);
+    intervalToRefresh.value = setInterval(async () => {
+      console.log("dentro do refresh", props.interval);
+
+      await refresh();
+    }, props.interval);
+  }
+};
+
+// watch
 
 watch(response, () => {
   graphData.value = null;
@@ -76,26 +91,28 @@ watch(period, async () => {
   await refresh();
 });
 watch(
-    () => props.projectId,
-    () => {
-      graphData.value = null;
-      setTimeout(async () => {
-        await refresh();
-      }, 150);
-    }
+  () => props.projectId,
+  () => {
+    graphData.value = null;
+    setTimeout(async () => {
+      await refresh();
+    }, 150);
+  }
 );
 
-// methods
-const refreshData = () => {
-  intervalToRefresh.value = setInterval(async () => {
-    await refresh()
-  }, props.interval);
-}
-
-refreshData();
+watch(
+  () => props.interval,
+  (newValue) => {
+    if (newValue !== 0) {
+      console.log("dentro do watch interval cont 1", newValue);
+      clearInterval(intervalToRefresh.value);
+      refreshData();
+    } else clearInterval(intervalToRefresh.value);
+  }
+);
 
 onBeforeUnmount(() => {
-  clearInterval(intervalToRefresh.value)
+  clearInterval(intervalToRefresh.value);
 });
 </script>
 

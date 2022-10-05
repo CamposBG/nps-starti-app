@@ -212,11 +212,9 @@ const fakeData = reactive([
 // methods
 const handleChangeVoteType = (value) => {
   score.value = value;
-  console.log({ value });
 };
 
 const search = () => {
-  console.log("search");
   searchTerm.value = searchRef.value;
 };
 
@@ -264,7 +262,6 @@ const loadMore = () => {
    */
   currentPage.value++;
   // FAKE DATA
-  console.log("loadMore");
   fakeData.push({
     date: "2022-10-03",
     votes: [
@@ -316,7 +313,6 @@ watch(response, () => {
   do queryParams que por sua vez dispara esse,
   eu vou dando push dos novos resultados no array cumulativeTableDataReactive
   */
-  console.log("watch response");
   if (response.value?.votes) {
     tableData.value = response.value.votes;
     // pageMeta.value = response.meta;
@@ -325,7 +321,6 @@ watch(response, () => {
 });
 
 watch(queryParams, async (newValue, oldValue) => {
-  console.log("watch queryParams");
   //Só esvazia o array se algum query param mudar sem ser a pagina
   await refresh();
   // if (
