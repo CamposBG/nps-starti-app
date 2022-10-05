@@ -69,10 +69,7 @@ const intervalToRefresh = ref(null);
 // methods
 const refreshData = () => {
   if (props.interval) {
-    console.log("dentro do refresh cont 1", props.interval);
     intervalToRefresh.value = setInterval(async () => {
-      console.log("dentro do refresh", props.interval);
-
       await refresh();
     }, props.interval);
   }
@@ -104,7 +101,6 @@ watch(
   () => props.interval,
   (newValue) => {
     if (newValue !== 0) {
-      console.log("dentro do watch interval cont 1", newValue);
       clearInterval(intervalToRefresh.value);
       refreshData();
     } else clearInterval(intervalToRefresh.value);
