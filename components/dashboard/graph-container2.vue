@@ -16,13 +16,7 @@
         />
       </div>
       <div id="graph-wrapper" class="max-h-96">
-        <div v-if="isLoading" class="skeleton-wrapper h-96">
-          <NSkeleton height="300px" width="50px" />
-          <NSkeleton height="150px" width="50px" />
-          <NSkeleton height="200px" width="50px" />
-          <NSkeleton height="70px" width="50px" />
-        </div>
-        <div v-else class="h-fit">
+        <div class="h-fit">
           <LazyDashboardChart2
             v-show="graphData && graphData.length > 0"
             :chart-data="graphData"

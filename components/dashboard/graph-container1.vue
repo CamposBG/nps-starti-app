@@ -16,11 +16,8 @@
         />
       </div>
       <div id="graph-wrapper" class="max-h-96">
-        <div v-if="isLoading" class="skeleton-wrapper h-96">
-          <NSkeleton circle height="290px" />
-        </div>
-        <div v-else class="w-auto h-96">
-          <LazyDashboardChart1 v-show="graphData" :graph-data="graphData" />
+        <div class="w-auto h-96">
+          <LazyDashboardChart1 :graph-data="graphData" />
           <div
             v-show="!graphData && !isLoading"
             class="h-96 flex justify-center items-center"
@@ -57,7 +54,7 @@ const {
 );
 
 // ref|data
-const graphData = ref(null);
+const graphData = ref(0);
 const period = ref(7);
 const periodMarks = {
   7: "7 dias",
@@ -78,19 +75,19 @@ const refreshData = () => {
 // watch
 
 watch(response, () => {
-  graphData.value = null;
-  if (response.value && response.value.avgNote) {
+  graphData.value = 0;
+  if (response.value?.avgNote) {
     graphData.value = response.value.avgNote;
   }
 });
+
 watch(period, async () => {
-  graphData.value = null;
   await refresh();
 });
+
 watch(
   () => props.projectId,
   () => {
-    graphData.value = null;
     setTimeout(async () => {
       await refresh();
     }, 150);
@@ -111,9 +108,3 @@ onBeforeUnmount(() => {
   clearInterval(intervalToRefresh.value);
 });
 </script>
-
-<style lang="scss" scoped>
-.skeleton-wrapper {
-  @apply flex gap-2 justify-center items-center;
-}
-</style>
