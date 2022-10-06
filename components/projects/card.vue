@@ -1,5 +1,5 @@
 <template>
-  <NCard :title="title" class="hover:cursor-pointer" hoverable size="small">
+  <NCard :title="title" class="hover:cursor-pointer" hoverable>
     <template #header-extra>
       <NTooltip trigger="hover">
         <template #trigger>
@@ -27,32 +27,50 @@
           </div>
         </div>
       </div>
-      <div class="flex flex-col gap-y-2 pl-2">
-        <div v-if="owners.length > 0">
+      <div class="flex flex-col pl-2">
+        <div v-if="owners.length > 0" class="flex items-center">
           <span class="font-bold">
             Donos:
           </span>
-          <template v-for="owner in owners" class="flex flex-wrap gap-2">
-            <NTag :bordered="false">
-              {{ owner }}
-            </NTag>
-          </template>
-          <NTag v-if="ownersExcess > 0" :bordered="false">
-            e mais {{ ownersExcess }}
-          </NTag>
+          <NAvatarGroup :max="4" :options="owners">
+            <template #avatar="{ option }">
+              <NTooltip>
+                <template #trigger>
+                  <NAvatar>
+                    {{ option.trim()[0] }}
+                  </NAvatar>
+                </template>
+                {{ option }}
+              </NTooltip>
+            </template>
+            <template #rest="{ options: restOptions, rest }">
+              <NDropdown :options="createDropdownOptions(restOptions)" placement="top">
+                <NAvatar>+{{ rest }}</NAvatar>
+              </NDropdown>
+            </template>
+          </NAvatarGroup>
         </div>
-        <div v-if="viewers.length > 0">
+        <div v-if="viewers.length > 0" class="flex items-center">
           <span class="font-bold">
-            Visualizadores
+            Visualizadores:
           </span>
-          <template v-for="viewer in viewers" class="flex flex-wrap gap-2">
-            <NTag :bordered="false">
-              {{ viewer }}
-            </NTag>
-          </template>
-          <NTag v-if="viewersExcess > 0" :bordered="false">
-            e mais {{ viewersExcess }}
-          </NTag>
+          <NAvatarGroup :max="4" :options="viewers">
+            <template #avatar="{ option }">
+              <NTooltip>
+                <template #trigger>
+                  <NAvatar>
+                    {{ option.trim()[0] }}
+                  </NAvatar>
+                </template>
+                {{ option }}
+              </NTooltip>
+            </template>
+            <template #rest="{ options: restOptions, rest }">
+              <NDropdown :options="createDropdownOptions(restOptions)" placement="top">
+                <NAvatar>+{{ rest }}</NAvatar>
+              </NDropdown>
+            </template>
+          </NAvatarGroup>
         </div>
       </div>
     </div>
@@ -79,8 +97,11 @@
 
 <script setup>
 import {
+  NAvatar,
+  NAvatarGroup,
   NButton,
   NCard,
+  NDropdown,
   NNumberAnimation,
   NPopconfirm,
   NSpace,
@@ -88,7 +109,7 @@ import {
   NTag,
   NTooltip,
   useDialog,
-  useNotification
+  useNotification,
 } from 'naive-ui';
 import {useStorage} from "vue3-storage";
 
@@ -106,13 +127,12 @@ const props = defineProps({
 
 const owners = ref([]);
 const viewers = ref([]);
-const viewersExcess = ref(0);
-const ownersExcess = ref(0);
 const typeName = ref(null);
 const isUserAdmin = ref(null);
 
 isUserAdmin.value = storage.getStorageSync('user').user_type === 1;
 
+// methods
 const handleEditProject = (name, guid) => {
   nuxtApp.$bus.emit('drawer:open', {
     component: "ProjectsForm",
@@ -165,11 +185,8 @@ const handleOpenDeleteDialog = () => {
 const mountOwnersAndViewers = () => {
   const viewersArray = props.projectData.viewers_name && props.projectData.viewers_name.length > 0 ? props.projectData.viewers_name.split(',') : [];
   const ownersArray = props.projectData.owners_name && props.projectData.owners_name.length > 0 ? props.projectData.owners_name.split(',') : [];
-  viewers.value = viewersArray.slice(0, 2);
-  owners.value = ownersArray.slice(0, 2);
-
-  viewersExcess.value = viewersArray.length > 3 ? viewersArray.length - 3 : 0;
-  ownersExcess.value = ownersArray.length > 3 ? ownersArray.length - 3 : 0;
+  viewers.value = viewersArray;
+  owners.value = ownersArray;
 };
 
 const getProjectTypes = async () => {
@@ -187,6 +204,11 @@ const handleGoToProject = (guid) => {
   router.push('/projects/' + guid + '/widgets')
 };
 
+
+const createDropdownOptions = (options) => options.map((option) => ({
+  key: option,
+  label: option
+}))
 
 await getProjectTypes();
 mountOwnersAndViewers();

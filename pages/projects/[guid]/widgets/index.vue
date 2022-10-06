@@ -22,7 +22,6 @@
             <LazyWidgetSettingCard :description="widget.description" :widget-data="widget"/>
           </NGi>
         </NGrid>
-
       </div>
     </div>
     <div v-else class="flex justify-center items-center">
