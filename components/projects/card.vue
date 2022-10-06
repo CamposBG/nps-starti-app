@@ -17,11 +17,11 @@
           <div>
             <n-statistic>
               <NNumberAnimation
-                  ref="numberAnimationInstRef"
-                  :active="true"
-                  :from="0"
-                  :to="projectData.widgets_configured"
-                  show-separator
+                ref="numberAnimationInstRef"
+                :active="true"
+                :from="0"
+                :to="projectData.widgets_configured"
+                show-separator
               />
             </n-statistic>
           </div>
@@ -29,9 +29,7 @@
       </div>
       <div class="flex flex-col pl-2">
         <div v-if="owners.length > 0" class="flex items-center">
-          <span class="font-bold">
-            Donos:
-          </span>
+          <span class="font-bold"> Donos: </span>
           <NAvatarGroup :max="4" :options="owners">
             <template #avatar="{ option }">
               <NTooltip>
@@ -44,16 +42,17 @@
               </NTooltip>
             </template>
             <template #rest="{ options: restOptions, rest }">
-              <NDropdown :options="createDropdownOptions(restOptions)" placement="top">
+              <NDropdown
+                :options="createDropdownOptions(restOptions)"
+                placement="top"
+              >
                 <NAvatar>+{{ rest }}</NAvatar>
               </NDropdown>
             </template>
           </NAvatarGroup>
         </div>
         <div v-if="viewers.length > 0" class="flex items-center">
-          <span class="font-bold">
-            Visualizadores:
-          </span>
+          <span class="font-bold"> Visualizadores: </span>
           <NAvatarGroup :max="4" :options="viewers">
             <template #avatar="{ option }">
               <NTooltip>
@@ -66,7 +65,10 @@
               </NTooltip>
             </template>
             <template #rest="{ options: restOptions, rest }">
-              <NDropdown :options="createDropdownOptions(restOptions)" placement="top">
+              <NDropdown
+                :options="createDropdownOptions(restOptions)"
+                placement="top"
+              >
                 <NAvatar>+{{ rest }}</NAvatar>
               </NDropdown>
             </template>
@@ -76,17 +78,23 @@
     </div>
     <template v-if="isUserAdmin" #action>
       <NSpace>
-        <NButton color="teal" size="small" type="primary"
-                 @click="handleEditProject(projectData.name, projectData.guid)">
+        <NButton
+          color="teal"
+          size="small"
+          type="primary"
+          @click="handleEditProject(projectData.name, projectData.guid)"
+        >
           Editar
         </NButton>
-        <NPopconfirm :positive-button-props="{color: 'teal'}" :show-icon="false" negative-text="Cancelar"
-                     positive-text="Excluir projeto"
-                     @positive-click="handleDeleteProject">
+        <NPopconfirm
+          :positive-button-props="{ color: 'teal' }"
+          :show-icon="false"
+          negative-text="Cancelar"
+          positive-text="Excluir projeto"
+          @positive-click="handleDeleteProject"
+        >
           <template #activator>
-            <NButton size="small">
-              Excluir
-            </NButton>
+            <NButton size="small"> Excluir </NButton>
           </template>
           Tem certeza que deseja excluir o projeto {{ projectData.name }}?
         </NPopconfirm>
@@ -110,8 +118,8 @@ import {
   NTooltip,
   useDialog,
   useNotification,
-} from 'naive-ui';
-import {useStorage} from "vue3-storage";
+} from "naive-ui";
+import { useStorage } from "vue3-storage";
 
 const nuxtApp = useNuxtApp();
 const router = useRouter();
@@ -119,10 +127,10 @@ const storage = useStorage();
 const dialog = useDialog();
 const notification = useNotification();
 
-const emit = defineEmits(['refresh-projects'])
+const emit = defineEmits(["refresh-projects"]);
 const props = defineProps({
-  title: {type: String, default: '', required: true},
-  projectData: {type: Object, default: null, required: true},
+  title: { type: String, default: "", required: true },
+  projectData: { type: Object, default: null, required: true },
 });
 
 const owners = ref([]);
@@ -130,61 +138,68 @@ const viewers = ref([]);
 const typeName = ref(null);
 const isUserAdmin = ref(null);
 
-isUserAdmin.value = storage.getStorageSync('user').user_type === 1;
+isUserAdmin.value = storage.getStorageSync("user").user_type === 1;
 
 // methods
 const handleEditProject = (name, guid) => {
-  nuxtApp.$bus.emit('drawer:open', {
+  nuxtApp.$bus.emit("drawer:open", {
     component: "ProjectsForm",
-    title: 'Editar o projeto ' + name,
+    title: "Editar o projeto " + name,
     maskClosable: false,
     onClose: async () => {
-      emit('refresh-projects');
+      emit("refresh-projects");
     },
-    props: {guid}
+    props: { guid },
   });
 };
 
 const handleDeleteProject = async () => {
-  const response = await nuxtApp.$repo.projects.deleteProject(props.projectData.guid);
+  const response = await nuxtApp.$repo.projects.deleteProject(
+    props.projectData.guid
+  );
 
   if (response) {
     notification.success({
       content: "Sucesso",
-      meta: 'Projeto excluído',
+      meta: "Projeto excluído",
       duration: 2000,
-      keepAliveOnHover: true
+      keepAliveOnHover: true,
     });
-    emit('refresh-projects')
+    emit("refresh-projects");
   } else if (response.error) {
     notification.error({
       content: "Erro",
       meta: response.error,
       duration: 2500,
-      keepAliveOnHover: true
+      keepAliveOnHover: true,
     });
   }
 };
 
 const handleOpenDeleteDialog = () => {
   dialog.warning({
-    title: 'Excluir projeto',
+    title: "Excluir projeto",
     content: `Tem certeza que deseja excluir o projeto ${props.projectData.name}?`,
     negativeText: "Cancelar",
     positiveText: "Excluir projeto",
     onPositiveClick: handleDeleteProject,
-    onNegativeClick: () => {
-    },
+    onNegativeClick: () => {},
     positiveButtonProps: {
-      color: 'teal'
+      color: "teal",
     },
-    showIcon: false
-  })
+    showIcon: false,
+  });
 };
 
 const mountOwnersAndViewers = () => {
-  const viewersArray = props.projectData.viewers_name && props.projectData.viewers_name.length > 0 ? props.projectData.viewers_name.split(',') : [];
-  const ownersArray = props.projectData.owners_name && props.projectData.owners_name.length > 0 ? props.projectData.owners_name.split(',') : [];
+  const viewersArray =
+    props.projectData.viewers_name && props.projectData.viewers_name.length > 0
+      ? props.projectData.viewers_name.split(",")
+      : [];
+  const ownersArray =
+    props.projectData.owners_name && props.projectData.owners_name.length > 0
+      ? props.projectData.owners_name.split(",")
+      : [];
   viewers.value = viewersArray;
   owners.value = ownersArray;
 };
@@ -201,14 +216,14 @@ const getProjectTypes = async () => {
 };
 
 const handleGoToProject = (guid) => {
-  router.push('/projects/' + guid + '/widgets')
+  router.push("/projects/" + guid + "/widgets");
 };
 
-
-const createDropdownOptions = (options) => options.map((option) => ({
-  key: option,
-  label: option
-}))
+const createDropdownOptions = (options) =>
+  options.map((option) => ({
+    key: option,
+    label: option,
+  }));
 
 await getProjectTypes();
 mountOwnersAndViewers();
@@ -218,5 +233,10 @@ mountOwnersAndViewers();
 .n-card {
   max-width: 400px;
 }
+</style>
 
+<style>
+.n-card > .n-card-header:has(.n-tag) {
+  flex-direction: column !important;
+}
 </style>

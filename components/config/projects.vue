@@ -3,16 +3,27 @@
     <NPageHeader>
       <template #title>
         <p class="flex text-2xl font-bold">Configuração dos projetos</p>
-
       </template>
       <template #extra>
         <NSpace align="center" justify="space-between">
-          <NButton v-if="isUserAdmin" color="teal" size="small" type="primary" @click="handleAddProject">
+          <NButton
+            v-if="isUserAdmin"
+            color="teal"
+            size="small"
+            type="primary"
+            @click="handleAddProject"
+          >
             Adicionar projeto
           </NButton>
-          <NInput v-model:value="search" clearable placeholder="Pesquise um projeto..." round @input="changeSearch">
+          <NInput
+            v-model:value="search"
+            clearable
+            placeholder="Pesquise um projeto..."
+            round
+            @input="changeSearch"
+          >
             <template #prefix>
-              <Search class="w-3"/>
+              <Search class="w-3" />
             </template>
           </NInput>
         </NSpace>
@@ -21,18 +32,23 @@
 
     <div class="mt-5">
       <div v-if="pending" class="flex justify-center items-center">
-        <NSpin size="large"/>
+        <NSpin size="large" />
       </div>
-      <NEmpty v-else-if="projects.length === 0 && !search" description="Nenhum projeto cadastrado ainda">
+      <NEmpty
+        v-else-if="projects.length === 0 && !search"
+        description="Nenhum projeto cadastrado ainda"
+      >
       </NEmpty>
-      <NEmpty v-else-if="projects.length === 0 && search && !pending"
-              description="Nenhum projeto encontrado com esse nome"/>
+      <NEmpty
+        v-else-if="projects.length === 0 && search && !pending"
+        description="Nenhum projeto encontrado com esse nome"
+      />
       <div v-else>
         <NGrid :x-gap="12" :y-gap="12" :cols="3">
           <NGi v-for="project in projects" :key="`project-${project.id}`">
-            <LazyProjectsCard 
-              :project-data="project" 
-              :title="project.name" 
+            <LazyProjectsCard
+              :project-data="project"
+              :title="project.name"
               @refresh-projects="refresh"
             />
           </NGi>
@@ -43,32 +59,43 @@
 </template>
 
 <script setup>
-import {NButton, NEmpty, NInput, NPageHeader, NSpace, NSpin, useMessage, NGrid, NGi} from 'naive-ui';
-import {Search} from '@vicons/fa';
-import {useStorage} from "vue3-storage";
+import {
+  NButton,
+  NEmpty,
+  NInput,
+  NPageHeader,
+  NSpace,
+  NSpin,
+  useMessage,
+  NGrid,
+  NGi,
+} from "naive-ui";
+import { Search } from "@vicons/fa";
+import { useStorage } from "vue3-storage";
 
 const message = useMessage();
 const nuxtApp = useNuxtApp();
 const storage = useStorage();
 
 const projects = ref([]);
-const search = ref('');
+const search = ref("");
 const isUserAdmin = ref(null);
 
-isUserAdmin.value = storage.getStorageSync('user').user_type === 1;
+isUserAdmin.value = storage.getStorageSync("user").user_type === 1;
 
 const {
   data: response,
   refresh,
-  pending
-} = useLazyAsyncData(`projects-list-${Math.random()}`, () => nuxtApp.$repo.projects.listProjects(search.value));
-
+  pending,
+} = useLazyAsyncData(`projects-list-${Math.random()}`, () =>
+  nuxtApp.$repo.projects.listProjects(search.value)
+);
 
 // methods
 const handleAddProject = () => {
-  nuxtApp.$bus.emit('drawer:open', {
-    component: 'ProjectsForm',
-    title: 'Adicionar projeto',
+  nuxtApp.$bus.emit("drawer:open", {
+    component: "ProjectsForm",
+    title: "Adicionar projeto",
     onClose: async () => {
       await refresh();
     },
@@ -79,7 +106,7 @@ const changeSearch = nuxtApp.$utils.debounce(async () => {
   if (search.value.length > 3 || search.value.length === 0) {
     await refresh();
   }
-}, 500)
+}, 500);
 
 // watch
 watch(response, () => {
@@ -87,7 +114,6 @@ watch(response, () => {
     projects.value = response.value.data;
   }
 });
-
 </script>
 
 <style lang="scss" scoped>
@@ -99,4 +125,3 @@ watch(response, () => {
   }
 }
 </style>
-
