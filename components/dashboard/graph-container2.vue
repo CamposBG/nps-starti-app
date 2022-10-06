@@ -18,7 +18,6 @@
       <div id="graph-wrapper" class="max-h-96">
         <div class="h-fit">
           <LazyDashboardChart2
-            v-show="graphData && graphData.length > 0"
             :chart-data="graphData"
             :period-selected="period"
             :project-id="projectId"
