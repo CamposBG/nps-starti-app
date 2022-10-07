@@ -4,6 +4,9 @@
       <NFormItem label="Descrição" path="description">
         <NInput v-model:value="props.formValue.description" placeholder="Digite a descrição do widget"/>
       </NFormItem>
+      <NFormItem label="Mostrar em dispositivos móveis?" label-placement="left" path="enableMobile">
+        <NSwitch v-model:value="props.formValue.enableMobile"/>
+      </NFormItem>
       <NFormItem path="timesToShow" require-mark-placement="left">
         <template #label>
           <div class="flex flex-col">
@@ -25,7 +28,7 @@
 </template>
 
 <script setup>
-import {NCard, NFormItem, NInput, NInputNumber, NSelect} from 'naive-ui'
+import {NCard, NFormItem, NInput, NInputNumber, NSelect, NSwitch} from 'naive-ui'
 
 const emit = defineEmits(["updateForm"]);
 

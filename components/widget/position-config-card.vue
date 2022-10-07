@@ -1,9 +1,6 @@
 <template>
   <div>
-    <NCard size="large" title="Posicionamento do widget e propabilidade de aparição">
-      <NFormItem label="Habilitar no mobile?" label-placement="left" path="enableMobile">
-        <NSwitch v-model:value="props.formValue.enableMobile"/>
-      </NFormItem>
+    <NCard size="large" title="Opções de posicionamento do widget">
       <NFormItem label="Posicionamento onde o widget irá aparecer" path="widgetPosition">
         <LazyWidgetSelectPosition :initial-value="props.formValue.widgetPosition"
                                   @selectPosition="(value) => props.formValue.widgetPosition = value"/>
@@ -14,6 +11,28 @@
                  :step="5"
                  placement="bottom"
                  show-tooltip/>
+      </NFormItem>
+      <NFormItem label-placement="left" path="showBackdrop">
+        <template #label>
+          <div class="flex flex-col items-start">
+            <span>
+              Blur na página?
+            </span>
+            <small>Caso habilitado, quando o widget for mostrado, todo o fundo atrás dele ficará embassado</small>
+          </div>
+        </template>
+        <NSwitch v-model:value="props.formValue.showBackdrop"/>
+      </NFormItem>
+      <NFormItem label-placement="left" path="showVoteButton">
+        <template #label>
+          <div class="flex flex-col items-start">
+            <span>
+              Mostrar botão para avaliar (forçar aparição do widget)?
+            </span>
+            <small>Será mostrado um botão para abrir o widget, caso o mesmo não apareça para o usuário</small>
+          </div>
+        </template>
+        <NSwitch v-model:value="props.formValue.showVoteButton"/>
       </NFormItem>
     </NCard>
   </div>

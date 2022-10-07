@@ -1,6 +1,6 @@
 <template>
   <div>
-    <NCard size="large" title="Configuração de cor">
+    <NCard size="large" title="Customização do widget ">
       <NForm ref="formRef" :inline="false" :model="formValue">
         <NFormItem label="Cor principal do widget" path="color">
           <NColorPicker v-model:value="props.formValue.color" :show-alpha="false"/>

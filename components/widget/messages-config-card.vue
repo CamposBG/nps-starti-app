@@ -1,6 +1,6 @@
 <template>
   <div>
-    <NCard size="large" title="Configuração das mensagens">
+    <NCard size="large" title="Configuração dos textos">
       <NFormItem label="Alterar mensagem padrão do widget?" label-placement="left" path="enableCustomMessage">
         <NSwitch v-model:value="props.formValue.enableCustomMessage"/>
       </NFormItem>

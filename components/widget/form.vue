@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isLoading">
+  <div v-if="isLoading" class="flex justify-center items-center my-48">
     <NSpin size="large"/>
   </div>
   <NForm v-else ref="formRef" :inline="false" :model="formValue" :rules="rules">
@@ -18,10 +18,13 @@
         <LazyWidgetDomainConfigCard :formValue="formValue"/>
       </NGi>
       <NGi>
-        <LazyWidgetColorConfigCard :formValue="formValue"/>
+        <LazyWidgetStyleCustomizeConfigCard :formValue="formValue"/>
       </NGi>
-         <NGi v-if="formValue.widget_guid != null">
-        <LazyWidgetCode :formValue="formValue" />
+      <NGi v-if="formValue.widget_guid != null">
+        <LazyWidgetCode v-if="formValue.widget_guid != null" :formValue="formValue"/>
+      </NGi>
+      <NGi v-if="formValue.showVoteButton">
+        <LazyWidgetStyleCustomizeVoteButtonCard :formValue="formValue"/>
       </NGi>
       <NGi :span="2">
         <NSpace>
@@ -78,7 +81,17 @@ const formValue = ref({
   domains: [],
   color: '#FFFFFF',
   showVoteButton: false,
-  widget_guid: null
+  widget_guid: null,
+  forceJustification: false,
+  bgColor: '#FFFFFF',
+  showBackdrop: false,
+  voteButtonPosition: '0-15-15-0',
+  voteButtonText: 'Avaliar',
+  voteButtonColor: '#FFFFFF',
+  fontSize: 12,
+  borderSize: 0,
+  borderColor: '#FFFFFF',
+  fontFamily: null
 });
 
 rules.value = {
@@ -100,6 +113,11 @@ rules.value = {
   color: {
     required: true,
     message: "A cor é obrigatória",
+    trigger: ["blur"]
+  },
+  voteButtonText: {
+    required: true,
+    message: "O texto do botão de avaliar é obrigatório",
     trigger: ["blur"]
   },
   timesToShow: {
@@ -143,6 +161,15 @@ rules.value = {
     validator(rule, value) {
       if (value === null || value === undefined) {
         return new Error("É necessário escolher uma posição onde o widget irá aparecer")
+      }
+    }
+  },
+  voteButtonPosition: {
+    required: true,
+    trigger: ["blur"],
+    validator(rule, value) {
+      if (value === null || value === undefined) {
+        return new Error("É necessário escolher uma posição onde o botão de avaliar irá aparecer")
       }
     }
   },
@@ -227,9 +254,9 @@ onBeforeMount(async () => {
       formValue.value.enableMobile = response.enable_mobile;
       formValue.value.widgetPosition = response.widget_position;
       formValue.value.probabilityToShow = response.probability_to_show;
-      formValue.value.enableCustomMessage = response.enable_custom_message;
+      formValue.value.enableCustomMessage = response.enable_custom_message === 1;
       formValue.value.message = response.message;
-      formValue.value.enableCustomThanksMessage = response.enable_custom_thanks_message;
+      formValue.value.enableCustomThanksMessage = response.enable_custom_thanks_message === 1;
       formValue.value.thanksMessage = response.thanks_message;
       formValue.value.domains = response.domains.length > 0 ? response.domains.split(',') : [];
       formValue.value.color = response.color;
