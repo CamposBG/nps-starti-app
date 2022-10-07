@@ -44,7 +44,7 @@
         description="Nenhum projeto encontrado com esse nome"
       />
       <div v-else>
-        <NGrid :x-gap="12" :y-gap="12" :cols="3">
+        <NGrid :x-gap="12" :y-gap="12" cols="1 m:2 xl:3" responsive="screen">
           <NGi v-for="project in projects" :key="`project-${project.id}`">
             <LazyProjectsCard
               :project-data="project"
