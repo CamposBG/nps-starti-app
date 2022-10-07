@@ -28,7 +28,7 @@
       </NGi>
       <NGi :span="2">
         <NSpace>
-          <NButton :loading="isSubmitting" color="teal" icon-placement="right" type="primary"
+          <NButton :loading="isSubmitting" color="teal" icon-placement="left" type="primary"
                    @click="handleSubmitConfig(true)">
             Salvar e ativar configuração
             <template #icon>
@@ -91,7 +91,9 @@ const formValue = ref({
   fontSize: 12,
   borderSize: 0,
   borderColor: '#FFFFFF',
-  fontFamily: null
+  fontFamily: null,
+  fontColor: '#000000',
+  voteButtonFontColor: '#000000'
 });
 
 rules.value = {
@@ -113,6 +115,16 @@ rules.value = {
   color: {
     required: true,
     message: "A cor é obrigatória",
+    trigger: ["blur"]
+  },
+  fontColor: {
+    required: true,
+    message: "A cor do texto é obrigatória",
+    trigger: ["blur"]
+  },
+  bgColor: {
+    required: true,
+    message: "A cor de fundo é obrigatória",
     trigger: ["blur"]
   },
   voteButtonText: {

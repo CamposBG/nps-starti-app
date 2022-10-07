@@ -4,13 +4,18 @@
       <NFormItem label="Cor principal" path="color">
         <NColorPicker v-model:value="props.formValue.color" :show-alpha="false"/>
       </NFormItem>
-      <NFormItem label="Cor de fundo" path="bgColor">
+      <NFormItem label="Cor do corpo do widget" path="bgColor">
         <NColorPicker v-model:value="props.formValue.bgColor" :show-alpha="false"/>
       </NFormItem>
-      <NFormItem label="Tamanho da borda (px)" path="borderSize">
+      <NFormItem label="Cor dos textos" path="fontColor">
+        <NColorPicker v-model:value="props.formValue.fontColor" :show-alpha="false"/>
+      </NFormItem>
+      <NFormItem label="Deseja que o widget tenha borda?" label-placement="left">
+        <NSwitch v-model:value="hasBorder"/>
+      </NFormItem>
+      <NFormItem v-if="hasBorder" label="Tamanho da borda (px)" path="borderSize">
         <NInputNumber v-model:value="props.formValue.borderSize" clearable min="0"
                       placeholder="Digite o tamanho da borda"/>
-      </NFormItem>
       </NFormItem>
       <NFormItem v-if="props.formValue.borderSize > 0" label="Cor da borda" path="borderColor">
         <NColorPicker v-model:value="props.formValue.borderColor" :show-alpha="false"/>
@@ -23,14 +28,15 @@
         <NSwitch v-model:value="preview"/>
       </NFormItem>
       <NFormItem label="Fonte utilizada nos textos" path="showVoteButton">
-        <NSelect v-model:value="props.formValue.fontFamily" :options="fontsFamiliesOptions"
-                 placeholder="Escolha uma opção"/>
+        <!-- <NSelect v-model:value="props.formValue.fontFamily" :options="fontsFamiliesOptions"
+                 placeholder="Escolha uma opção"/> -->
+                 <div id="font-picker"></div>
       </NFormItem>
-      <NFormItem label="Tamanho da fonte" path="fontSize">
+      <NFormItem label="Tamanho base da fonte (px)" path="fontSize">
         <NInputNumber v-model:value="props.formValue.fontSize" clearable placeholder="Digite o tempo"/>
       </NFormItem>
       <NFormItem label="Preview da fonte" path="showVoteButton">
-        <div class="font-selected --font:Roboto">
+        <div class="apply-font" :style="{fontSize: `${props.formValue.fontSize}px`}">
           Esse é o preview ta fonte selecionada
         </div>
       </NFormItem>
@@ -63,8 +69,8 @@
 </template>
 
 <script setup>
-// import 'https://fonts.googleapis.com/css2?family=Roboto&display=swap'
-import {NCard, NColorPicker, NFormItem, NInput, NInputNumber, NSelect, NSwitch} from 'naive-ui'
+import {NCard, NColorPicker, NFormItem, NInput, NInputNumber, NSelect, NSwitch} from 'naive-ui';
+import FontPicker from 'font-picker';
 
 const nuxtApp = useNuxtApp();
 
@@ -74,28 +80,36 @@ const props = defineProps({
   }
 });
 
+const fontPicker = ref(null);
+const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+const hasBorder = ref(false);
+
 const preview = ref(false);
-const url = ref('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+const font1 = ref(null);
 
-const fontsFamiliesOptions = ref([
-  {
-    label: 'Roboto',
-    value: 'Roboto',
-    url: 'https://fonts.googleapis.com/css2?family=Roboto&display=swap'
-  },
-  {
-    label: 'Noto Sans Mono',
-    value: 'Noto Sans Mono'
-  },
-]);
 
+// watch
+watch(hasBorder, (value) => {
+  if (!value) {
+    props.formValue.borderSize = 0;
+  }
+});
+
+console.log({apiKey});
+
+// lifecycles
+onMounted(() => {
+  fontPicker.value = new FontPicker(
+    apiKey,
+  'Roboto',
+  { limit: 100}
+);
+});
 </script>
 
-<style lang="scss" scoped>
-
-
-.font-selected {
-  font-family: v-bind('props.formValue.fontFamily');
-}
-
+<style>
+ .dropdown-button {
+  background-color: #fff !important;
+  border-radius: 50% !important;
+ }
 </style>

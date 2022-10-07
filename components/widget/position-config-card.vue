@@ -1,6 +1,9 @@
 <template>
   <div>
     <NCard size="large" title="Opções de posicionamento do widget">
+      <NStatistic label="Probabilidade do widget aparecer">
+        {{props.formValue.probabilityToShow}}%
+      </NStatistic>
       <NFormItem label="Posicionamento onde o widget irá aparecer" path="widgetPosition">
         <LazyWidgetSelectPosition :initial-value="props.formValue.widgetPosition"
                                   @selectPosition="(value) => props.formValue.widgetPosition = value"/>
@@ -9,8 +12,7 @@
         <NSlider v-model:value="props.formValue.probabilityToShow" :format-tooltip="value => `${value}%`"
                  :marks="marks"
                  :step="5"
-                 placement="bottom"
-                 show-tooltip/>
+                 placement="bottom"/>
       </NFormItem>
       <NFormItem label-placement="left" path="showBackdrop">
         <template #label>
@@ -39,7 +41,7 @@
 </template>
 
 <script setup>
-import {NCard, NFormItem, NSlider, NSwitch} from 'naive-ui'
+import {NCard, NFormItem, NSlider, NSwitch, NStatistic} from 'naive-ui'
 
 
 const props = defineProps({

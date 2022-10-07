@@ -9,11 +9,15 @@
       <NFormItem label="Cor principal do botão" path="voteButtonColor">
         <NColorPicker v-model:value="props.formValue.voteButtonColor" :show-alpha="false"/>
       </NFormItem>
+      </NFormItem>
+      <NFormItem label="Cor do texto do botão" path="voteButtonFontColor">
+        <NColorPicker v-model:value="props.formValue.voteButtonFontColor" :show-alpha="false"/>
+      </NFormItem>
       <NFormItem label="Visualizar um exemplo do widget?" label-placement="left">
         <NSwitch v-model:value="preview"/>
       </NFormItem>
       <NFormItem v-if="props.formValue.showVoteButton" label="Posicionamento onde o botão de avaliar irá aparecer" path="voteButtonPosition">
-        <LazyWidgetSelectPosition :initial-value="props.formValue.voteButtonPosition"
+        <LazyWidgetSelectVoteButtonPosition :initial-value="props.formValue.voteButtonPosition"
                                   @selectPosition="(value) => props.formValue.voteButtonPosition = value"/>
       </NFormItem>
     </NCard>
