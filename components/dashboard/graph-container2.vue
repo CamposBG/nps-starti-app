@@ -18,13 +18,14 @@
       <div id="graph-wrapper" class="max-h-96">
         <div class="h-fit">
           <LazyDashboardChart2
+            v-show="!isGraphEmpty"
             :chart-data="graphData"
             :period-selected="period"
             :project-id="projectId"
             :user="user"
           />
           <div
-            v-show="graphData && graphData.length === 0 && !isLoading"
+            v-show="isGraphEmpty"
             class="h-96 flex justify-center items-center"
           >
             <NEmpty description="Não há dados no período selecionado" />
@@ -36,7 +37,7 @@
 </template>
 
 <script setup>
-import { NEmpty, NSkeleton, NSlider } from "naive-ui";
+import { NEmpty, NSlider } from "naive-ui";
 
 const props = defineProps({
   title: { type: String, default: "Titulo do grafico" },
@@ -48,18 +49,17 @@ const props = defineProps({
 const nuxtApp = useNuxtApp();
 
 //async data
-const {
-  data: response,
-  refresh,
-  pending: isLoading,
-} = await useLazyAsyncData(`graph-second-key-${Math.random()}`, () =>
-  nuxtApp.$repo.dash.secondGraph({
-    projectId: props.projectId,
-    periodSelected: period.value,
-  })
+const { data: response, refresh } = await useLazyAsyncData(
+  `graph-second-key-${Math.random()}`,
+  () =>
+    nuxtApp.$repo.dash.secondGraph({
+      projectId: props.projectId,
+      periodSelected: period.value,
+    })
 );
 
 // ref|data
+const isGraphEmpty = ref(false);
 const period = ref(7);
 const periodMarks = {
   7: "7 dias",
@@ -70,6 +70,17 @@ const graphData = ref([]);
 const intervalToRefresh = ref(null);
 
 // methods
+
+const checkIfGraphIsEmpty = () => {
+  setTimeout(() => {
+    if (graphData.value?.length === 0) {
+      isGraphEmpty.value = true;
+    } else {
+      isGraphEmpty.value = false;
+    }
+  }, 500);
+};
+
 const refreshData = () => {
   if (props.interval) {
     intervalToRefresh.value = setInterval(async () => {
@@ -82,6 +93,7 @@ const refreshData = () => {
 watch(response, () => {
   if (response.value && response.value.avgNotes) {
     graphData.value = response.value.avgNotes;
+    checkIfGraphIsEmpty();
   }
 });
 

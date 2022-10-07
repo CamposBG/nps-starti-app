@@ -27,11 +27,13 @@
       <LazyDashboardGraphContainer1
         :interval="interval"
         :project-id="project"
+        :project-type="projectType || 1"
         :title="'Média dentro do período'"
       />
       <LazyDashboardGraphContainer2
         :interval="interval"
         :project-id="project"
+        :project-type="projectType || 1"
         :title="'Médias diárias'"
       />
     </div>
@@ -112,6 +114,7 @@ if (userData.projects?.length > 0) {
     label: element.name,
     value: element.id,
     disabled: false,
+    type: element.type,
   }));
 }
 
