@@ -15,7 +15,7 @@
           :collapsed-width="64"
           :on-update:collapsed="changeIconPosition"
           :width="240"
-          bordered
+          :bordered="false"
           collapse-mode="width"
           content-style="height: 100%"
           show-trigger
@@ -153,7 +153,9 @@ onMounted(() => {
 .n-layout-sider {
   height: 100vh !important;
 }
-
+.n-layout--static-positioned {
+  border-left: 1px solid rgba(0, 0, 0, 0.103);
+}
 .n-layout-toggle-button {
   position: fixed !important;
 }
