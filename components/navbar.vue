@@ -1,7 +1,7 @@
 <template>
   <div class="h-1/2">
     <div
-      class="flex justify-between p-2 border-b z-40 shadow-sm sticky top-0 bg-white"
+      class="flex justify-between p-2 border-b z-[3000] shadow-sm sticky top-0 bg-white"
     >
       <div class="flex items-center justify-center">Starti NPS</div>
       <div>
