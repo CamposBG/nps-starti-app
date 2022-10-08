@@ -17,13 +17,17 @@
       </div>
       <div id="graph-wrapper" class="max-h-96">
         <div class="w-auto h-96">
-          <LazyDashboardChart1 :graph-data="graphData" />
-          <div
-            v-show="!graphData && !isLoading"
+          <LazyDashboardChart1
+            v-if="projectType == 1 && graphData"
+            :graph-data="graphData"
+          />
+          <LazyDashboardChart1Type2 v-if="projectType == 2" :graph-data="1.3" />
+          <!-- <div
+            v-show="!graphData"
             class="h-96 flex justify-center items-center"
           >
             <NEmpty description="Não há dados no período selecionado" />
-          </div>
+          </div> -->
         </div>
       </div>
     </div>
@@ -37,6 +41,7 @@ const props = defineProps({
   title: { type: String, default: "Titulo do grafico" },
   projectId: { type: Number },
   interval: { type: Number, default: 0 },
+  projectType: { type: Number },
 });
 // providers
 const nuxtApp = useNuxtApp();
@@ -54,7 +59,7 @@ const {
 );
 
 // ref|data
-const graphData = ref(0);
+const graphData = ref(null);
 const period = ref(7);
 const periodMarks = {
   7: "7 dias",
@@ -75,7 +80,7 @@ const refreshData = () => {
 // watch
 
 watch(response, () => {
-  graphData.value = 0;
+  graphData.value = null;
   if (response.value?.avgNote) {
     graphData.value = response.value.avgNote;
   }

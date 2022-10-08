@@ -23,6 +23,7 @@
             :period-selected="period"
             :project-id="projectId"
             :user="user"
+            :project-type="projectType"
           />
           <div
             v-show="isGraphEmpty"
@@ -43,8 +44,8 @@ const props = defineProps({
   title: { type: String, default: "Titulo do grafico" },
   projectId: { type: Number },
   interval: { type: Number, default: 0 },
+  projectType: { type: Number },
 });
-
 // providers
 const nuxtApp = useNuxtApp();
 

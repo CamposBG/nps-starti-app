@@ -27,20 +27,22 @@
       <LazyDashboardGraphContainer1
         :interval="interval"
         :project-id="project"
-        :project-type="projectType || 1"
+        :project-type="projectType"
         :title="'Média dentro do período'"
       />
       <LazyDashboardGraphContainer2
         :interval="interval"
         :project-id="project"
-        :project-type="projectType || 1"
+        :project-type="projectType"
         :title="'Médias diárias'"
       />
     </div>
     <div v-if="project" class="mt-10">
-      <!-- <LazyDashboardTable/> -->
       <LazyDashboardTimeline :project-id="project" />
     </div>
+    <pre>
+      {{ projectType }}
+    </pre>
   </div>
 </template>
 
@@ -88,24 +90,6 @@ const mappedIntervals = ref([
     disabled: false,
   },
 ]);
-const scoreOptions = [
-  {
-    label: "Todos",
-    value: "all",
-  },
-  {
-    label: "Detratores",
-    value: "detractors", // 0-6
-  },
-  {
-    label: "Passivos",
-    value: "passives", // 7-8
-  },
-  {
-    label: "Promotores",
-    value: "promoters", // 9-10
-  },
-];
 
 let mappedProjects;
 
@@ -118,6 +102,17 @@ if (userData.projects?.length > 0) {
   }));
 }
 
+// computed
+const projectType = computed(() => {
+  if (project) {
+    const projectSelected = mappedProjects.filter(
+      (e) => e.value === project.value
+    );
+    return projectSelected[0]?.type;
+  }
+});
+
+// lifecycle
 onMounted(() => {
   if (mappedProjects) {
     if (Object.keys(mappedProjects.length > 0)) {
