@@ -11,8 +11,8 @@ export default defineNuxtPlugin((nuxtApp) => {
     useState("beforeEach", () => "ok");
 
     nuxtApp.$router.options.scrollBehavior = () => ({
-      left: 0,
-      top: 0,
+      // left: 0,
+      // top: 0,
     });
 
     nuxtApp.provide("repo", new Repository(nuxtApp));
