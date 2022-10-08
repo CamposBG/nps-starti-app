@@ -17,19 +17,21 @@
       </div>
       <div id="graph-wrapper" class="max-h-96">
         <div class="h-fit">
-          <LazyDashboardChart2
-            v-show="!isGraphEmpty"
-            :chart-data="graphData"
-            :period-selected="period"
-            :project-id="projectId"
-            :user="user"
-            :project-type="projectType"
-          />
           <div
-            v-show="isGraphEmpty"
+            v-if="isGraphEmpty"
             class="h-96 flex justify-center items-center"
           >
             <NEmpty description="Não há dados no período selecionado" />
+          </div>
+          <div v-else>
+            <LazyDashboardChart2
+              v-if="projectType === 1"
+              :chart-data="graphData"
+            />
+            <LazyDashboardChart2Type2
+              v-else-if="projectType === 2"
+              :chart-data="graphData"
+            />
           </div>
         </div>
       </div>
@@ -106,6 +108,8 @@ watch(period, async () => {
 watch(
   () => props.projectId,
   () => {
+    graphData.value = [];
+    period.value = 7;
     setTimeout(() => {
       refresh();
     }, 150);

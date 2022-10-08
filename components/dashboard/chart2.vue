@@ -1,13 +1,13 @@
 <template>
   <div>
-    <VueEcharts ref="graph" :option="chartData" class="h-96"/>
+    <VueEcharts ref="graph" :option="chartData" class="h-96" />
   </div>
 </template>
 <script script setup>
-import {VueEcharts} from "vue3-echarts";
+import { VueEcharts } from "vue3-echarts";
 
 const props = defineProps({
-  chartData: {type: Array, default: []},
+  chartData: { type: Array, default: [] },
 });
 
 // data|refs
@@ -16,15 +16,17 @@ const chartData = {
   tooltip: {
     trigger: "axis",
     formatter: (seriesName) => {
-      const formattedDate = seriesName[0].axisValue.split("-").reverse().join("/");
+      const formattedDate = seriesName[0].axisValue
+        .split("-")
+        .reverse()
+        .join("/");
       return `${formattedDate} <br> Nota: ${seriesName[0].value} <br> ${
-          seriesName[0].value <= 6
-              ? "<strong>Detrator<strong>"
-              : seriesName[0].value <= 8
-                  ? "<strong>Passivo<strong>"
-                  : "<strong>Promotor<strong>"
+        seriesName[0].value <= 6
+          ? "<strong>Detrator<strong>"
+          : seriesName[0].value <= 8
+          ? "<strong>Passivo<strong>"
+          : "<strong>Promotor<strong>"
       } `;
-      // return formattedDate + "<br> nota: " + seriesName[0].value + ;
     },
   },
   xAxis: {
@@ -32,15 +34,7 @@ const chartData = {
     data: props.chartData.map((e) => e.date),
     axisLabel: {
       formatter: (value, index) => {
-        // const date = new Date(`${value} `);
         const date = value.split("-").reverse().join("/");
-
-        // const formattedDate =
-        //   date.getDate() +
-        //   "/" +
-        //   (date.getMonth() + 1) +
-        //   "/" +
-        //   date.getFullYear();
         return date;
       },
     },
@@ -98,41 +92,41 @@ const chartData = {
 };
 
 watch(
-    () => props.chartData,
-    () => {
-      graph.value.setOption({
-        xAxis: {
-          data: props.chartData.map((e) => e.date),
+  () => props.chartData,
+  () => {
+    graph.value.setOption({
+      xAxis: {
+        data: props.chartData.map((e) => e.date),
+      },
+      series: [
+        {
+          data: props.chartData.map((e) => {
+            if (e.noteAvg <= 6) {
+              return {
+                value: e.noteAvg,
+                itemStyle: {
+                  color: "#e49c9c",
+                },
+              };
+            } else if (e.noteAvg <= 8) {
+              return {
+                value: e.noteAvg,
+                itemStyle: {
+                  color: "#e4e09c",
+                },
+              };
+            } else {
+              return {
+                value: e.noteAvg,
+                itemStyle: {
+                  color: "#9ce4ab",
+                },
+              };
+            }
+          }),
         },
-        series: [
-          {
-            data: props.chartData.map((e) => {
-              if (e.noteAvg <= 6) {
-                return {
-                  value: e.noteAvg,
-                  itemStyle: {
-                    color: "#e49c9c",
-                  },
-                };
-              } else if (e.noteAvg <= 8) {
-                return {
-                  value: e.noteAvg,
-                  itemStyle: {
-                    color: "#e4e09c",
-                  },
-                };
-              } else {
-                return {
-                  value: e.noteAvg,
-                  itemStyle: {
-                    color: "#9ce4ab",
-                  },
-                };
-              }
-            }),
-          },
-        ],
-      });
-    }
+      ],
+    });
+  }
 );
 </script>

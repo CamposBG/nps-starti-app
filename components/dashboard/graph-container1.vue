@@ -95,6 +95,7 @@ watch(
   () => props.projectId,
   () => {
     graphData.value = null;
+    period.value = 7;
     setTimeout(async () => {
       await refresh();
     }, 150);
