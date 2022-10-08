@@ -18,16 +18,19 @@
       <div id="graph-wrapper" class="max-h-96">
         <div class="w-auto h-96">
           <LazyDashboardChart1
-            v-if="projectType == 1 && graphData"
+            v-if="projectType === 1 && graphData"
             :graph-data="graphData"
           />
-          <LazyDashboardChart1Type2 v-if="projectType == 2" :graph-data="1.3" />
-          <!-- <div
+          <LazyDashboardChart1Type2
+            v-else-if="projectType === 2 && graphData"
+            :graph-data="graphData"
+          />
+          <div
             v-show="!graphData"
             class="h-96 flex justify-center items-center"
           >
             <NEmpty description="Não há dados no período selecionado" />
-          </div> -->
+          </div>
         </div>
       </div>
     </div>
@@ -35,7 +38,7 @@
 </template>
 
 <script setup>
-import { NEmpty, NSkeleton, NSlider } from "naive-ui";
+import { NEmpty, NSlider } from "naive-ui";
 
 const props = defineProps({
   title: { type: String, default: "Titulo do grafico" },
@@ -47,15 +50,13 @@ const props = defineProps({
 const nuxtApp = useNuxtApp();
 
 //async data
-const {
-  data: response,
-  refresh,
-  pending: isLoading,
-} = await useLazyAsyncData(`graph-key-${Math.random()}`, () =>
-  nuxtApp.$repo.dash.firstGraph({
-    projectId: props.projectId,
-    periodSelected: period.value,
-  })
+const { data: response, refresh } = await useLazyAsyncData(
+  `graph-key-${Math.random()}`,
+  () =>
+    nuxtApp.$repo.dash.firstGraph({
+      projectId: props.projectId,
+      periodSelected: period.value,
+    })
 );
 
 // ref|data
@@ -93,6 +94,7 @@ watch(period, async () => {
 watch(
   () => props.projectId,
   () => {
+    graphData.value = null;
     setTimeout(async () => {
       await refresh();
     }, 150);

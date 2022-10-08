@@ -20,6 +20,8 @@ const props = defineProps({
   graphData: { type: Number },
 });
 
+console.log(props.graphData);
+
 // ref data
 // const iconComponent = shallowRef(resolveComponent("AccessibleIcon"));
 const iconComponent = shallowRef();
