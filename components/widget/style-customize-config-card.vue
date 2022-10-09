@@ -17,9 +17,6 @@
         <NInputNumber v-model:value="props.formValue.borderSize" clearable min="0"
                       placeholder="Digite o tamanho da borda"/>
       </NFormItem>
-      <NFormItem v-if="props.formValue.borderSize > 0" label="Cor da borda" path="borderColor">
-        <NColorPicker v-model:value="props.formValue.borderColor" :show-alpha="false"/>
-      </NFormItem>
       <NFormItem v-if="props.formValue.borderSize && props.formValue.borderSize > 0" label="Cor da borda"
                  path="borderColor">
         <NColorPicker v-model:value="props.formValue.borderColor" :show-alpha="false"/>
