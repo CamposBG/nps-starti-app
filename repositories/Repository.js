@@ -5,6 +5,7 @@ import AuthRepository from "~/repositories/auth/AuthRepository";
 import WidgetsRepository from "~/repositories/widgets/WidgetsRepository";
 import DashBoardRepository from "~/repositories/dashBoard/DashBoardRepository";
 import ConfigEmailRepository from "~/repositories/config-email/ConfigEmailRepository";
+import FontsRepository from "~/repositories/fonts/FontsRepository";
 
 export default class Repository {
   context = null;
@@ -20,6 +21,8 @@ export default class Repository {
   widgets = null;
 
   configEmail = null;
+
+  fonts = null;
 
   constructor(context) {
     this.context = context;
@@ -39,5 +42,7 @@ export default class Repository {
     this.configEmail = new ConfigEmailRepository("/api/mail-config", this.context);
 
     this.dash = new DashBoardRepository("/api", this.context);
+
+    this.fonts = new FontsRepository("/api", this.context);
   }
 }

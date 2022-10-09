@@ -122,6 +122,11 @@ rules.value = {
     message: "A cor do texto é obrigatória",
     trigger: ["blur"]
   },
+  fontFamily: {
+    required: true,
+    message: "A fonte do texto é obrigatória",
+    trigger: ["blur"]
+  },
   bgColor: {
     required: true,
     message: "A cor de fundo é obrigatória",
@@ -275,6 +280,18 @@ onBeforeMount(async () => {
       formValue.value.isActive = response.is_active;
       formValue.value.showVoteButton = response.show_vote_button === 1;
       formValue.value.widget_guid = response.widget_guid;
+      formValue.value.forceJustification = response.force_justification;
+      formValue.value.bgColor = response.bg_color;
+      formValue.value.showBackdrop = response.show_backdrop;
+      formValue.value.voteButtonPosition = response.vote_button_position;
+      formValue.value.voteButtonText = response.vote_button_text;
+      formValue.value.voteButtonColor = response.vote_button_color;
+      formValue.value.fontSize = response.font_size;
+      formValue.value.borderSize = response.border_size;
+      formValue.value.borderColor = response.border_color;
+      formValue.value.fontFamily = response.font_family;
+      formValue.value.fontColor = response.font_color;
+      formValue.value.voteButtonFontColor = response.vote_button_font_color;
     } else {
       router.push(`/projects`)
     }

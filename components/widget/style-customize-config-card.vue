@@ -27,17 +27,16 @@
       <NFormItem label="Visualizar um exemplo do widget?" label-placement="left">
         <NSwitch v-model:value="preview"/>
       </NFormItem>
-      <NFormItem label="Fonte utilizada nos textos" path="showVoteButton">
-        <!-- <NSelect v-model:value="props.formValue.fontFamily" :options="fontsFamiliesOptions"
-                 placeholder="Escolha uma opção"/> -->
-                 <div id="font-picker"></div>
+      <NFormItem label="Fonte utilizada nos textos" path="fontFamily">
+        <NSelect v-model:value="props.formValue.fontFamily" :options="fontsFamiliesOptions"
+                 placeholder="Escolha uma fonte"/>
       </NFormItem>
       <NFormItem label="Tamanho base da fonte (px)" path="fontSize">
         <NInputNumber v-model:value="props.formValue.fontSize" clearable placeholder="Digite o tempo"/>
       </NFormItem>
-      <NFormItem label="Preview da fonte" path="showVoteButton">
-        <div class="apply-font" :style="{fontSize: `${props.formValue.fontSize}px`}">
-          Esse é o preview ta fonte selecionada
+      <NFormItem label="Preview do texto com a fonte e o tamanho base selecionado" path="showVoteButton">
+        <div class="font-selected" :style="{fontSize: `${props.formValue.fontSize}px`}">
+          Esse é um preview de como os textos ficarão
         </div>
       </NFormItem>
       <div v-if="preview" class="flex flex-col items-center gap-y-8">
@@ -70,7 +69,6 @@
 
 <script setup>
 import {NCard, NColorPicker, NFormItem, NInput, NInputNumber, NSelect, NSwitch} from 'naive-ui';
-import FontPicker from 'font-picker';
 
 const nuxtApp = useNuxtApp();
 
@@ -80,12 +78,10 @@ const props = defineProps({
   }
 });
 
-const fontPicker = ref(null);
-const apiKey = import.meta.env.VITE_GOOGLE_API_KEY;
+const fontsFamiliesOptions = ref([]);
 const hasBorder = ref(false);
 
 const preview = ref(false);
-const font1 = ref(null);
 
 
 // watch
@@ -95,21 +91,25 @@ watch(hasBorder, (value) => {
   }
 });
 
-console.log({apiKey});
 
 // lifecycles
-onMounted(() => {
-  fontPicker.value = new FontPicker(
-    apiKey,
-  'Roboto',
-  { limit: 100}
-);
+onMounted(async () => {
+  const fonts = await nuxtApp.$repo.fonts.getFonts();
+
+  if (fonts && fonts.length > 0) {
+    fontsFamiliesOptions.value = fonts.map((font) => ({label: font.name, value: font.name}));
+  }
 });
 </script>
 
-<style>
- .dropdown-button {
-  background-color: #fff !important;
-  border-radius: 50% !important;
- }
+<style lang="scss" scoped>
+ $fonts: 'Inconsolata', 'Roboto', 'Alkalami', 'Gemunu Libre', 'Abyssinica SIL', 'Open Sans', 'Montserrat', 'Inter Tight', 'Lato', 'Poppins', 'Noto Sans Mono', 'Oswald', 'Roboto Mono', 'Noto Sans', 'Raleway';
+ 
+@each $font in $fonts {
+  $url: "https://fonts.googleapis.com/css2?family=#{$font}&display=swap";
+  @import url($url);      
+}
+.font-selected {
+  font-family: v-bind('props.formValue.fontFamily');
+}
 </style>
