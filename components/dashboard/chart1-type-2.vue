@@ -1,19 +1,19 @@
 <template>
   <div class="grid place-items-center h-full">
     <div class="text-center">
-      <component :is="iconComponent" class="w-16 mb-10" />
-      <p class="font-bold text-4xl">{{ graphData }}</p>
+      <component :is="getIconToShow()" class="w-36 mb-10 text-yellow-400" />
+      <p class="font-bold text-5xl">{{ graphData }}</p>
     </div>
   </div>
 </template>
 
 <script setup>
 import {
-  AccessibleIcon,
-  Accusoft,
-  AcquisitionsIncorporated,
-  Ad,
-  AddressBook,
+  Surprise,
+  SadTear,
+  Meh,
+  GrinAlt,
+  SmileWink
 } from "@vicons/fa";
 
 const props = defineProps({
@@ -29,23 +29,23 @@ const iconComponent = shallowRef();
 const notesMap = [
   {
     note: 1,
-    icon: "AccessibleIcon",
+    icon: SadTear
   },
   {
     note: 2,
-    icon: "Accusoft",
+    icon: Surprise
   },
   {
     note: 3,
-    icon: "AcquisitionsIncorporated",
+    icon: Meh
   },
   {
     note: 4,
-    icon: "Ad",
+    icon: GrinAlt
   },
   {
     note: 5,
-    icon: "AddressBook",
+    icon: SmileWink
   },
 ];
 
@@ -58,19 +58,4 @@ const getIconToShow = () => {
   return notesMap.find((item) => item.note === noteRounded.value).icon;
 };
 
-const getIconComponent = (icon) => {
-  if (icon === "AccessibleIcon") {
-    iconComponent.value = AccessibleIcon;
-  } else if (icon === "Accusoft") {
-    iconComponent.value = Accusoft;
-  } else if (icon === "AcquisitionsIncorporated") {
-    iconComponent.value = AcquisitionsIncorporated;
-  } else {
-    iconComponent.value = AddressBook;
-  }
-};
-
-if (getIconToShow()) {
-  getIconComponent(getIconToShow());
-}
 </script>
