@@ -28,15 +28,15 @@
           @click="selectBox"
       ></div>
       <div
-          :class="getXPosition('15-0-0-0')"
+          :class="getXPosition('15-0-0-50')"
           class="inner-square-top absolute top-0 right-[35%]"
-          name="15-0-0-0"
+          name="15-0-0-50"
           @click="selectBox"
       ></div>
       <div
-          :class="getXPosition('0-0-15-0')"
+          :class="getXPosition('0-0-15-50')"
           class="inner-square-bottom absolute bottom-0 right-[35%]"
-          name="0-0-15-0"
+          name="0-0-15-50"
           @click="selectBox"
       ></div>
       <div

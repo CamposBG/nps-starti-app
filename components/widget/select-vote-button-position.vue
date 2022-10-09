@@ -4,27 +4,27 @@
         class="relative w-56 h-28 bg-slate-200 rounded-sm border border-gray-400 overflow-hidden shadow-md"
     >
       <div
-          :class="getXPosition('15-15-0-0')"
+          :class="getXPosition('15-1-0-0')"
           class="inner-square-right absolute top-2 right-0"
-          name="15-15-0-0"
+          name="15-1-0-0"
           @click="selectBox"
       ></div>
       <div
-          :class="getXPosition('15-0-0-15')"
+          :class="getXPosition('15-0-0-1')"
           class="inner-square-left absolute top-2 left-0"
-          name="15-0-0-15"
+          name="15-0-0-1"
           @click="selectBox"
       ></div>
       <div
-          :class="getXPosition('0-0-15-15')"
+          :class="getXPosition('0-0-15-1')"
           class="inner-square-left absolute bottom-2 left-0"
-          name="0-0-15-15"
+          name="0-0-15-1"
           @click="selectBox"
       ></div>
       <div
-          :class="getXPosition('0-15-15-0')"
+          :class="getXPosition('0-1-15-0')"
           class="inner-square-right absolute bottom-2 right-0"
-          name="0-15-15-0"
+          name="0-1-15-0"
           @click="selectBox"
       ></div>
     </div>
