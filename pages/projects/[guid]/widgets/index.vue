@@ -34,6 +34,10 @@
 import {NButton, NEmpty, NGi, NGrid, NPageHeader, NSpace, NSpin} from 'naive-ui';
 import {useStorage} from "vue3-storage";
 
+definePageMeta({
+  userType: 1,
+});
+
 // composables
 const router = useRouter();
 const route = useRoute();
