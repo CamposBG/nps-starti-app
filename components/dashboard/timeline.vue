@@ -44,7 +44,7 @@
     </div>
     <!-- timeline -->
     <div
-      v-for="dates in tableData"
+      v-for="dates in paginatedItems"
       id="vote"
       class="p-5 mb-4 bg-gray-50 rounded-lg border border-gray-100 dark:bg-gray-800 dark:border-gray-700 mt-5"
     >
@@ -141,13 +141,9 @@
         </ol>
       </div>
     </div>
-
-    <!-- load More -->
-    <!-- <div class="w-fit mx-auto">
-      <NButton :loading="isLoading" icon-placement="left" @click="loadMore">
-        Carregar mais
-      </NButton>
-    </div> -->
+    <div class="w-fit mx-auto">
+      <n-pagination v-model:page="page" :page-count="totalPages" simple />
+    </div>
   </div>
 </template>
 
@@ -160,6 +156,7 @@ import {
   NPopselect,
   NTag,
   NPopover,
+  NPagination,
 } from "naive-ui";
 import { Mask, Globe } from "@vicons/fa";
 
@@ -181,6 +178,11 @@ const {
 );
 
 // ref|data
+const page = ref(1);
+const totalPages = ref(null);
+const previousPage = ref(null);
+const nextPage = ref(null);
+const paginatedItems = ref([]);
 const tableData = ref([]);
 const searchRef = ref(null);
 const searchTerm = ref(null);
@@ -248,6 +250,15 @@ const clearSearch = () => {
   searchTerm.value = null;
 };
 
+const formatDate = (date) => {
+  return new Date(date.split("-")).toLocaleDateString("pt-BR", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
 // computed
 const currentScoreLabel = computed(() => {
   const label = scoreOptions.filter((e) => e.value === score.value);
@@ -261,18 +272,18 @@ const queryParams = computed(() => ({
   period: getPeriodFormatted(),
 }));
 
-const formatDate = (date) => {
-  return new Date(date.split("-")).toLocaleDateString("pt-BR", {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
+function paginate(items, page = 1, perPage = 5) {
+  const offset = perPage * (page - 1);
+  totalPages.value = Math.ceil(items.length / perPage);
+  paginatedItems.value = items.slice(offset, perPage * page);
+  previousPage.value = page - 1 ? page - 1 : null;
+  nextPage.value = totalPages > page ? page + 1 : null;
+}
 // watch
 watch(response, () => {
   if (response.value?.votes) {
     tableData.value = response.value.votes;
+    paginate(tableData.value, page.value, 1);
   }
 });
 
@@ -280,6 +291,9 @@ watch(queryParams, async () => {
   await refresh();
 });
 
+watch(page, () => {
+  paginate(tableData.value, page.value, 1);
+});
 // onBeforeMount(() => {
 // const divs = document.getElementsByTagName("div")
 // }),
