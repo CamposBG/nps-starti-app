@@ -85,7 +85,7 @@ const formValue = ref({
   forceJustification: false,
   bgColor: '#FFFFFF',
   showBackdrop: false,
-  voteButtonPosition: '0-15-15-0',
+  voteButtonPosition: '0-15-1-0',
   voteButtonText: 'Avaliar',
   voteButtonColor: '#FFFFFF',
   fontSize: 12,
