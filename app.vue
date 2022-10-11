@@ -61,4 +61,7 @@ nuxtApp.hook("page:finish", () => {
 .n-layout .n-layout-scroll-container {
   overflow-y: hidden !important;
 }
+.n-drawer.n-drawer--right-placement {
+  top: 51px !important;
+}
 </style>
