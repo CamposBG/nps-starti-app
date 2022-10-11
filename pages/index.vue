@@ -38,7 +38,10 @@
       />
     </div>
     <div v-if="project" class="mt-10">
-      <LazyDashboardTimeline :project-id="project" />
+      <LazyDashboardTimeline
+        :project-id="project"
+        :project-type="projectType"
+      />
     </div>
   </div>
 </template>

@@ -110,7 +110,7 @@ const menuOptions = ref([
         {
           to: "/config-email",
         },
-        { default: () => "Configuração de e-mail" }
+        { default: () => "Configuração de Email" }
       ),
     key: "config-email",
     icon: renderIcon(Envelope),
@@ -169,5 +169,8 @@ onMounted(() => {
   overflow: hidden;
   position: fixed;
   left: 2px;
+}
+.n-menu-item-content-header > a {
+  white-space: pre-line;
 }
 </style>

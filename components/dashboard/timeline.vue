@@ -103,20 +103,37 @@
                   </div>
                 </a>
               </template>
-              <div class="bg-white max-h-40 overflow-y-auto">
+              <div class="bg-white max-h-40 max-w-lg overflow-y-auto">
                 <div class="sticky p-2 top-0 bg-slate-200 shadow-sm">
                   <p class="font-semibold text-lg">Detalhes</p>
                 </div>
                 <div class="p-2">
                   <p class="mb-2">
-                    <strong>NomeNomeNomeNomeNomeNomeNomeNomeNome</strong>:
-                    {{ votes.widget }}
+                    <strong>Nome</strong>:
+                    {{ votes.name }}
                   </p>
-                  <p class="mb-2"><strong>Nome</strong>: {{ votes.widget }}</p>
-                  <p class="mb-2"><strong>Nome</strong>: {{ votes.widget }}</p>
-                  <p class="mb-2"><strong>Nome</strong>: {{ votes.widget }}</p>
-                  <p class="mb-2"><strong>Nome</strong>: {{ votes.widget }}</p>
-                  <p class="mb-2"><strong>Nome</strong>: {{ votes.widget }}</p>
+                  <p class="mb-2"></p>
+                  <p class="mb-2">
+                    <strong>E-mail</strong>:
+                    {{ votes.email || "nenhum dado vindo da api" }}
+                  </p>
+                  <p class="mb-2">
+                    <strong>Widget</strong>:
+                    {{ votes.widget || "nenhum dado vindo da api" }}
+                  </p>
+
+                  <p class="mb-2">
+                    <strong>URL</strong>:
+                    {{ votes.url || "nenhum dado vindo da api" }}
+                  </p>
+                  <p class="mb-2">
+                    <strong>Nota</strong>:
+                    {{ votes.vote || "nenhum dado vindo da api" }}
+                  </p>
+                  <p class="mb-2">
+                    <strong>Comentário</strong>:
+                    {{ votes.comment || "nenhum dado vindo da api" }}
+                  </p>
                 </div>
               </div>
             </n-popover>
@@ -149,6 +166,7 @@ import { Mask, Globe } from "@vicons/fa";
 // props
 const props = defineProps({
   projectId: { type: Number },
+  projectType: { type: Number },
 });
 
 const nuxtApp = useNuxtApp();
@@ -197,16 +215,20 @@ const search = () => {
 };
 
 const voteBgColor = (vote) => {
-  if (vote) {
-    if (vote <= 6) {
-      return "bg-rose-400";
-    } else if (vote <= 8) {
-      return "bg-amber-400";
+  if (props.projectType === 1) {
+    if (vote) {
+      if (vote <= 6) {
+        return "bg-rose-400";
+      } else if (vote <= 8) {
+        return "bg-amber-400";
+      } else {
+        return "bg-emerald-400";
+      }
     } else {
-      return "bg-emerald-400";
+      return "bg-gray-400 ";
     }
   } else {
-    return "bg-gray-400 ";
+    return "bg-gray-400";
   }
 };
 
