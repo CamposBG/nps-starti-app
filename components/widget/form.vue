@@ -5,8 +5,7 @@
   <NForm v-else ref="formRef" :inline="false" :model="formValue" :rules="rules">
     <NGrid :cols="2" x-gap="12" y-gap="12">
       <NGi>
-        <LazyWidgetTimeConfigCard :formValue="formValue"
-                                  @updateForm="value => formValue.value = {...formValue.value, ...value}"/>
+        <LazyWidgetTimeConfigCard :formValue="formValue" :widget-type="widgetType"/>
       </NGi>
       <NGi>
         <LazyWidgetPositionConfigCard :formValue="formValue"/>
@@ -56,6 +55,7 @@ const nuxtApp = useNuxtApp();
 const route = useRoute();
 const router = useRouter();
 const notification = useNotification();
+const widgetType = ref(1);
 
 const props = defineProps({
   guid: {type: String, default: '', required: false}
@@ -292,6 +292,7 @@ onBeforeMount(async () => {
       formValue.value.fontFamily = response.font_family;
       formValue.value.fontColor = response.font_color;
       formValue.value.voteButtonFontColor = response.vote_button_font_color;
+      widgetType.value = response.type;
     } else {
       router.push(`/projects`)
     }
