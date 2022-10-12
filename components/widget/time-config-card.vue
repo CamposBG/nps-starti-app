@@ -7,6 +7,17 @@
       <NFormItem label="Mostrar em dispositivos móveis?" label-placement="left" path="enableMobile">
         <NSwitch v-model:value="props.formValue.enableMobile"/>
       </NFormItem>
+      <NFormItem label-placement="left" path="forceJustification" v-if="props.widgetType === 1">
+        <template #label>
+          <div class="flex flex-col items-start">
+            <span>
+              Obrigar comentário quando voto for detrator?
+            </span>
+            <small>O usuário será obrigado a escrever um comentário quando sua nota for abaixo de 7</small>
+          </div>
+        </template>
+        <NSwitch v-model:value="props.formValue.forceJustification"/>
+      </NFormItem>
       <NFormItem path="timesToShow" require-mark-placement="left">
         <template #label>
           <div class="flex flex-col">
@@ -30,12 +41,12 @@
 <script setup>
 import {NCard, NFormItem, NInput, NInputNumber, NSelect, NSwitch} from 'naive-ui'
 
-const emit = defineEmits(["updateForm"]);
 
 const props = defineProps({
   formValue: {
     type: Object, default: null, required: true
-  }
+  },
+  widgetType: {type: Number, default: 1}
 });
 
 // refs | data

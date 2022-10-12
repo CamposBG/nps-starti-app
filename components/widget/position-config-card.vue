@@ -1,14 +1,14 @@
 <template>
   <div>
     <NCard size="large" title="Opções de posicionamento do widget">
-      <NStatistic label="Probabilidade do widget aparecer">
-        {{props.formValue.probabilityToShow}}%
-      </NStatistic>
       <NFormItem label="Posicionamento onde o widget irá aparecer" path="widgetPosition">
         <LazyWidgetSelectPosition :initial-value="props.formValue.widgetPosition"
                                   @selectPosition="(value) => props.formValue.widgetPosition = value"/>
       </NFormItem>
-      <NFormItem label="Probabilidade do widget aparecer para o usuário" path="probabilityToShow">
+      <NStatistic label="Probabilidade do widget aparecer">
+        {{props.formValue.probabilityToShow}}%
+      </NStatistic>
+      <NFormItem label="Defina a probabilidade do widget aparecer para o usuário" path="probabilityToShow">
         <NSlider v-model:value="props.formValue.probabilityToShow" :format-tooltip="value => `${value}%`"
                  :marks="marks"
                  :step="5"
@@ -20,7 +20,7 @@
             <span>
               Blur na página?
             </span>
-            <small>Caso habilitado, quando o widget for mostrado, todo o fundo atrás dele ficará embassado</small>
+            <small>Caso habilitado, quando o widget for mostrado, todo o fundo atrás dele ficará desfocado</small>
           </div>
         </template>
         <NSwitch v-model:value="props.formValue.showBackdrop"/>
