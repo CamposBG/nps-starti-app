@@ -303,6 +303,7 @@ const queryParams = computed(() => ({
   search: searchTerm.value,
   voteType: score.value,
   period: getPeriodFormatted(),
+  comments: commentsFilter.value,
 }));
 
 function paginate(items, page = 1, perPage = 5) {
