@@ -27,6 +27,16 @@
             <n-button type="tertiary">{{ currentScoreLabel }}</n-button>
           </NPopselect>
         </div>
+        <div class="flex items-center gap-2 text-gray-400">
+          <p>Comentários:</p>
+          <NPopselect
+            v-model:value="commentsFilter"
+            :on-update:value="(value) => handleChangeComments(value)"
+            :options="commentsOptions"
+          >
+            <n-button type="tertiary">{{ currentCommentLabel }}</n-button>
+          </NPopselect>
+        </div>
       </div>
       <div class="flex items-center">
         <NInputGroup>
@@ -178,6 +188,7 @@ const {
 );
 
 // ref|data
+const commentsFilter = ref("all");
 const page = ref(1);
 const totalPages = ref(null);
 const previousPage = ref(null);
@@ -206,10 +217,27 @@ const scoreOptions = [
     value: "promoters", // 9-10
   },
 ];
+const commentsOptions = [
+  {
+    label: "Todos",
+    value: "all",
+  },
+  {
+    label: "Sim",
+    value: "yes",
+  },
+  {
+    label: "Não",
+    value: "no",
+  },
+];
 
 // methods
 const handleChangeVoteType = (value) => {
   score.value = value;
+};
+const handleChangeComments = (value) => {
+  commentsFilter.value = value;
 };
 
 const search = () => {
@@ -262,6 +290,11 @@ const formatDate = (date) => {
 // computed
 const currentScoreLabel = computed(() => {
   const label = scoreOptions.filter((e) => e.value === score.value);
+  return label[0].label;
+});
+
+const currentCommentLabel = computed(() => {
+  const label = commentsOptions.filter((e) => e.value === commentsFilter.value);
   return label[0].label;
 });
 
