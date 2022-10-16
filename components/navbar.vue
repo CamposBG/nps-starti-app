@@ -159,9 +159,6 @@ onMounted(() => {
   top: 50px;
   bottom: 0;
 }
-.n-menu {
-  transition: all 200 ease-in-out 1000ms;
-}
 .n-layout--static-positioned {
   border-left: 1px solid rgba(0, 0, 0, 0.103);
 }
@@ -177,5 +174,8 @@ onMounted(() => {
 }
 .n-menu-item-content-header > a {
   white-space: pre-line;
+}
+.n-menu.n-menu--vertical {
+  transition: width 250ms ease-in-out;
 }
 </style>
