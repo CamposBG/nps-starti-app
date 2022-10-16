@@ -48,13 +48,13 @@ import { h } from "vue";
 import { NIcon, NLayout, NLayoutSider, NMenu } from "naive-ui";
 import { RouterLink } from "vue-router";
 import { useStorage } from "vue3-storage";
-import { values } from "lodash";
 
 const route = useRoute();
 const storage = useStorage();
 const sidebarToggledState = useSidebarState();
 
 // ref|data
+const windowWidth = ref(window.innerWidth);
 const collapsed = ref(false);
 const activeKey = ref(null);
 const user = ref(null);
@@ -133,6 +133,15 @@ const changeIconPosition = (isCollapsed) => {
   sidebarToggledState.value = !sidebarToggledState.value;
 };
 
+//watch
+watch(windowWidth, () => {
+  if (windowWidth.value < 900) {
+    collapsed.value = true;
+    changeIconPosition(collapsed);
+    sidebarToggledState.value = true;
+  }
+});
+
 onBeforeMount(() => {
   if (!route.path.split("/")[1]) {
     activeKey.value = "dashboard";
@@ -143,6 +152,9 @@ onBeforeMount(() => {
 
 onMounted(() => {
   changeIconPosition(false);
+  window.onresize = () => {
+    windowWidth.value = window.innerWidth;
+  };
 });
 </script>
 
@@ -165,7 +177,6 @@ onMounted(() => {
 .n-layout-toggle-button {
   position: fixed !important;
 }
-
 .n-menu--collapsed {
   // margin-left: 30px !important;
   overflow: hidden;
