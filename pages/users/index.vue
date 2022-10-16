@@ -5,17 +5,24 @@
     </template>
     <template #extra>
       <NSpace align="center" justify="space-between">
-        <NButton v-if="isUserAdmin" color="teal" size="small" @click="handleCreateUser"> Adicionar usuário</NButton>
+        <NButton
+          v-if="isUserAdmin"
+          color="teal"
+          size="small"
+          @click="handleCreateUser"
+        >
+          Adicionar usuário</NButton
+        >
       </NSpace>
     </template>
   </NPageHeader>
   <div class="mt-5">
-    <LazyUserList :update="refreshList"/>
+    <LazyUserList :update="refreshList" />
   </div>
 </template>
 <script setup>
-import {NButton, NPageHeader, NSpace} from "naive-ui";
-import {useStorage} from "vue3-storage";
+import { NButton, NPageHeader, NSpace } from "naive-ui";
+import { useStorage } from "vue3-storage";
 
 const nuxtApp = useNuxtApp();
 const storage = useStorage();
@@ -27,16 +34,16 @@ definePageMeta({
 const refreshList = ref(0);
 const isUserAdmin = ref(null);
 
-isUserAdmin.value = storage.getStorageSync('user').user_type === 1;
+isUserAdmin.value = storage.getStorageSync("user").user_type === 1;
 
 const handleCreateUser = () => {
-  nuxtApp.$bus.emit('drawer:open', {
-    component: 'UserCreateForm',
-    title: 'Criar novo usuário',
+  nuxtApp.$bus.emit("drawer:open", {
+    component: "UserCreateForm",
+    title: "Criar novo usuário",
     onClose: async () => {
-      refreshList.value++
+      refreshList.value++;
     },
-    maskClosable: false
+    maskClosable: false,
   });
 };
 </script>
@@ -44,9 +51,5 @@ const handleCreateUser = () => {
 <style lang="scss" scoped>
 .form-table-wrapper {
   @apply flex flex-wrap  gap-16;
-}
-
-.wrapper-itens {
-  // @apply basis-full
 }
 </style>

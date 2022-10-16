@@ -1,14 +1,7 @@
 <template>
   <div class="app h-full">
-    <!--    <Navbar @isSidebarToggle="adjustMargin" />-->
-    <!--    <div class="top-bar">-->
-    <!--      <UserOptions :user="user"/>-->
-    <!--    </div>-->
-    <!--    <div class="main" :class="mainMargin">-->
-    <!--      <slot />-->
-    <!--    </div>-->
     <Navbar @isSidebarToggle="adjustMargin">
-      <div class="p-10">
+      <div class="p-10 main-content" :class="adustMainContentMarginLeft()">
         <slot />
       </div>
     </Navbar>
@@ -19,11 +12,17 @@
 import { useStorage } from "vue3-storage";
 
 const store = useStorage();
-const nuxtApp = useNuxtApp();
-const user = store.getStorageSync("user");
-const router = useRouter();
+const sidebarToggledState = useSidebarState();
 
 const mainMargin = ref("ml-[250px]");
+
+const adustMainContentMarginLeft = () => {
+  if (sidebarToggledState.value) {
+    return "ml-[60px]";
+  } else {
+    return "ml-[250px]";
+  }
+};
 
 // methods
 const adjustMargin = (isSideBarToggled) => {
@@ -43,5 +42,10 @@ const adjustMargin = (isSideBarToggled) => {
 .main {
   padding: 16px;
   transition: margin-left 0.5s;
+}
+</style>
+<style>
+.main-content {
+  transition: margin-left 250ms ease-in-out;
 }
 </style>

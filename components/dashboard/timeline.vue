@@ -335,6 +335,7 @@ watch(response, () => {
 });
 
 watch(queryParams, async () => {
+  console.log(queryParams );
   page.value = 1;
   await refresh();
 });

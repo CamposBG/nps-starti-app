@@ -52,6 +52,7 @@ import { values } from "lodash";
 
 const route = useRoute();
 const storage = useStorage();
+const sidebarToggledState = useSidebarState();
 
 // ref|data
 const collapsed = ref(false);
@@ -129,6 +130,7 @@ const changeIconPosition = (isCollapsed) => {
   if (colorBg[0]) {
     colorBg[0].style.width = isCollapsed ? "63px" : "215px";
   }
+  sidebarToggledState.value = !sidebarToggledState.value;
 };
 
 onBeforeMount(() => {
@@ -146,22 +148,25 @@ onMounted(() => {
 
 <style lang="scss">
 .n-layout-sider-scroll-container {
-  height: 100vh !important;
   position: fixed;
   overflow: hidden;
 }
 .n-layout-sider {
-  height: 100vh !important;
+  background-color: #ffffff;
+  border-right: rgb(226, 226, 226) solid 1px;
+  justify-content: center;
+  position: fixed;
+  top: 50px;
+  bottom: 0;
+}
+.n-menu {
+  transition: all 200 ease-in-out 1000ms;
 }
 .n-layout--static-positioned {
   border-left: 1px solid rgba(0, 0, 0, 0.103);
 }
 .n-layout-toggle-button {
   position: fixed !important;
-}
-
-.n-layout-sider {
-  justify-content: center;
 }
 
 .n-menu--collapsed {

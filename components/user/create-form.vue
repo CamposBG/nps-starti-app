@@ -227,10 +227,6 @@ rules.value = {
 const isChangingPassword = ref(false);
 
 // methods
-function validatePasswordLength(rule, value) {
-  return value.length < 6;
-}
-
 function validatePasswordSame(rule, value) {
   return value === formValue.value.confirmPassword;
 }

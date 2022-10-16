@@ -8,13 +8,7 @@
 </template>
 
 <script setup>
-import {
-  Surprise,
-  SadTear,
-  Meh,
-  GrinAlt,
-  SmileWink
-} from "@vicons/fa";
+import { Surprise, SadTear, Meh, GrinAlt, SmileWink } from "@vicons/fa";
 
 const props = defineProps({
   graphData: { type: Number },
@@ -23,29 +17,27 @@ const props = defineProps({
 console.log(props.graphData);
 
 // ref data
-// const iconComponent = shallowRef(resolveComponent("AccessibleIcon"));
-const iconComponent = shallowRef();
 
 const notesMap = [
   {
     note: 1,
-    icon: SadTear
+    icon: SadTear,
   },
   {
     note: 2,
-    icon: Surprise
+    icon: Surprise,
   },
   {
     note: 3,
-    icon: Meh
+    icon: Meh,
   },
   {
     note: 4,
-    icon: GrinAlt
+    icon: GrinAlt,
   },
   {
     note: 5,
-    icon: SmileWink
+    icon: SmileWink,
   },
 ];
 
@@ -57,5 +49,4 @@ const noteRounded = computed(() =>
 const getIconToShow = () => {
   return notesMap.find((item) => item.note === noteRounded.value).icon;
 };
-
 </script>
