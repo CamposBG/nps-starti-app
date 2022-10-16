@@ -20,7 +20,7 @@
         <LazyWidgetStyleCustomizeConfigCard :formValue="formValue"/>
       </NGi>
       <NGi v-if="formValue.widget_guid != null">
-        <LazyWidgetCode v-if="formValue.widget_guid != null" :formValue="formValue"/>
+        <LazyWidgetCode v-if="formValue.widget_guid" :formValue="formValue"/>
       </NGi>
       <NGi v-if="formValue.showVoteButton">
         <LazyWidgetStyleCustomizeVoteButtonCard :formValue="formValue"/>
@@ -68,10 +68,10 @@ const isSubmitting = ref(false);
 const formValue = ref({
   description: null,
   timesToShow: null,
+  timesToVote: null,
   secondsToShow: 2,
   secondsToHide: 15,
   enableMobile: false,
-  // widgetPosition: 'box1-left-bottom',
   widgetPosition: '0-15-15-0',
   probabilityToShow: 10,
   enableCustomMessage: false,
@@ -292,6 +292,7 @@ onBeforeMount(async () => {
       formValue.value.fontFamily = response.font_family;
       formValue.value.fontColor = response.font_color;
       formValue.value.voteButtonFontColor = response.vote_button_font_color;
+      formValue.value.timesToVote = response.times_to_vote;
       widgetType.value = response.type;
     } else {
       router.push(`/projects`)

@@ -13,16 +13,26 @@
             <span>
               Obrigar comentário quando voto for detrator?
             </span>
-            <small>O usuário será obrigado a escrever um comentário quando sua nota for abaixo de 7</small>
+            <small>Torna obrigatório um comentário quando a nota for abaixo de 7</small>
           </div>
         </template>
         <NSwitch v-model:value="props.formValue.forceJustification"/>
       </NFormItem>
-      <NFormItem path="timesToShow" require-mark-placement="left">
+      <NFormItem path="timesToVote" require-mark-placement="left">
         <template #label>
           <div class="flex flex-col">
             Recorência da aparição do widget
-            <small>Intervalo para usuários que já votaram, votarem novamente</small>
+            <small>Intervalo para usuários que já votarem</small>
+          </div>
+        </template>
+        <NSelect v-model:value="props.formValue.timesToVote" :options="timesToVoteOptions"
+                 placeholder="Escolha uma opção"/>
+      </NFormItem>
+      <NFormItem path="timesToShow" require-mark-placement="left">
+        <template #label>
+          <div class="flex flex-col">
+            Recorência da aparição do widget quando não votado
+            <small>Intervalo de tempo para o widget aparecer para usuários que se recusaram a votar</small>
           </div>
         </template>
         <NSelect v-model:value="props.formValue.timesToShow" :options="timesToShowOptions"
@@ -51,6 +61,21 @@ const props = defineProps({
 
 // refs | data
 const timesToShowOptions = ref([
+  {
+    label: 'Uma vez por semana',
+    value: 7
+  },
+  {
+    label: 'Uma vez a cada 15 dias',
+    value: 15
+  },
+  {
+    label: 'Uma vez por mês',
+    value: 30
+  }
+]);
+
+const timesToVoteOptions = ref([
   {
     label: 'Uma única vez',
     value: 1
