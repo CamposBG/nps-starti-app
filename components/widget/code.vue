@@ -33,12 +33,11 @@ const base_url = window.origin;
 const tooltipText = ref('Copiar código');
 const widgetGuid = props.formValue.widget_guid;
 
-const widgetCode = ref(`\<\script
-  id="wd-nps" 
-  data-widget="${widgetGuid}"
-  data-url-base="${base_url}"
-  src="${base_url}/assets/widget-1.0.min.js"
-\>\<\/script\>\
+const widgetCode = ref(`\<\script src="${base_url}/assets/widget-1.0.min.js"\>\<\/script\>\
+
+\<\script\>
+  const wdNps = WidgetNPS("${widgetGuid}",{urlBase: "${base_url}"})
+<\/script\>\
 `)
 
 const copy = () => {
