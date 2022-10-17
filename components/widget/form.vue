@@ -27,7 +27,8 @@
       </NGi>
       <NGi>
         <!--        <LazyWidgetExampleCard :formValue="formValue"/>-->
-        <LazyWidgetExample v-if="previewWidget" :formValue="formValue"/>
+        <LazyWidgetExample v-if="previewWidget && widgetType === 1" :formValue="formValue"/>
+        <LazyWidgetExampleTypeTwo v-else-if="previewWidget && widgetType === 2" :formValue="formValue"/>
       </NGi>
       <NGi :span="2">
         <NSpace>
@@ -285,22 +286,22 @@ onBeforeMount(async () => {
       formValue.value.enableCustomThanksMessage = response.enable_custom_thanks_message === 1;
       formValue.value.thanksMessage = response.thanks_message;
       formValue.value.domains = response.domains.length > 0 ? response.domains.split(',') : [];
-      formValue.value.color = response.color;
+      formValue.value.color = response.color || '#FFFFFF';
       formValue.value.isActive = response.is_active;
       formValue.value.showVoteButton = response.show_vote_button === 1;
       formValue.value.widget_guid = response.widget_guid;
       formValue.value.forceJustification = response.force_justification;
-      formValue.value.bgColor = response.bg_color;
+      formValue.value.bgColor = response.bg_color || '#FFFFFF';
       formValue.value.showBackdrop = response.show_backdrop;
       formValue.value.voteButtonPosition = response.vote_button_position;
       formValue.value.voteButtonText = response.vote_button_text;
-      formValue.value.voteButtonColor = response.vote_button_color;
+      formValue.value.voteButtonColor = response.vote_button_color || '#FFFFFF';
       formValue.value.fontSize = response.font_size;
       formValue.value.borderSize = response.border_size;
-      formValue.value.borderColor = response.border_color;
+      formValue.value.borderColor = response.border_color || '#FFFFFF';
       formValue.value.fontFamily = response.font_family;
-      formValue.value.fontColor = response.font_color;
-      formValue.value.voteButtonFontColor = response.vote_button_font_color;
+      formValue.value.fontColor = response.font_color || '#FFFFFF';
+      formValue.value.voteButtonFontColor = response.vote_button_font_color || '#FFFFFF';
       formValue.value.timesToVote = response.times_to_vote;
       widgetType.value = response.type;
     } else {
