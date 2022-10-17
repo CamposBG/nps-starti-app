@@ -17,13 +17,17 @@
         <LazyWidgetDomainConfigCard :formValue="formValue"/>
       </NGi>
       <NGi>
-        <LazyWidgetStyleCustomizeConfigCard :formValue="formValue"/>
+        <LazyWidgetStyleCustomizeConfigCard :formValue="formValue" @update-preview="changePreviewWidget"/>
       </NGi>
       <NGi v-if="formValue.widget_guid != null">
         <LazyWidgetCode v-if="formValue.widget_guid" :formValue="formValue"/>
       </NGi>
       <NGi v-if="formValue.showVoteButton">
         <LazyWidgetStyleCustomizeVoteButtonCard :formValue="formValue"/>
+      </NGi>
+      <NGi>
+        <!--        <LazyWidgetExampleCard :formValue="formValue"/>-->
+        <LazyWidgetExample v-if="previewWidget" :formValue="formValue"/>
       </NGi>
       <NGi :span="2">
         <NSpace>
@@ -56,6 +60,7 @@ const route = useRoute();
 const router = useRouter();
 const notification = useNotification();
 const widgetType = ref(1);
+const previewWidget = ref(false);
 
 const props = defineProps({
   guid: {type: String, default: '', required: false}
@@ -256,6 +261,10 @@ const handleSubmitConfig = async (isActive) => {
       }
   );
   isSubmitting.value = false;
+};
+
+const changePreviewWidget = (value) => {
+  previewWidget.value = value;
 };
 
 onBeforeMount(async () => {

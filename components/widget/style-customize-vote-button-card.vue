@@ -12,19 +12,25 @@
       <NFormItem label="Cor do texto do botão" path="voteButtonFontColor">
         <NColorPicker v-model:value="props.formValue.voteButtonFontColor" :show-alpha="false"/>
       </NFormItem>
-      <NFormItem label="Visualizar um exemplo do widget?" label-placement="left">
-        <NSwitch v-model:value="preview"/>
-      </NFormItem>
-      <NFormItem v-if="props.formValue.showVoteButton" label="Posicionamento onde o botão de avaliar irá aparecer" path="voteButtonPosition">
+      <NFormItem v-if="props.formValue.showVoteButton" label="Posicionamento onde o botão de avaliar irá aparecer"
+                 path="voteButtonPosition">
         <LazyWidgetSelectVoteButtonPosition :initial-value="props.formValue.voteButtonPosition"
-                                  @selectPosition="(value) => props.formValue.voteButtonPosition = value"/>
+                                            @selectPosition="(value) => props.formValue.voteButtonPosition = value"/>
       </NFormItem>
+      <NFormItem label="Preview do botão de avaliar?" label-placement="left">
+        <NSwitch v-model:value="previewVoteButton"/>
+      </NFormItem>
+      <LazyWidgetExampleVoteButton
+          v-if="previewVoteButton && props.formValue.voteButtonText.length > 0"
+          :key="props.formValue.voteButtonText" :color="props.formValue.voteButtonColor"
+          :text="props.formValue.voteButtonText"
+          :text-color="props.formValue.voteButtonFontColor"/>
     </NCard>
   </div>
 </template>
 
 <script setup>
-import {NCard, NColorPicker, NFormItem, NInput, NInputNumber, NSwitch} from 'naive-ui';
+import {NCard, NColorPicker, NFormItem, NInput, NSwitch} from 'naive-ui';
 
 const nuxtApp = useNuxtApp();
 
@@ -35,6 +41,7 @@ const props = defineProps({
 });
 
 const preview = ref(false);
+const previewVoteButton = ref(false);
 const url = ref('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 const fontsFamiliesOptions = ref([
