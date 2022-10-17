@@ -1,3 +1,3 @@
 export const useSidebarState = () => {
-  return useState("sidebarToggledState", () => true);
+  return useState("sidebarToggledState", () => false);
 };

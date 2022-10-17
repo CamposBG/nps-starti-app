@@ -130,7 +130,11 @@ const changeIconPosition = (isCollapsed) => {
   if (colorBg[0]) {
     colorBg[0].style.width = isCollapsed ? "63px" : "215px";
   }
-  sidebarToggledState.value = !sidebarToggledState.value;
+  if (isCollapsed) {
+    sidebarToggledState.value = true;
+  } else {
+    sidebarToggledState.value = false;
+  }
 };
 
 //watch
@@ -138,6 +142,7 @@ watch(windowWidth, () => {
   if (windowWidth.value < 900) {
     collapsed.value = true;
     changeIconPosition(collapsed);
+    console.log("#2");
     sidebarToggledState.value = true;
   }
 });
