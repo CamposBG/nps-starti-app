@@ -26,7 +26,7 @@
                  placeholder="Escolha uma fonte"/>
       </NFormItem>
       <NFormItem label="Tamanho base da fonte (px)" path="fontSize">
-        <NInputNumber v-model:value="props.formValue.fontSize" clearable placeholder="Digite o tempo"/>
+        <NInputNumber v-model:value="props.formValue.fontSize" clearable placeholder="Digite o tamanho"/>
       </NFormItem>
       <NFormItem label="Preview do texto com a fonte e o tamanho base selecionado" path="showVoteButton">
         <div :style="{fontSize: `${props.formValue.fontSize}px`}" class="font-selected">
